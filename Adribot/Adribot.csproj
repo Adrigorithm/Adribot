@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="bin\Debug\netcoreapp3.1\api.json" />
     <Content Include="bin\Debug\netcoreapp3.1\config.json" />
   </ItemGroup>
 
