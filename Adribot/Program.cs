@@ -5,7 +5,6 @@ using DSharpPlus.Interactivity;
 using Newtonsoft.Json;
 using System;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -44,6 +43,7 @@ namespace Adribot
 
             // Register Commands
             commands.RegisterCommands<Commands>();
+            commands.RegisterCommands<FloofGroup>();
 
             // Event handlers
             discord.MessageCreated += MessageCreated;

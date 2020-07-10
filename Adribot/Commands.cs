@@ -6,36 +6,14 @@ using DSharpPlus.Interactivity;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Adribot
 {
     public class Commands
     {
-        HttpClient catClient;
-        ApiJson apiJson;
-
-        public Commands() {
-            string json = GetApiJson();
-            apiJson = JsonConvert.DeserializeObject<ApiJson>(json);
-
-            // Setup cat api 
-            catClient = new HttpClient();
-            catClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("x-api-key", apiJson.CatToken);
-        }
-
-        private string GetApiJson() {
-            using(var fs = File.OpenRead("api.json")) {
-                using(var sr = new StreamReader(fs, new UTF8Encoding(false))) {
-                    return sr.ReadToEnd();
-                }
-            }
-        }
-
         [Command("clear"), Description("Clears chat history"), RequirePermissions(Permissions.ManageMessages)]
         public async Task ClearChat(CommandContext ctx, [Description("Amount of messages to be deleted.")] int amount = -1) {
             var channel = ctx.Channel;
@@ -98,13 +76,44 @@ namespace Adribot
                 }
             }
         }
+    }
 
-        [Command("cat"), Description("Replies with a random cat"), RequirePermissions(Permissions.SendMessages)]
+    [Group("floof", CanInvokeWithoutSubcommand = true)]
+    [Description("Floofs!. When invoked without subcommand, returns a random one.")]
+    [RequirePermissions(Permissions.SendMessages)]
+    public class FloofGroup : AuthCommand
+    {
+        HttpClient catClient;
+        HttpClient foxClient;
+
+        public FloofGroup() {
+            // Setup cat api 
+            catClient = new HttpClient();
+            catClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("x-api-key", apiJson.CatToken);
+            foxClient = new HttpClient();
+        }
+
+        
+
+        public async Task ExecuteGroupAsync(CommandContext ctx) {
+            Random random = new Random();
+
+            switch(random.Next(0, 2)) {
+                case 0:
+                    await GetCat(ctx);
+                    return;
+                case 1:
+                    await GetFox(ctx);
+                    return;
+            }
+        }
+
+        [Command("cat"), Description("Cat floof!")]
         public async Task GetCat(CommandContext ctx) {
             string catJson = await catClient.GetStringAsync("https://api.thecatapi.com/v1/images/search");
             var catUrl = JsonConvert.DeserializeObject<List<dynamic>>(catJson)[0].url;
 
-            string[] titles = {"Cute floof!", "Found one!", "Cat.", "Cat = Life", "Daily cats!", "Cuteness overload!"};
+            string[] titles = { "Cute floof!", "Found one!", "Cat.", "Cat = Life", "Daily cats!", "Cuteness overload!", "Kitty" };
             Random random = new Random();
 
             // Load cat in embed
@@ -116,11 +125,25 @@ namespace Adribot
 
             await ctx.RespondAsync(null, false, catEmbed);
         }
+
+        [Command("fox"), Description("Fox floof!")]
+        public async Task GetFox(CommandContext ctx) {
+            string foxJson = await foxClient.GetStringAsync("https://randomfox.ca/floof/");
+            var foxUrl = JsonConvert.DeserializeObject<dynamic>(foxJson).image;
+
+            string[] titles = { "Cute floof!", "Found one!", "Fox.", "Fox = Life", "Daily Foxes!", "Cuteness overload!", "Foxie!" };
+            Random random = new Random();
+
+            // Load cat in embed
+            DiscordEmbedBuilder foxImageBuilder = new DiscordEmbedBuilder();
+            foxImageBuilder.WithTitle(titles[random.Next(0, titles.Length)]);
+            foxImageBuilder.WithImageUrl(foxUrl.Value);
+
+            DiscordEmbed foxEmbed = foxImageBuilder.Build();
+
+            await ctx.RespondAsync(null, false, foxEmbed);
+        }
     }
 
-    public struct ApiJson
-    {
-        [JsonProperty("cat")]
-        public string CatToken { get; private set; }
-    }
+    
 }
