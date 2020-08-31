@@ -9,10 +9,10 @@ namespace Adribot
         protected ApiJson apiJson;
 
         public AuthCommand() {
-            LoadAPI();
+            LoadApi();
         }
 
-        private void LoadAPI() {
+        private void LoadApi() {
             string json = GetApiJson();
             apiJson = JsonConvert.DeserializeObject<ApiJson>(json);
         }
