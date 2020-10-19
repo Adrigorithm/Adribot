@@ -10,31 +10,23 @@ namespace Adribot.config
 
         [JsonProperty("token")]
         public static string Token { get; private set; }
-        
+
         [JsonProperty("prefix")]
         public static string Prefix { get; private set; }
 
-        static Config()
-        {
+        static Config() {
             LoadConfig(Path);
         }
 
-        private static void LoadConfig(string path)
-        {
-            if (File.Exists(path))
-            {
-                try
-                {
+        private static void LoadConfig(string path) {
+            if(File.Exists(path)) {
+                try {
                     JsonConvert.DeserializeObject<Config>(File.ReadAllText(Path));
-                }
-                catch (Exception e)
-                {
+                } catch(Exception e) {
                     Console.WriteLine(e);
                     throw;
                 }
-            }
-            else
-            {
+            } else {
                 Console.WriteLine("Config file is missing.");
             }
         }
