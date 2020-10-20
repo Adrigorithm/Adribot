@@ -6,17 +6,12 @@ namespace Adribot.src.entities
 {
     public class Ban
     {
-        private ulong _guildId, _userId;
-        private DateTime _banExpired;
+        public int BanId { get; }
+        public ulong GuildId { get; }
+        public ulong UserId { get; }
+        public DateTime BanExpired { get; }
 
-        public Ban(ulong guildId, ulong userId, DateTime banExpired) {
-            _guildId = guildId;
-            _userId = userId;
-            _banExpired = banExpired;
-        }
-
-        public ulong GuildId { get => _guildId; }
-        public ulong UserId { get => _userId; }
-        public DateTime BanExpired { get => _banExpired; }
+        public Ban(int banId, ulong guildId, ulong userId, DateTime banExpired) =>
+            (BanId, GuildId, UserId, BanExpired) = (banId, guildId, userId, banExpired);
     }
 }

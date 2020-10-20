@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Adribot.config;
+using Adribot.services;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Interactivity;
@@ -67,7 +68,7 @@ namespace Adribot
         }
 
         private void SetupServices() {
-            
+            BanService.SetupBanService(_client);
         }
 
         private void SetupInteractivity() {

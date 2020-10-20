@@ -23,14 +23,14 @@ namespace Adribot.src.services.dbGateway
                 var bans = new List<object>();
 
                 var connection = new SqlConnection(_connectionString);
-                var command = new SqlCommand($"SELECT TOP {((amount > 0) ? amount : 10)} guildId, userId, banExpired FROM dbo.bans ORDER BY banExpired DESC", connection);
+                var command = new SqlCommand($"SELECT TOP {((amount > 0) ? amount : 10)} banId, guildId, userId, banExpired FROM dbo.bans WHERE unbanned = 0 ORDER BY banExpired DESC", connection);
 
                 try {
                     connection.Open();
 
                     SqlDataReader reader = command.ExecuteReader();
                     while(reader.Read()) {
-                        bans.Add(new Ban((ulong)reader["guildId"], (ulong)reader["userId"], (DateTime)reader["banExpired"]));
+                        bans.Add(new Ban((int)reader["banId"], (ulong)reader["guildId"], (ulong)reader["userId"], (DateTime)reader["banExpired"]));
                     }
                 } catch(Exception e) {
                     Console.WriteLine($"Database query failed!\nException: {e.Message}.");
@@ -45,34 +45,59 @@ namespace Adribot.src.services.dbGateway
 
         public void InsertObjectList(IEnumerable<object> objects) {
 
+            // Preview version
+            //(objects) switch
+            //{
+            //    (IEnumerable<Ban> b) => InsertBans(b),
+            //};
+
             // What type is this lol
             switch(objects) {
                 case IEnumerable<Ban> b:
-                    var connection = new SqlConnection(_connectionString);
-                    StringBuilder commandString = new StringBuilder();
-
-                    commandString.Append("INSERT INTO dbo.bans (guildId, userId, banExpired) VALUES ");
-
-                    for(int i = 0; i < b.Count(); i++) {
-                        commandString.Append($"({b.ElementAt(i).GuildId}, {b.ElementAt(i).UserId}, {b.ElementAt(i).BanExpired})");
-
-                        if(i++ < b.Count()) {
-                            commandString.Append(',');
-                        }
-                    }
-
-                    var command = new SqlCommand(commandString.ToString(), connection);
-
-                    try {
-                        connection.Open();
-                        command.ExecuteNonQuery();
-                    } catch(Exception e) {
-                        Console.WriteLine($"Database query failed!\nException: {e.Message}.");
-                    }
-
-                    connection.Close();
+                    InsertBans(b);
                     break;
             }
+        }
+
+        public void CheckUnbanned(int banId) {
+            var connection = new SqlConnection(_connectionString);
+            var command = new SqlCommand($"UPDATE dbo.bans SET unbanned = 1 WHERE banId = {banId}", connection);
+
+            try {
+                connection.Open();
+                command.ExecuteNonQuery();
+
+            } catch(Exception e) {
+                Console.WriteLine($"Database query failed!\nException: {e.Message}.");
+            }
+
+            connection.Close();
+        }
+
+        private void InsertBans(IEnumerable<Ban> b) {
+            var connection = new SqlConnection(_connectionString);
+            StringBuilder commandString = new StringBuilder();
+
+            commandString.Append("INSERT INTO dbo.bans (guildId, userId, banExpired) VALUES ");
+
+            for(int i = 0; i < b.Count(); i++) {
+                commandString.Append($"({b.ElementAt(i).GuildId}, {b.ElementAt(i).UserId}, {b.ElementAt(i).BanExpired})");
+
+                if(i++ < b.Count()) {
+                    commandString.Append(',');
+                }
+            }
+
+            var command = new SqlCommand(commandString.ToString(), connection);
+
+            try {
+                connection.Open();
+                command.ExecuteNonQuery();
+            } catch(Exception e) {
+                Console.WriteLine($"Database query failed!\nException: {e.Message}.");
+            }
+
+            connection.Close();
         }
     }
 }
