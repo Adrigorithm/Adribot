@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Adribot.config;
-using Adribot.services;
+using Adribot.src.events;
+using Adribot.src.services;
+using Adribot.src.services.spec;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using EventHandler = Adribot.events.EventHandler;
 
 namespace Adribot
 {
@@ -17,58 +21,59 @@ namespace Adribot
         private DiscordClient _client;
         private CommandsNextExtension _commands;
         private InteractivityExtension _interactivity;
-        private EventHandler _events;
+        private BotEventHandler _eventHandler;
+        private Config _botConfig;
 
         /// <summary>
         /// Creates a bot
         /// </summary>
         /// <param name="useCommands">Whether or not this bot should use commands</param>
         /// <param name="useInteractivity">Whether or not this bot will interact with users</param>
-        public Bot(bool useCommands, bool useInteractivity) {
-            SetupDiscordClient(useCommands, useInteractivity);
-        }
+        public Bot() => 
+            SetupDiscordClient();
 
-        private void SetupDiscordClient(bool useCommands, bool useInteractivity) {
+        private void SetupDiscordClient() {
+            _botConfig = new Config();
+            Task.Run(async () => await _botConfig.LoadConfigAsync()).Wait();
+
             _client = new DiscordClient(new DiscordConfiguration {
-                Token = Config.Token,
-                MinimumLogLevel = LogLevel.Information
+                Token = _botConfig.Token,
+                MinimumLogLevel = LogLevel.Information,
+                Intents = DiscordIntents.All
             });
 
-            if(useCommands) {
-                SetupCommands();
-            }
-
-            if(useInteractivity) {
-                SetupInteractivity();
-            }
+            SetupInteractivity();
+            SetupCommands();
 
             AttachEvents();
         }
-        
+
         /// <summary>
         /// Enables specific events to the current DiscordClient instance
         /// </summary>
         private void AttachEvents() {
-            _events = new EventHandler(_client)
-            {
+            _eventHandler = new BotEventHandler(_client) {
                 EnableMessageCreated = true
             };
+
+            _eventHandler.Attach();
         }
 
         /// <summary>
         /// Enables the execution of commands on the client
         /// </summary>
         private void SetupCommands() {
+
+            // Dependency Injection
+            var services = new ServiceCollection()
+                .AddSingleton<IService, BanService>()
+                .BuildServiceProvider();
+
             _commands = _client.UseCommandsNext(new CommandsNextConfiguration {
                 EnableDms = false,
-                StringPrefixes = new[] { Config.Prefix }
+                StringPrefixes = _botConfig.Prefixes,
+                Services = services
             });
-
-            SetupServices();
-        }
-
-        private void SetupServices() {
-            BanService.SetupBanService(_client);
         }
 
         private void SetupInteractivity() {
@@ -77,7 +82,7 @@ namespace Adribot
 
         /// <summary>
         /// Add commands grouped in a class
-        /// This class should inherit from BaseCommands
+        /// This class should inherit from BaseCommandModule
         /// </summary>
         /// <param name="commands">List of classes with commands that this bot should use</param>
         public void AttachCommands(IEnumerable<Type> commands) {

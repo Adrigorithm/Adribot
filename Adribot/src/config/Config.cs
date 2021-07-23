@@ -1,33 +1,39 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace Adribot.config
 {
     public class Config
     {
-        private const string Path = "config.json";
+        [JsonIgnore]
+        private const string ConfigPath = "config.json";
 
-        [JsonProperty("token")]
-        public static string Token { get; private set; }
+        [JsonPropertyName("token")]
+        public string Token { get; set; }
 
-        [JsonProperty("prefix")]
-        public static string Prefix { get; private set; }
+        [JsonPropertyName("prefixes")]
+        public string[] Prefixes { get; set; }
 
-        static Config() {
-            LoadConfig(Path);
+        public Config() {
+
         }
 
-        private static void LoadConfig(string path) {
-            if(File.Exists(path)) {
-                try {
-                    JsonConvert.DeserializeObject<Config>(File.ReadAllText(Path));
-                } catch(Exception e) {
-                    Console.WriteLine(e);
-                    throw;
-                }
-            } else {
-                Console.WriteLine("Config file is missing.");
+        public async Task LoadConfigAsync() {
+            try {
+                Config cfgTemp = await JsonSerializer.DeserializeAsync<Config>(File.OpenRead(ConfigPath));
+                Token = cfgTemp.Token;
+                Prefixes = cfgTemp.Prefixes;
+            } catch(FileNotFoundException) {
+                Console.WriteLine("Configuration file not found!");
+            } catch(UnauthorizedAccessException) {
+                Console.WriteLine("Adribot has insufficient permissions to access the configuration file.\n" +
+                    "Consider starting as an authorized user or grant the application access.");
+            } catch(JsonException e) {
+                Console.WriteLine($"Configuration file is corrupt: {e.Message}");
             }
         }
     }

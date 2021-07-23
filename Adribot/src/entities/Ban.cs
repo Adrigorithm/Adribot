@@ -1,17 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Adribot.src.entities
 {
-    public class Ban
-    {
-        public int BanId { get; }
-        public ulong GuildId { get; }
-        public ulong UserId { get; }
-        public DateTime BanExpired { get; }
+    [Table("bans")]
+    public class Ban {
+        [Key]
+        [Column("banId")]
+        public int BanId { get; set; }
 
-        public Ban(int banId, ulong guildId, ulong userId, DateTime banExpired) =>
-            (BanId, GuildId, UserId, BanExpired) = (banId, guildId, userId, banExpired);
+        [Column("guildId")]
+        public ulong GuildId { get; set; }
+
+        [Column("userId")]
+        public ulong UserId { get; set; }
+
+        [Column("banExpired")]
+        public DateTime BanExpired { get; set; }
+
+        [Column("isBanned")]
+        public bool IsBanned { get; set; }
+
+        [Column("reason")]
+        public string Reason { get; set; }
     }
 }
