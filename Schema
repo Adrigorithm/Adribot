@@ -1,0 +1,23 @@
+﻿CREATE TABLE [bans] (
+    [banId] int NOT NULL IDENTITY,
+    [guildId] decimal(20,0) NOT NULL,
+    [userId] decimal(20,0) NOT NULL,
+    [banExpired] datetime2 NOT NULL,
+    [isBanned] bit NOT NULL,
+    [reason] nvarchar(max) NULL,
+    CONSTRAINT [PK_bans] PRIMARY KEY ([banId])
+);
+GO
+
+
+CREATE TABLE [tags] (
+    [tagId] int NOT NULL IDENTITY,
+    [guildId] decimal(20,0) NOT NULL,
+    [authorId] decimal(20,0) NOT NULL,
+    [content] nvarchar(max) NULL,
+    [tagName] nvarchar(max) NULL,
+    CONSTRAINT [PK_tags] PRIMARY KEY ([tagId])
+);
+GO
+
+

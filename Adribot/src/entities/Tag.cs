@@ -22,9 +22,11 @@ namespace Adribot.src.entities
         public ulong AuthorId { get; set; }
 
         [Column("content")]
+        [MaxLength(4000)]
         public string Content { get; set; }
 
         [Column("tagName")]
+        [MaxLength(40)]
         public string TagName { get; set; }
     }
 }

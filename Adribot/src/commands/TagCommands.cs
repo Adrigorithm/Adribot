@@ -18,6 +18,7 @@ namespace Adribot.src.commands
     class TagCommands : BaseCommandModule
     {
         private List<Tag> _tags;
+        private static string[] tagNameBlacklist = {"create", "new", "add", "remove", "delete", "edit"};
 
         public TagCommands() {
             GetTagsAsync();
@@ -25,17 +26,19 @@ namespace Adribot.src.commands
 
         private void GetTagsAsync() {
             using(var db = new DBController()) {
-                _tags = db.Tags.ToList();
+                try {
+                    _tags = db.Tags.ToList();
+                } catch(Exception e) {
+                    Console.WriteLine(e);
+                    _tags = new List<Tag>();
+                }
             }
         }
 
-        [Command()]
-        [Description("Gets a tag")]
-        [Aliases("get")]
-        [RequirePermissions(Permissions.SendMessages)]
+        [GroupCommand]
         public async Task GetTagAsync(CommandContext ctx, string tagName) {
             try {
-                var tag = _tags.First(x => x.GuildId == ctx.Guild.Id && x.TagName == tagName.ToLower());
+                var tag = _tags.First(x => x.GuildId == ctx.Guild.Id && x.TagName == tagName);
                 DiscordMember tagAuthor;
 
                 tagAuthor = await ctx.Guild.GetMemberAsync(tag.AuthorId);
@@ -51,7 +54,7 @@ namespace Adribot.src.commands
 
                 await ctx.RespondAsync(tagMessage);
             } catch(Exception) {
-                await ctx.RespondAsync($"A Tag {tagName} does not exist (Or the database went offline).");
+                await ctx.RespondAsync($"A Tag `{tagName}` does not exist (Or the database went offline).");
             }
         }
 
@@ -59,8 +62,8 @@ namespace Adribot.src.commands
         [Description("Creates a new tag")]
         [Aliases("new", "add")]
         [RequirePermissions(Permissions.ManageChannels)]
-        public async Task CreateTagAsync(CommandContext ctx, string tagName, string content) {
-            if(content.Length <= 4000 && tagName.Length <= 50) {
+        public async Task CreateTagAsync(CommandContext ctx, string tagName,[RemainingText] string content) {
+            if(!tagNameBlacklist.Contains(tagName) && content.Length <= 4000 && tagName.Length <= 40) {
                 var tag = new Tag {
                     AuthorId = ctx.Member.Id,
                     GuildId = ctx.Guild.Id,
@@ -74,7 +77,48 @@ namespace Adribot.src.commands
                         await db.SaveChangesAsync();
                         _tags.Add(tag);
                     } catch(Exception) {
-                        await ctx.RespondAsync($"A Tag {tagName} already exists (Or the database went offline).");
+                        await ctx.RespondAsync($"A Tag `{tagName}` already exists (Or the database went offline).");
+                    }
+                }
+            } else {
+                await ctx.RespondAsync($"A tagName has a limit of `40` chars and cannot be a tag sub-command, while for the tagContent it is `4000`");
+            }
+        }
+
+        [Command("remove")]
+        [Description("Removes a tag")]
+        [Aliases("delete")]
+        [RequirePermissions(Permissions.ManageChannels)]
+        public async Task DeleteTagAsync(CommandContext ctx, string tagName) {
+            var tag = _tags.First(x => x.GuildId == ctx.Guild.Id && x.TagName == tagName);
+            using(var db = new DBController()) {
+                db.Remove(tag);
+                try {
+                    await db.SaveChangesAsync();
+                    _tags.Remove(tag);
+                } catch(Exception) {
+                    await ctx.RespondAsync($"A Tag `{tagName}` doesn't exists (Or the database went offline).");
+                }
+            }
+        }
+
+        [Command("edit")]
+        [Description("Edits a tag")]
+        [RequirePermissions(Permissions.ManageChannels)]
+        public async Task EditTagAsync(CommandContext ctx, string tagName, [Description("New tag content")][RemainingText] string content) {
+            for(int i = 0; i < _tags.Count(); i++) {
+                if(_tags[i].GuildId == ctx.Guild.Id && _tags[i].TagName == tagName) {
+                    var contentOld = _tags[i].Content;
+                    _tags[i].Content = content;
+
+                    using(var db = new DBController()) {
+                        db.Update(_tags[i]);
+                        try {
+                            await db.SaveChangesAsync();
+                        } catch(Exception) {
+                            _tags[i].Content = contentOld;
+                            await ctx.RespondAsync($"A Tag `{tagName}` doesn't exists (Or the database went offline).");
+                        }
                     }
                 }
             }
