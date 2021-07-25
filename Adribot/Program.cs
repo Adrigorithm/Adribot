@@ -10,7 +10,7 @@ namespace Adribot
     {
         static async Task Main(string[] args) {
             var bot = new Bot();
-            bot.AttachCommands(new[] { typeof(UtilityCommands), typeof(TagCommands) });
+            bot.AttachCommands(new[] { typeof(AdminCommands), typeof(TagCommands), typeof(UtilityCommands) });
 
             await bot.Start();
             await Task.Delay(-1);
