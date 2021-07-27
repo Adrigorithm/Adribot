@@ -21,28 +21,39 @@ namespace Adribot.src.commands
         [Command("emoji")]
         [Description("Steals emoji from a message")]
         [RequirePermissions(Permissions.ManageEmojis)]
-        public async Task StealEmojiAsync(CommandContext ctx, bool fromReactions, [Description("Specify if more emojis are present (0-based)")] int index = 0) {
-            var emojiMessage = ctx.Message.ReferencedMessage.Content;
-            var matches = Regex.Matches(emojiMessage, RegexPatterns.EmojiRegex);
+        public async Task StealEmojiAsync(CommandContext ctx, [Description("Pull emoji from message reactions instead of message content")] bool fromReactions = false, [Description("Specify if more emojis are present (0-based)")] int index = 0) {
+            var emojiMessage = ctx.Message.ReferencedMessage;
+            var matches = Regex.Matches(emojiMessage.Content, RegexPatterns.EmojiRegex);
 
-            using(var client = new HttpClient()) {
-                try {
-                    if(index > -1) {
+            if(index > -1) {
+                using(var client = new HttpClient()) {
+                    try {
                         var url = $"https://cdn.discordapp.com/emojis/{matches[index].Groups[2].Value}.png";
-
+                        if(fromReactions) {
+                            url = emojiMessage.Reactions[index].Emoji.Url;
+                        }
+                        
                         using(var httpClient = new HttpClient()) {
                             var mStream = new MemoryStream();
                             await (await httpClient.GetStreamAsync(url)).CopyToAsync(mStream);
 
-                            await ctx.Guild.CreateEmojiAsync(matches[index].Groups[1].Value,
-                                mStream,
-                                null,
-                                "stolen emoji lmao.");
+                            if(fromReactions) {
+                                await ctx.Guild.CreateEmojiAsync(
+                                    emojiMessage.Reactions[index].Emoji.Name,
+                                    mStream,
+                                    null,
+                                    "stolen emoji lmao.");
+                            } else {
+                                await ctx.Guild.CreateEmojiAsync(
+                                    matches[index].Groups[1].Value,
+                                    mStream,
+                                    null,
+                                    "stolen emoji lmao.");
+                            }
                         }
-
+                    } catch(Exception e) {
+                        Console.WriteLine(e);
                     }
-                } catch(Exception e) {
-                    Console.WriteLine(e);
                 }
             }
         }
@@ -56,13 +67,13 @@ namespace Adribot.src.commands
             }
         }
 
-        [Command("sticker")]
-        [Description("Steals sticker from a message")]
-        public async Task StealStickerAsync(CommandContext ctx, [Description("Specify if more stickers are present (0-based)")] int index = 0) {
-            var stickers = ctx.Message.ReferencedMessage.Stickers;
-            if(stickers.Count > 0 && stickers.Count > index) {
-                // Not supported by Lib, To be self-implement 
-            }
-        }
+        //[Command("sticker")]
+        //[Description("Steals sticker from a message")]
+        //public async Task StealStickerAsync(CommandContext ctx, [Description("Specify if more stickers are present (0-based)")] int index = 0) {
+        //    var stickers = ctx.Message.ReferencedMessage.Stickers;
+        //    if(stickers.Count > 0 && stickers.Count > index) {
+        //        // Not supported by Lib, To be self-implement 
+        //    }
+        //}
     }
 }

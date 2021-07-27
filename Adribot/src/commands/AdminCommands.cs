@@ -32,5 +32,25 @@ namespace Adribot.src.commands
                 duration.ToFutureDate(),
                 reason);
         }
+
+        [Command("clear")]
+        [Description("Removes messages\nA negative number will remove ALL messages INCLUDING pins (you've been warned).")]
+        [RequirePermissions(Permissions.ManageMessages)]
+        public async Task ClearAsync(CommandContext ctx, [Description("Messages to remove (max: 100)")] int amount = 50) {
+            if(amount < 0) {
+                var channel = await ctx.Channel.CloneAsync();
+                await ctx.Channel.DeleteAsync();
+                await channel.SendMessageAsync("All messages have been deleted.");
+            } else if(amount <= 100) {
+                try {
+                    var messages = await ctx.Channel.GetMessagesBeforeAsync(ctx.Message.Id, amount);
+                    await ctx.Channel.DeleteMessagesAsync(messages);
+                } catch(Exception) {
+                    await ctx.RespondAsync("No messages were deleted since some messages were over 14 days old." +
+                        "\nThis is not a bug, but an API limitation.");
+                }
+                
+            }
+        }
     }
 }
