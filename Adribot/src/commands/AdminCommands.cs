@@ -14,6 +14,7 @@ namespace Adribot.src.commands
 {
     class AdminCommands : BaseCommandModule {
         public BanService BanController { private get; set; }
+        public MuteService MuteController { private get; set; }
 
         [Command("ban")]
         [Description("Permabans a member")]
@@ -27,6 +28,24 @@ namespace Adribot.src.commands
         [Aliases("tban")]
         [RequirePermissions(Permissions.BanMembers)]
         public async Task BanMemberAsync(CommandContext ctx, [Description("Member to ban")] DiscordMember member, [Description("Duration: \\d[mhdwMy]")] string duration = "1w", [Description("Y u do dis?!")] string reason = "") {
+            await BanController.BanAsync(
+                member,
+                duration.ToFutureDate(),
+                reason);
+        }
+
+        [Command("mute")]
+        [Description("Permamutes a member")]
+        [RequirePermissions(Permissions.BanMembers)]
+        public async Task MuteMemberAsync(CommandContext ctx, [Description("Member to ban")] DiscordMember member, [Description("Y u do dis?!")] string reason = "") {
+            await member.BanAsync(0, reason);
+        }
+
+        [Command("mute")]
+        [Description("Temporary mute member")]
+        [Aliases("tmute")]
+        [RequirePermissions(Permissions.BanMembers)]
+        public async Task MuteMemberAsync(CommandContext ctx, [Description("Member to ban")] DiscordMember member, [Description("Duration: \\d[mhdwMy]")] string duration = "1w", [Description("Y u do dis?!")] string reason = "") {
             await BanController.BanAsync(
                 member,
                 duration.ToFutureDate(),
