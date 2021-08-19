@@ -1,5 +1,7 @@
-﻿using Adribot.src.entities.source;
+﻿using Adribot.src.entities;
+using Adribot.src.entities.source;
 using DSharpPlus;
+using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +26,7 @@ namespace Adribot.src.services.spec
 
         private void GetMutes() {
             _mutes = _muteController.Mutes
-                .OrderBy(x => x.MuteExpired)
+                .OrderBy(x => x.ExpiryDate)
                 .Take(10)
                 .ToList();
         }
@@ -37,41 +39,41 @@ namespace Adribot.src.services.spec
             if(_mutes.Count() == 0)
                 GetMutes();
 
-            if(_mutes[0].BanExpired.CompareTo(DateTime.Now) < 0)
+            if(_mutes[0].ExpiryDate.CompareTo(DateTime.Now) < 0)
                 Task.Run(() => UnmuteAsync(_mutes[0]));
         }
 
         private async Task UnmuteAsync(Mute mute) {
             if(Client != null) {
-                await (await Client.GetGuildAsync(mute.GuildId)).UnbanMemberAsync(ban.UserId);
-                if(_bans.Count() > 1) {
-                    _banController.Remove(_bans[0]);
-                    await _banController.SaveChangesAsync();
-                    _bans.RemoveAt(0);
+                var guild = await Client.GetGuildAsync(mute.Member.GuildId);
+                await guild.Members[mute.Member.UserId].SetMuteAsync(false, mute.Reason + " -> Mute expired.");
+                if(_mutes.Count() > 1) {
+                    _muteController.Remove(_mutes[0]);
+                    await _muteController.SaveChangesAsync();
+                    _mutes.RemoveAt(0);
 
                 }
             }
         }
 
-        public async Task BanAsync(DiscordMember member, DateTime banExpired, string reason = null) {
+        public async Task MuteAsync(DiscordMember member, DateTime expiryDate, string reason = null) {
             await member.Guild.BanMemberAsync(member);
 
-            var ban = new Ban {
-                GuildId = member.Guild.Id,
-                UserId = member.Id,
-                BanExpired = banExpired,
+            var mute = new Mute {
+                MemberId = _muteController.Members.First(x => x.UserId == member.Id).MemberId,
+                ExpiryDate = expiryDate,
                 Reason = reason
             };
 
-            _banController.Add(ban);
-            await _banController.SaveChangesAsync();
+            _muteController.Add(mute);
+            await _muteController.SaveChangesAsync();
 
-            if(_bans.Count() == 0) {
-                _bans.Add(ban);
+            if(_mutes.Count() == 0) {
+                _mutes.Add(mute);
             } else {
-                if(ban.BanExpired.CompareTo(_bans[^1].BanExpired) < 0) {
-                    _bans.Add(ban);
-                    _bans = _bans.OrderBy(x => x.BanExpired).ToList();
+                if(mute.ExpiryDate.CompareTo(_mutes[^1].ExpiryDate) < 0) {
+                    _mutes.Add(mute);
+                    _mutes = _mutes.OrderBy(x => x.ExpiryDate).ToList();
                 }
             }
         }

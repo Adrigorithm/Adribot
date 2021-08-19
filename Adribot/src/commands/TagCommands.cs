@@ -41,7 +41,7 @@ namespace Adribot.src.commands
                 var tag = _tags.First(x => x.GuildId == ctx.Guild.Id && x.TagName == tagName);
                 DiscordMember tagAuthor;
 
-                tagAuthor = await ctx.Guild.GetMemberAsync(tag.AuthorId);
+                tagAuthor = await ctx.Guild.GetMemberAsync(tag.Member.UserId);
 
                 var tagMessage = new DiscordEmbedBuilder {
                     Author = new DiscordEmbedBuilder.EmbedAuthor {
@@ -64,14 +64,14 @@ namespace Adribot.src.commands
         [RequirePermissions(Permissions.ManageChannels)]
         public async Task CreateTagAsync(CommandContext ctx, string tagName,[RemainingText] string content) {
             if(!tagNameBlacklist.Contains(tagName) && content.Length <= 4000 && tagName.Length <= 40) {
-                var tag = new Tag {
-                    AuthorId = ctx.Member.Id,
-                    GuildId = ctx.Guild.Id,
-                    Content = content,
-                    TagName = tagName
-                };
-
                 using(var db = new DBController()) {
+                    var tag = new Tag {
+                        UserId = db.Members.First(x => x.UserId == ctx.Member.Id).UserId,
+                        Content = content,
+                        TagName = tagName,
+                        GuildId = ctx.Guild.Id
+                    };
+
                     db.Add(tag);
                     try {
                         await db.SaveChangesAsync();

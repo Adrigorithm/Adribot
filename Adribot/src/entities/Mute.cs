@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace Adribot.src.entities
 {
-    public class GuildMember {
-        public ulong GuildId { get; set; }
-        public Guild Guild { get; set; }
+    public class Mute
+    {
+        public int MuteId { get; set; }
+        public DateTime ExpiryDate { get; set; }
+        public string Reason { get; set; }
 
-        public ulong UserId { get; set; }
+        public int MemberId { get; set; }
         public Member Member { get; set; }
     }
 }

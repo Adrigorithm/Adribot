@@ -26,7 +26,7 @@ namespace Adribot.src.services.spec
 
         private void GetBans() {
             _bans = _banController.Bans
-                .OrderBy(x => x.BanExpired)
+                .OrderBy(x => x.ExpiryDate)
                 .Take(10)
                 .ToList();
         }
@@ -39,13 +39,13 @@ namespace Adribot.src.services.spec
             if(_bans.Count() == 0)
                 GetBans();
 
-            if(_bans[0].BanExpired.CompareTo(DateTime.Now) < 0)
+            if(_bans[0].ExpiryDate.CompareTo(DateTime.Now) < 0)
                 Task.Run(() => UnbanAsync(_bans[0]));
         }
 
         private async Task UnbanAsync(Ban ban) {
             if(Client != null) {
-                await (await Client.GetGuildAsync(ban.GuildId)).UnbanMemberAsync(ban.UserId);
+                await (await Client.GetGuildAsync(ban.Member.GuildId)).UnbanMemberAsync(ban.Member.UserId);
                 if(_bans.Count() > 1) {
                     _banController.Remove(_bans[0]);
                     await _banController.SaveChangesAsync();
@@ -55,13 +55,12 @@ namespace Adribot.src.services.spec
             }
         }
 
-        public async Task BanAsync(DiscordMember member, DateTime banExpired, string reason = null) {
+        public async Task BanAsync(DiscordMember member, DateTime expiryDate, string reason = null) {
             await member.Guild.BanMemberAsync(member);
 
             var ban = new Ban {
-                GuildId = member.Guild.Id,
-                UserId = member.Id,
-                BanExpired = banExpired,
+                MemberId = _banController.Members.First(x => x.UserId == member.Id).MemberId,
+                ExpiryDate = expiryDate,
                 Reason = reason
             };
 
@@ -71,9 +70,9 @@ namespace Adribot.src.services.spec
             if(_bans.Count() == 0) {
                 _bans.Add(ban);
             } else {
-                if(ban.BanExpired.CompareTo(_bans[^1].BanExpired) < 0) {
+                if(ban.ExpiryDate.CompareTo(_bans[^1].ExpiryDate) < 0) {
                     _bans.Add(ban);
-                    _bans = _bans.OrderBy(x => x.BanExpired).ToList();
+                    _bans = _bans.OrderBy(x => x.ExpiryDate).ToList();
                 }
             }
         }

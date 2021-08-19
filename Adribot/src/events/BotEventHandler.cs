@@ -2,9 +2,7 @@
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Adribot.src.events
@@ -13,6 +11,7 @@ namespace Adribot.src.events
     {
         private DiscordClient _client;
         public bool EnableMessageCreated;
+        public bool EnableGuildCreated;
 
         public BotEventHandler(DiscordClient client) =>
             _client = client;
@@ -21,6 +20,12 @@ namespace Adribot.src.events
         public void Attach() {
             if(EnableMessageCreated)
                 _client.MessageCreated += MessageCreatedAsync;
+            if(EnableGuildCreated)
+                _client.GuildCreated += GuildCreatedAsync;
+        }
+
+        private Task GuildCreatedAsync(DiscordClient sender, GuildCreateEventArgs e) {
+            throw new NotImplementedException();
         }
 
         private async Task MessageCreatedAsync(DiscordClient sender, MessageCreateEventArgs e) {

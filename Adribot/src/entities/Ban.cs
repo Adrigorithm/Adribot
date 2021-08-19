@@ -9,12 +9,11 @@ namespace Adribot.src.entities
 {
     public class Ban
     {
-        [Key]
         public int BanId { get; set; }
         public DateTime ExpiryDate { get; set; }
         public string Reason { get; set; }
 
-        public int UserId { get; set; }
+        public int MemberId { get; set; }
         public Member Member { get; set; }
     }
 }

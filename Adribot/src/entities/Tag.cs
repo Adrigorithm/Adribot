@@ -8,25 +8,17 @@ using System.Threading.Tasks;
 
 namespace Adribot.src.entities
 {
-    [Table("tags")]
     public class Tag
     {
-        [Key]
-        [Column("tagId")]
         public int TagId { get; set; }
 
-        [Column("guildId")]
-        public ulong GuildId { get; set; }
-
-        [Column("authorId")]
-        public ulong AuthorId { get; set; }
-
-        [Column("content")]
         [MaxLength(4000)]
         public string Content { get; set; }
 
-        [Column("tagName")]
         [MaxLength(40)]
         public string TagName { get; set; }
+
+        public int MemberId { get; set; }
+        public Member Member { get; set; }
     }
 }
