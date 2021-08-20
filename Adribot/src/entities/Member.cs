@@ -19,9 +19,9 @@ namespace Adribot.src.entities
         public User User { get; set; }
 
         public int BanId { get; set; }
-        public Ban Ban { get; set; }
+        public List<Ban> Ban { get; set; }
 
         public int MuteId { get; set; }
-        public Mute Mute { get; set; }
+        public List<Mute> Mute { get; set; }
     }
 }

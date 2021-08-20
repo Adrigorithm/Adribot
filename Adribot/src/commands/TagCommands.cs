@@ -38,7 +38,7 @@ namespace Adribot.src.commands
         [GroupCommand]
         public async Task GetTagAsync(CommandContext ctx, string tagName) {
             try {
-                var tag = _tags.First(x => x.GuildId == ctx.Guild.Id && x.TagName == tagName);
+                var tag = _tags.First(x => x.Member.GuildId == ctx.Guild.Id && x.TagName == tagName);
                 DiscordMember tagAuthor;
 
                 tagAuthor = await ctx.Guild.GetMemberAsync(tag.Member.UserId);
@@ -66,10 +66,9 @@ namespace Adribot.src.commands
             if(!tagNameBlacklist.Contains(tagName) && content.Length <= 4000 && tagName.Length <= 40) {
                 using(var db = new DBController()) {
                     var tag = new Tag {
-                        UserId = db.Members.First(x => x.UserId == ctx.Member.Id).UserId,
+                        MemberId = db.Members.First(x => x.UserId == ctx.Member.Id).MemberId,
                         Content = content,
-                        TagName = tagName,
-                        GuildId = ctx.Guild.Id
+                        TagName = tagName
                     };
 
                     db.Add(tag);
@@ -90,7 +89,7 @@ namespace Adribot.src.commands
         [Aliases("delete")]
         [RequirePermissions(Permissions.ManageChannels)]
         public async Task DeleteTagAsync(CommandContext ctx, string tagName) {
-            var tag = _tags.First(x => x.GuildId == ctx.Guild.Id && x.TagName == tagName);
+            var tag = _tags.First(x => x.Member.GuildId == ctx.Guild.Id && x.TagName == tagName);
             using(var db = new DBController()) {
                 db.Remove(tag);
                 try {
@@ -107,7 +106,7 @@ namespace Adribot.src.commands
         [RequirePermissions(Permissions.ManageChannels)]
         public async Task EditTagAsync(CommandContext ctx, string tagName, [Description("New tag content")][RemainingText] string content) {
             for(int i = 0; i < _tags.Count(); i++) {
-                if(_tags[i].GuildId == ctx.Guild.Id && _tags[i].TagName == tagName) {
+                if(_tags[i].Member.GuildId == ctx.Guild.Id && _tags[i].TagName == tagName) {
                     var contentOld = _tags[i].Content;
                     _tags[i].Content = content;
 

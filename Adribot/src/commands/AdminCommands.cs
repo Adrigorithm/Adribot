@@ -36,17 +36,17 @@ namespace Adribot.src.commands
 
         [Command("mute")]
         [Description("Permamutes a member")]
-        [RequirePermissions(Permissions.BanMembers)]
-        public async Task MuteMemberAsync(CommandContext ctx, [Description("Member to ban")] DiscordMember member, [Description("Y u do dis?!")] string reason = "") {
-            await member.BanAsync(0, reason);
+        [RequirePermissions(Permissions.MuteMembers)]
+        public async Task MuteMemberAsync(CommandContext ctx, [Description("Member to mute")] DiscordMember member, [Description("Y u do dis?!")] string reason = "") {
+            await member.SetMuteAsync(true, reason);
         }
 
         [Command("mute")]
         [Description("Temporary mute member")]
         [Aliases("tmute")]
-        [RequirePermissions(Permissions.BanMembers)]
-        public async Task MuteMemberAsync(CommandContext ctx, [Description("Member to ban")] DiscordMember member, [Description("Duration: \\d[mhdwMy]")] string duration = "1w", [Description("Y u do dis?!")] string reason = "") {
-            await BanController.BanAsync(
+        [RequirePermissions(Permissions.MuteMembers)]
+        public async Task MuteMemberAsync(CommandContext ctx, [Description("Member to mute")] DiscordMember member, [Description("Duration: \\d[mhdwMy]")] string duration = "5m", [Description("Y u do dis?!")] string reason = "") {
+            await MuteController.MuteAsync(
                 member,
                 duration.ToFutureDate(),
                 reason);
