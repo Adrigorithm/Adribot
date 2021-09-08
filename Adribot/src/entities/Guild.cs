@@ -9,6 +9,5 @@ namespace Adribot.src.entities
         public ulong GuildId { get; set; }
 
         public List<Member> Members { get; set; }
-        public List<Tag> Tags { get; set; }
     }
 }

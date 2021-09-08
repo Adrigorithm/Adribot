@@ -66,7 +66,8 @@ namespace Adribot
 
             // Dependency Injection
             var services = new ServiceCollection()
-                .AddSingleton<IService, BanService>()
+                .AddSingleton(new BanService(_client))
+                .AddSingleton(new MuteService(_client))
                 .BuildServiceProvider();
 
             _commands = _client.UseCommandsNext(new CommandsNextConfiguration {

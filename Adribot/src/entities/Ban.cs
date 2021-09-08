@@ -10,9 +10,12 @@ namespace Adribot.src.entities
     public class Ban
     {
         public int BanId { get; set; }
+
+        [Required]
         public DateTime ExpiryDate { get; set; }
         public string Reason { get; set; }
 
+        [Required]
         public int MemberId { get; set; }
         public Member Member { get; set; }
     }

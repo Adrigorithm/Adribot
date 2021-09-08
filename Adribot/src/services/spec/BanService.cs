@@ -11,14 +11,19 @@ using System.Threading.Tasks;
 
 namespace Adribot.src.services.spec
 {
-    class BanService : IBackgroundService
+    public class BanService : IBackgroundService
     {
-        Timer _timer;
-        DBController _banController = new DBController();
-        List<Ban> _bans;
-        public DiscordClient Client { get; set; }
+        private Timer _timer;
+        private DBController _banController = new DBController();
+        private List<Ban> _bans;
+        private DiscordClient _client;
 
-        public void StartTimer(int interval = 10000) {
+        public BanService(DiscordClient client) {
+            _client = client;
+            StartTimer();
+        }
+
+        private void StartTimer(int interval = 10000) {
             GetBans();
             _timer = new Timer(new TimerCallback(TimerProc));
             _ = _timer.Change(0, interval);
@@ -44,14 +49,12 @@ namespace Adribot.src.services.spec
         }
 
         private async Task UnbanAsync(Ban ban) {
-            if(Client != null) {
-                await (await Client.GetGuildAsync(ban.Member.GuildId)).UnbanMemberAsync(ban.Member.UserId);
-                if(_bans.Count() > 1) {
-                    _banController.Remove(_bans[0]);
-                    await _banController.SaveChangesAsync();
-                    _bans.RemoveAt(0);
+            await (await _client.GetGuildAsync(ban.Member.GuildId)).UnbanMemberAsync(ban.Member.UserId);
+            if(_bans.Count() > 1) {
+                _banController.Remove(_bans[0]);
+                await _banController.SaveChangesAsync();
+                _bans.RemoveAt(0);
 
-                }
             }
         }
 

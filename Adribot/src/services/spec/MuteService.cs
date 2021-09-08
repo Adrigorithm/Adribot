@@ -13,12 +13,18 @@ namespace Adribot.src.services.spec
 {
     class MuteService : IBackgroundService
     {
+        private DiscordClient _client;
+
         Timer _timer;
         DBController _muteController = new DBController();
         List<Mute> _mutes;
-        public DiscordClient Client { get; set; }
 
-        public void StartTimer(int interval = 5000) {
+        public MuteService(DiscordClient client) {
+            _client = client;
+            StartTimer();
+        }
+
+        private void StartTimer(int interval = 5000) {
             GetMutes();
             _timer = new Timer(new TimerCallback(TimerProc));
             _ = _timer.Change(0, interval);
@@ -44,8 +50,8 @@ namespace Adribot.src.services.spec
         }
 
         private async Task UnmuteAsync(Mute mute) {
-            if(Client != null) {
-                var guild = await Client.GetGuildAsync(mute.Member.GuildId);
+            if(_client != null) {
+                var guild = await _client.GetGuildAsync(mute.Member.GuildId);
                 await guild.Members[mute.Member.UserId].SetMuteAsync(false, mute.Reason + " -> Mute expired.");
                 if(_mutes.Count() > 1) {
                     _muteController.Remove(_mutes[0]);

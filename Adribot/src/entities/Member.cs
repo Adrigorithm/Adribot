@@ -10,18 +10,16 @@ namespace Adribot.src.entities
     public class Member {
         public int MemberId { get; set; }
 
-        public List<Tag> Tags { get; set; }
-
+        [Required]
         public ulong GuildId { get; set; }
         public Guild Guild { get; set; }
 
+        [Required]
         public ulong UserId { get; set; }
         public User User { get; set; }
 
-        public int BanId { get; set; }
+        public List<Tag> Tags { get; set; }
         public List<Ban> Ban { get; set; }
-
-        public int MuteId { get; set; }
         public List<Mute> Mute { get; set; }
     }
 }
