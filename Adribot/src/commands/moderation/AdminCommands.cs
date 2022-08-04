@@ -16,22 +16,21 @@ class AdminCommands : ApplicationCommandModule
         int index = messages.Count - 1;
         while (index > -1)
         {
-            if (messages[index].Timestamp.UtcDateTime.AddDays(14).CompareTo(DateTime.UtcNow) < 0)
+            if (messages[index].Timestamp.UtcDateTime.AddDays(14).CompareTo(DateTime.UtcNow) >= 0)
             {
-                index--;
-                continue;
+                break;
             }
-            break;
+            index--;
         }
 
-        await ctx.Channel.DeleteMessagesAsync(messages.Take(index + 1));
-        if (messages.Count - index + 1 > 0)
+        if(index > -1) await ctx.Channel.DeleteMessagesAsync(messages.Take(index + 1));
+        if (index < messages.Count - 1)
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent($"Ink too dry! {messages.Count - index - 1} Messages could not be deleted."));
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent($"Ink too dry! {messages.Count - index - 1} Messages could not be deleted.").AsEphemeral(true));
         }
         else
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent($"Deleted {messages.Count} Messages."));
         }
     }
 }

@@ -12,7 +12,6 @@ using DSharpPlus.SlashCommands;
 class MinecraftCommands : ApplicationCommandModule
 {
     private const string DatapackPath = "./temp/";
-    private string _lastDatapackFile = "";
 
     [SlashCommand("Datapack", "Compiles Emojiful datapacks from supplied DiscordEmoji")]
     public async Task CreateDatapack(InteractionContext ctx, [Option("Category", "A name to categorise this emoji collection")] string category, [Option("Emojis", "A chain of DiscordEmoji")] string emojiList)
@@ -20,7 +19,11 @@ class MinecraftCommands : ApplicationCommandModule
         var emojiMatches = Regex.Matches(emojiList, "(<a?):(\\w+):(\\d{18})>");
         if (emojiMatches.Count > 0)
         {
-            if(!String.IsNullOrEmpty(_lastDatapackFile)) File.Delete(DatapackPath + _lastDatapackFile);
+            foreach (var filePath in Directory.GetFiles(DatapackPath, "*?.zip"))
+            {
+                File.Delete(filePath);
+            }
+
             Directory.Delete(DatapackPath + $"datapack/data/emojiful/recipes/", true);
             Directory.CreateDirectory(DatapackPath + $"datapack/data/emojiful/recipes/");
 
@@ -34,14 +37,14 @@ class MinecraftCommands : ApplicationCommandModule
                     Type = "emojiful:emoji_recipe"
                 };
 
-                FileStream fs = File.Create(DatapackPath + $"datapack/data/emojiful/recipes/{emojiMatches[i].Groups[2].Value}.json");
+                FileStream fs = File.Create(DatapackPath + $"datapack/data/emojiful/recipes/{emojiMatches[i].Groups[2].Value.ToLower()}.json");
                 await JsonSerializer.SerializeAsync(fs, emoji);
                 await fs.DisposeAsync();
             }
-            _lastDatapackFile = $"{ctx.User.Username}-" + category + "-emojiful-datapack.zip";
-            ZipFile.CreateFromDirectory(DatapackPath + "datapack/", DatapackPath + _lastDatapackFile);
+            var fileName = $"{ctx.User.Username}-" + category + "-emojiful-datapack.zip";
+            ZipFile.CreateFromDirectory(DatapackPath + "datapack/", DatapackPath + fileName);
 
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddFile(_lastDatapackFile, File.OpenRead(DatapackPath + _lastDatapackFile)));
+            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddFile(fileName, File.OpenRead(DatapackPath + fileName)).AsEphemeral());
         }
     }
 }

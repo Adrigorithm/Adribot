@@ -23,8 +23,8 @@ public class Bot
 
         var slashies = _client.UseSlashCommands();
         // Remove GID to make global (Production)
-        // slashies.RegisterCommands<AdminCommands>(574341132826312736);
-        // slashies.RegisterCommands<MinecraftCommands>(574341132826312736);
+        slashies.RegisterCommands<AdminCommands>(574341132826312736);
+        slashies.RegisterCommands<MinecraftCommands>(574341132826312736);
         slashies.RegisterCommands<AdminCommands>(357597633566605313);
         slashies.RegisterCommands<MinecraftCommands>(357597633566605313);
 
@@ -35,7 +35,8 @@ public class Bot
     {
         _clientEvents = new(_client){
             UseMessageCreated = true,
-            UseGuildMemberUpdated = true
+            UseGuildMemberUpdated = true,
+            UseSlashCommandErrored = true
         };
         _clientEvents.Attach();
     }

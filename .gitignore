@@ -362,4 +362,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Custom rules
-Adribot/secret/*
+Adribot/secret/
+Adribot/temp/*.zip
