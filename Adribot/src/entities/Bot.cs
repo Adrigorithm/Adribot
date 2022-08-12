@@ -1,27 +1,33 @@
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Adribot.config;
 using DSharpPlus;
 using DSharpPlus.SlashCommands;
+using Microsoft.Extensions.DependencyInjection;
 
 public class Bot
 {
-    private Secret _secret;
+    private Config _config;
     private ClientEvents _clientEvents;
     private DiscordClient _client;
+    private AdribotContext _adribotContext;
     public Bot() => SetupClient();
 
     private void SetupClient()
     {
-        _secret = Task.Run(async () => await LoadConfigurationAsync()).Result;
+        Task.Run(async () => await _config.LoadConfigAsync()).Wait();
+        _adribotContext = new(_config.SQLConnectionString);
 
         _client = new(new DiscordConfiguration
         {
-            Token = _secret.Bot,
-            Intents = DiscordIntents.All
+            Token = _config.BotToken,
+            Intents = DiscordIntents.All,
         });
 
-        var slashies = _client.UseSlashCommands();
+        var slashies = _client.UseSlashCommands(new SlashCommandsConfiguration{
+            Services = new ServiceCollection().AddSingleton<InfractionService>().BuildServiceProvider()
+        });
         // Remove GID to make global (Production)
         slashies.RegisterCommands<AdminCommands>(574341132826312736);
         slashies.RegisterCommands<MinecraftCommands>(574341132826312736);
@@ -36,12 +42,12 @@ public class Bot
         _clientEvents = new(_client){
             UseMessageCreated = true,
             UseGuildMemberUpdated = true,
-            UseSlashCommandErrored = true
+            UseSlashCommandErrored = true,
+            UseUserUpdated = true
         };
         _clientEvents.Attach();
     }
 
-    private async Task<Secret> LoadConfigurationAsync() => await JsonSerializer.DeserializeAsync<Secret>(File.OpenRead("./secret/tokens.json"));
     public async Task StartAsync() => await _client.ConnectAsync();
     public async Task StopAsync() => await _client.DisconnectAsync();
 }

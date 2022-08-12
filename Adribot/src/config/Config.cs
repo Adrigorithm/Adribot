@@ -10,23 +10,19 @@ namespace Adribot.config
     public class Config
     {
         [JsonIgnore]
-        private const string ConfigPath = "config.json";
+        private const string ConfigPath = "/secret/config.json";
 
-        [JsonPropertyName("token")]
-        public string Token { get; set; }
+        [JsonPropertyName("botToken")]
+        public string BotToken { get; set; }
 
-        [JsonPropertyName("prefixes")]
-        public string[] Prefixes { get; set; }
-
-        public Config() {
-
-        }
+        [JsonPropertyName("sqlConnectionString")]
+        public string SQLConnectionString {get; set;}
 
         public async Task LoadConfigAsync() {
             try {
                 Config cfgTemp = await JsonSerializer.DeserializeAsync<Config>(File.OpenRead(ConfigPath));
-                Token = cfgTemp.Token;
-                Prefixes = cfgTemp.Prefixes;
+                BotToken = cfgTemp.BotToken;
+                SQLConnectionString = cfgTemp.SQLConnectionString;
             } catch(FileNotFoundException) {
                 Console.WriteLine("Configuration file not found!");
             } catch(UnauthorizedAccessException) {

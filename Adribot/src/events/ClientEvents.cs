@@ -16,6 +16,9 @@ class ClientEvents
 
     public bool UseGuildMemberUpdated;
     public bool UseMessageCreated;
+    public bool UseUserUpdated;
+
+    // Slashies
     public bool UseSlashCommandErrored;
 
     public ClientEvents(DiscordClient client)
@@ -31,12 +34,16 @@ class ClientEvents
             _client.MessageCreated += MessageCreatedAsync;
         if (UseGuildMemberUpdated)
             _client.GuildMemberUpdated += GuildMemberUpdatedAsync;
+        if (UseUserUpdated)
+            _client.UserUpdated += UserUpdatedAsync;
         if (UseSlashCommandErrored)
             slashies.SlashCommandErrored += SlashCommandErroredAsync;
     }
 
-    private Task SlashCommandErroredAsync(SlashCommandsExtension sender, SlashCommandErrorEventArgs e){
+    private Task SlashCommandErroredAsync(SlashCommandsExtension sender, SlashCommandErrorEventArgs e)
+    {
         Console.WriteLine($"{e.Context.CommandName}\n{e.Exception.Message}");
+
         return Task.CompletedTask;
     }
 
@@ -59,18 +66,25 @@ class ClientEvents
         }
     }
 
-    private async Task GuildMemberUpdatedAsync(DiscordClient client, GuildMemberUpdateEventArgs args)
+    private async Task UserUpdatedAsync(DiscordClient sender, UserUpdateEventArgs args) => await HoistCheckAsync((DiscordMember)args.UserAfter);
+
+    private async Task GuildMemberUpdatedAsync(DiscordClient client, GuildMemberUpdateEventArgs args) => await HoistCheckAsync(args.MemberAfter);
+
+    private async Task HoistCheckAsync(DiscordMember memberAfter)
     {
-        Console.WriteLine((byte)args.MemberAfter.DisplayName[0]);
-        if (!String.IsNullOrWhiteSpace(args.MemberAfter.DisplayName) && (byte)args.MemberAfter.DisplayName[0] < 48)
+        if (!String.IsNullOrWhiteSpace(memberAfter.DisplayName) && (byte)memberAfter.DisplayName[0] < 48)
         {
-            await args.MemberAfter.ModifyAsync(m => m.Nickname = "💩");
-            _poopers[args.Member.Id] = DateTime.UtcNow;
-        }else if (args.MemberAfter.DisplayName != "💩" && _poopers.ContainsKey(args.Member.Id) && _poopers[args.Member.Id].AddDays(3).CompareTo(DateTime.UtcNow) > 0)
+            await memberAfter.ModifyAsync(m => m.Nickname = "💩");
+            _poopers[memberAfter.Id] = DateTime.UtcNow;
+        }
+        else if (_poopers.ContainsKey(memberAfter.Id) && _poopers[memberAfter.Id].AddDays(1).CompareTo(DateTime.UtcNow) > 0)
         {
-            await args.MemberAfter.ModifyAsync(m => m.Nickname = "💩");
-        }else{
-            _poopers.Remove(args.Member.Id);
+            if (memberAfter.DisplayName != "💩" )
+                await memberAfter.ModifyAsync(m => m.Nickname = "💩");
+        }
+        else
+        {
+            _poopers.Remove(memberAfter.Id);
             await Task.CompletedTask;
         }
     }
