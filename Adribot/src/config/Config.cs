@@ -10,7 +10,7 @@ namespace Adribot.config
     public class Config
     {
         [JsonIgnore]
-        private const string ConfigPath = "/secret/config.json";
+        private const string ConfigPath = "secret/config.json";
 
         [JsonPropertyName("botToken")]
         public string BotToken { get; set; }
@@ -20,6 +20,7 @@ namespace Adribot.config
 
         public async Task LoadConfigAsync() {
             try {
+                Console.WriteLine(Directory.GetCurrentDirectory());
                 Config cfgTemp = await JsonSerializer.DeserializeAsync<Config>(File.OpenRead(ConfigPath));
                 BotToken = cfgTemp.BotToken;
                 SQLConnectionString = cfgTemp.SQLConnectionString;

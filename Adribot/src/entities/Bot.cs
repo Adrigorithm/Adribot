@@ -1,17 +1,19 @@
-using System.IO;
-using System.Text.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Adribot.config;
 using DSharpPlus;
+using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 
 public class Bot
 {
-    private Config _config;
+    private Config _config = new();
     private ClientEvents _clientEvents;
     private DiscordClient _client;
-    private AdribotContext _adribotContext;
+    internal AdribotContext _adribotContext;
     public Bot() => SetupClient();
 
     private void SetupClient()
@@ -25,9 +27,8 @@ public class Bot
             Intents = DiscordIntents.All,
         });
 
-        var slashies = _client.UseSlashCommands(new SlashCommandsConfiguration{
-            Services = new ServiceCollection().AddSingleton<InfractionService>().BuildServiceProvider()
-        });
+        var slashies = _client.UseSlashCommands();
+
         // Remove GID to make global (Production)
         slashies.RegisterCommands<AdminCommands>(574341132826312736);
         slashies.RegisterCommands<MinecraftCommands>(574341132826312736);
@@ -35,17 +36,23 @@ public class Bot
         slashies.RegisterCommands<MinecraftCommands>(357597633566605313);
 
         AttachEvents();
+        StartServices();
     }
 
     private void AttachEvents()
     {
-        _clientEvents = new(_client){
+        _clientEvents = new(_client, _config)
+        {
             UseMessageCreated = true,
-            UseGuildMemberUpdated = true,
             UseSlashCommandErrored = true,
-            UseUserUpdated = true
+            UseGuildDownloadCompleted = true
         };
         _clientEvents.Attach();
+    }
+
+    private void StartServices()
+    {
+        InfractionService.Init(_client, _config.SQLConnectionString);
     }
 
     public async Task StartAsync() => await _client.ConnectAsync();

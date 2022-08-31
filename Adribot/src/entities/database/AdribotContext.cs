@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 
-class AdribotContext : DbContext{
+internal class AdribotContext : DbContext{
     private string _connectionString;
 
     public DbSet<DGuild> Guilds {get; set;}
-    public DbSet<DUser> Users {get; set;}
-    public DbSet<Infraction> infractions {get; set;}
+    public DbSet<DMember> Members {get; set;}
+    public DbSet<Infraction> Infractions {get; set;}
 
     public AdribotContext(string connectionString) => _connectionString = connectionString;
     

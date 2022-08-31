@@ -8,8 +8,6 @@ using DSharpPlus.SlashCommands.Attributes;
 
 class AdminCommands : ApplicationCommandModule
 {
-    public InfractionService TimeoutService {private get; set;}
-
     [SlashCommand("Clear", "Deletes given amount of messages")]
     [SlashRequirePermissions(Permissions.ManageMessages)]
     public async Task DeleteMessagesAsync(InteractionContext ctx, [Option("Amount", "Amount of messages to delete"), Minimum(2), Maximum(100)] long amount = 10)

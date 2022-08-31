@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-public record DUser{
+public class DMember{
     [Key]
-    public ulong UserId {get; set;}
-    public string Nickname {get; set;}
+    public ulong MemberId {get; set;}
 
     public List<Infraction> Infractions {get; set;} = new();
 
-    public List<DGuild> Guilds {get; set;}
+    public ulong GuildId {get; set;}
+    public DGuild DGuild {get; set;}
 }

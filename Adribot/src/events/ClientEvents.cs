@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Adribot.config;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -11,33 +12,32 @@ using DSharpPlus.SlashCommands.EventArgs;
 
 class ClientEvents
 {
-    private Dictionary<ulong, DateTime> _poopers = new();
     private DiscordClient _client;
+    private Config _config;
 
-    public bool UseGuildMemberUpdated;
     public bool UseMessageCreated;
-    public bool UseUserUpdated;
+    public bool UseGuildDownloadCompleted;
 
     // Slashies
     public bool UseSlashCommandErrored;
 
-    public ClientEvents(DiscordClient client)
-    {
-        _client = client;
-    }
-
+    public ClientEvents(DiscordClient client, Config config) => (_client, _config) = (client, config);
+    
     public void Attach()
     {
         var slashies = _client.GetExtension<SlashCommandsExtension>();
 
         if (UseMessageCreated)
             _client.MessageCreated += MessageCreatedAsync;
-        if (UseGuildMemberUpdated)
-            _client.GuildMemberUpdated += GuildMemberUpdatedAsync;
-        if (UseUserUpdated)
-            _client.UserUpdated += UserUpdatedAsync;
         if (UseSlashCommandErrored)
             slashies.SlashCommandErrored += SlashCommandErroredAsync;
+        if (UseGuildDownloadCompleted)
+            _client.GuildDownloadCompleted += GuildDownloadCompletedAsync;
+    }
+
+    private Task GuildDownloadCompletedAsync(DiscordClient sender, GuildDownloadCompletedEventArgs e){
+        InfractionService.Init(_client, _config.SQLConnectionString);
+        return Task.CompletedTask;
     }
 
     private Task SlashCommandErroredAsync(SlashCommandsExtension sender, SlashCommandErrorEventArgs e)
@@ -63,29 +63,6 @@ class ClientEvents
                         await args.Message.CreateReactionAsync(DiscordEmoji.FromName(client, ":knife:"));
                     }
             }
-        }
-    }
-
-    private async Task UserUpdatedAsync(DiscordClient sender, UserUpdateEventArgs args) => await HoistCheckAsync((DiscordMember)args.UserAfter);
-
-    private async Task GuildMemberUpdatedAsync(DiscordClient client, GuildMemberUpdateEventArgs args) => await HoistCheckAsync(args.MemberAfter);
-
-    private async Task HoistCheckAsync(DiscordMember memberAfter)
-    {
-        if (!String.IsNullOrWhiteSpace(memberAfter.DisplayName) && (byte)memberAfter.DisplayName[0] < 48)
-        {
-            await memberAfter.ModifyAsync(m => m.Nickname = "💩");
-            _poopers[memberAfter.Id] = DateTime.UtcNow;
-        }
-        else if (_poopers.ContainsKey(memberAfter.Id) && _poopers[memberAfter.Id].AddDays(1).CompareTo(DateTime.UtcNow) > 0)
-        {
-            if (memberAfter.DisplayName != "💩" )
-                await memberAfter.ModifyAsync(m => m.Nickname = "💩");
-        }
-        else
-        {
-            _poopers.Remove(memberAfter.Id);
-            await Task.CompletedTask;
         }
     }
 }
