@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
@@ -32,5 +33,37 @@ class AdminCommands : ApplicationCommandModule
         {
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent($"Deleted {messages.Count} Messages."));
         }
+    }
+
+    [SlashCommand("Mute", "Mutes member using a Timeout")]
+    [SlashRequirePermissions(Permissions.MuteMembers)]
+    public async Task MuteMemberAsync(InteractionContext ctx, [Option("Member", "Member to mute")] DiscordUser member, [Option("Unit", "The duration multiplied by the factor parameter")] TimeSpanType type = TimeSpanType.MINUTES, [Option("Factor", "The amound of specified time units."), Minimum(1)] long factor = 3, [Option("Reason", "The reason for this infraction")] string reason = ""){
+        var now = DateTimeOffset.UtcNow;
+        var endDate = new KeyValuePair<TimeSpanType, long>(type, factor).ToEndDate(now);
+        await InfractionService.AddDataAsync(new Infraction{
+            Date = now,
+            EndDate = endDate,
+            GuildId = ctx.Guild.Id,
+            isExpired = false,
+            MemberId = member.Id,
+            Type = InfractionType.TIMEOUT
+        });
+        await ((DiscordMember)member).TimeoutAsync(endDate, reason);
+    }
+
+    [SlashCommand("Ban", "Bans members")]
+    [SlashRequirePermissions(Permissions.BanMembers)]
+    public async Task BanMemberAsync(InteractionContext ctx, [Option("Member", "Member to ban")] DiscordUser member, [Option("Unit", "The duration multiplied by the factor parameter")] TimeSpanType type = TimeSpanType.MONTHS, [Option("Factor", "The amound of specified time units."), Minimum(1)] long factor = 1, [Option("Messages", "Anount of messages by this user to delete")] long deleteMessages = 0, [Option("Reason", "The reason for this infraction")] string reason = ""){
+        var now = DateTimeOffset.UtcNow;
+        var endDate = new KeyValuePair<TimeSpanType, long>(type, factor).ToEndDate(now);
+        await InfractionService.AddDataAsync(new Infraction{
+            Date = now,
+            EndDate = endDate,
+            GuildId = ctx.Guild.Id,
+            isExpired = false,
+            MemberId = member.Id,
+            Type = InfractionType.BAN
+        });
+        await ((DiscordMember)member).BanAsync(Convert.ToInt16(deleteMessages), reason);
     }
 }

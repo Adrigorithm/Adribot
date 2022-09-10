@@ -65,10 +65,10 @@ static class InfractionService
             else if ((byte)memberAfter.DisplayName[0] < 48)
             {
                 await memberAfter.ModifyAsync(m => m.Nickname = "💩");
-                await _adribotContext.Infractions.AddAsync(new()
+                await AddDataAsync(new Infraction()
                 {
-                    Date = DateTime.UtcNow,
-                    Duration = TimeSpan.FromDays(1),
+                    Date = DateTimeOffset.UtcNow,
+                    EndDate = DateTimeOffset.UtcNow.AddDays(1),
                     GuildId = memberAfter.Guild.Id,
                     isExpired = false,
                     Type = InfractionType.HOIST,
@@ -85,7 +85,7 @@ static class InfractionService
         for (int i = 0; i < _adribotContext.Infractions.Count(); i++)
         {
             var infraction = _adribotContext.Infractions.ElementAt(i);
-            if (!infraction.isExpired && infraction.Date + infraction.Duration < DateTime.UtcNow)
+            if (!infraction.isExpired && infraction.EndDate < DateTimeOffset.UtcNow)
                 Task.Run(async () => await LiftInfractionAsync(infraction));
         }
     }
@@ -99,9 +99,6 @@ static class InfractionService
                 case InfractionType.HOIST:
                     await (await _client.GetGuildAsync(infraction.GuildId)).Members[infraction.MemberId].ModifyAsync(m => m.Nickname = "");
                     break;
-                case InfractionType.MUTE:
-                    await (await _client.GetGuildAsync(infraction.GuildId)).Members[infraction.MemberId].ModifyAsync(m => m.Muted = false);
-                    break;
                 case InfractionType.BAN:
                     await (await _client.GetGuildAsync(infraction.GuildId)).Members[infraction.MemberId].UnbanAsync();
                     break;
@@ -114,5 +111,47 @@ static class InfractionService
         {
             Console.WriteLine($"Infraction of type {infraction.Type.ToString()} on <@{infraction.MemberId}> could not be reclused.{Environment.NewLine}The following Exception was thrown: {e.Message}");
         }
+    }
+
+    public static async Task AddDataAsync(object data, bool checkDuplicates = true)
+    {
+        switch (data)
+        {
+            case DGuild guild:
+                await AddGuild(guild);
+                break;
+            case DMember member:
+                await AddMember(member);
+                break;
+            case Infraction infraction:
+                await AddMember(new DMember
+                {
+                    GuildId = infraction.GuildId,
+                    MemberId = infraction.MemberId
+                });
+                await AddInfraction(infraction);
+                break;
+            default:
+                return;
+        }
+
+        async Task AddMember(DMember member)
+        {
+            if (!checkDuplicates || !_adribotContext.Members.Any(dm => dm.MemberId == member.MemberId))
+                await _adribotContext.Members.AddAsync(member);
+        }
+
+        async Task AddGuild(DGuild guild)
+        {
+            if (!checkDuplicates || !_adribotContext.Guilds.Any(dg => dg.GuildId == guild.GuildId))
+                await _adribotContext.Guilds.AddAsync(guild);
+        }
+
+        async Task AddInfraction(Infraction infraction)
+        {
+            await _adribotContext.Infractions.AddAsync(infraction);
+        }
+
+        await _adribotContext.SaveChangesAsync();
     }
 }

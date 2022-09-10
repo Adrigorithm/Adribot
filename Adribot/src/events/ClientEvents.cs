@@ -49,7 +49,7 @@ class ClientEvents
 
     private async Task MessageCreatedAsync(DiscordClient client, MessageCreateEventArgs args)
     {
-        if (args.Guild != null && !args.Author.IsBot && args.MentionedUsers.Count > 0 && !((DiscordMember)args.Author).Permissions.HasPermission(Permissions.Administrator))
+        if (!args.Channel.IsPrivate && !args.Author.IsBot && args.MentionedUsers.Count > 0 && !((DiscordMember)args.Author).Permissions.HasPermission(Permissions.Administrator))
         {
             foreach (var user in args.MentionedUsers)
             {

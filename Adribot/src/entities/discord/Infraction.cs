@@ -2,8 +2,8 @@ using System;
 
 public class Infraction{
     public int InfractionId {get; set;}
-    public DateTime Date {get; set;}
-    public TimeSpan Duration {get; set;}
+    public DateTimeOffset Date {get; set;}
+    public DateTimeOffset EndDate {get; set;}
     public InfractionType Type {get; set;}
     public bool isExpired {get; set;}
 
