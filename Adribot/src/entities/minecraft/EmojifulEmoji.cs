@@ -1,7 +1,6 @@
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
-public class EmojifulEmoji
+public record EmojifulEmoji
 {
     [JsonPropertyName("category")]
     public string Category { get; set; }

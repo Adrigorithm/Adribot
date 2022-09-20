@@ -13,13 +13,12 @@ public class Bot
     private Config _config = new();
     private ClientEvents _clientEvents;
     private DiscordClient _client;
-    internal AdribotContext _adribotContext;
+
     public Bot() => SetupClient();
 
     private void SetupClient()
     {
         Task.Run(async () => await _config.LoadConfigAsync()).Wait();
-        _adribotContext = new(_config.SQLConnectionString);
 
         _client = new(new DiscordConfiguration
         {
@@ -36,7 +35,6 @@ public class Bot
         slashies.RegisterCommands<MinecraftCommands>(357597633566605313);
 
         AttachEvents();
-        StartServices();
     }
 
     private void AttachEvents()
@@ -48,11 +46,6 @@ public class Bot
             UseGuildDownloadCompleted = true
         };
         _clientEvents.Attach();
-    }
-
-    private void StartServices()
-    {
-        InfractionService.Init(_client, _config.SQLConnectionString);
     }
 
     public async Task StartAsync() => await _client.ConnectAsync();

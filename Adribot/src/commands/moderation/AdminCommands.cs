@@ -40,7 +40,7 @@ class AdminCommands : ApplicationCommandModule
     public async Task MuteMemberAsync(InteractionContext ctx, [Option("Member", "Member to mute")] DiscordUser member, [Option("Unit", "The duration multiplied by the factor parameter")] TimeSpanType type = TimeSpanType.MINUTES, [Option("Factor", "The amound of specified time units."), Minimum(1)] long factor = 3, [Option("Reason", "The reason for this infraction")] string reason = ""){
         var now = DateTimeOffset.UtcNow;
         var endDate = new KeyValuePair<TimeSpanType, long>(type, factor).ToEndDate(now);
-        await InfractionService.AddDataAsync(new Infraction{
+        await TimerServiceProvider.AddDataAsync(new Infraction{
             Date = now,
             EndDate = endDate,
             GuildId = ctx.Guild.Id,
@@ -56,7 +56,7 @@ class AdminCommands : ApplicationCommandModule
     public async Task BanMemberAsync(InteractionContext ctx, [Option("Member", "Member to ban")] DiscordUser member, [Option("Unit", "The duration multiplied by the factor parameter")] TimeSpanType type = TimeSpanType.MONTHS, [Option("Factor", "The amound of specified time units."), Minimum(1)] long factor = 1, [Option("Messages", "Anount of messages by this user to delete")] long deleteMessages = 0, [Option("Reason", "The reason for this infraction")] string reason = ""){
         var now = DateTimeOffset.UtcNow;
         var endDate = new KeyValuePair<TimeSpanType, long>(type, factor).ToEndDate(now);
-        await InfractionService.AddDataAsync(new Infraction{
+        await TimerServiceProvider.AddDataAsync(new Infraction{
             Date = now,
             EndDate = endDate,
             GuildId = ctx.Guild.Id,

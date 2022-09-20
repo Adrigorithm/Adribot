@@ -36,7 +36,7 @@ class ClientEvents
     }
 
     private Task GuildDownloadCompletedAsync(DiscordClient sender, GuildDownloadCompletedEventArgs e){
-        InfractionService.Init(_client, _config.SQLConnectionString);
+        TimerServiceProvider.Init(_client, _config.SQLConnectionString);
         return Task.CompletedTask;
     }
 
