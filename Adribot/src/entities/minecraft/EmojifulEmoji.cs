@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
 
+namespace Adribot.entities.minecraft;
+
 public record EmojifulEmoji
 {
     [JsonPropertyName("category")]

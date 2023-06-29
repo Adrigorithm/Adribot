@@ -1,11 +1,27 @@
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Adribot.entities.discord;
 
-public record Tag{
-    public int TagId {get; set;}
-    public string Name {get; set;}
-    public string Content {get; set;}
-    public DateTimeOffset Date {get; set;}
+namespace Adribot.entities.utilities;
 
-    public ulong MemberId {get; set;}
-    public DMember DMember {get; set;}
+[Table("tags")]
+public class Tag
+{
+    [Key]
+    [Column("tagid")]
+    public int TagId { get; set; }
+
+    [Column("name")]
+    public string Name { get; set; }
+
+    [Column("content")]
+    public string Content { get; set; }
+
+    [Column("date")]
+    public DateTimeOffset Date { get; set; }
+
+    [ForeignKey("dmemberid")]
+    public ulong DMemberId { get; set; }
+    public DMember DMember { get; set; }
 }

@@ -1,45 +1,54 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using Adribot.commands.fun;
+using Adribot.commands.moderation;
+using Adribot.commands.utilities;
 using Adribot.config;
+using Adribot.events;
+using Adribot.services;
 using DSharpPlus;
-using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Adribot.entities;
 
 public class Bot
 {
-    private Config _config = new();
-    private ClientEvents _clientEvents;
-    private DiscordClient _client;
+    private ClientEvents? _clientEvents;
+    private readonly DiscordClient _client;
 
-    public Bot() => SetupClient();
-
-    private void SetupClient()
+    public Bot()
     {
-        Task.Run(async () => await _config.LoadConfigAsync()).Wait();
+        Task.Run(async () => await Config.LoadConfigAsync()).Wait();
 
         _client = new(new DiscordConfiguration
         {
-            Token = _config.BotToken,
-            Intents = DiscordIntents.All,
+            Token = Config.Configuration.BotToken,
+            Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents
         });
 
-        var slashies = _client.UseSlashCommands();
+        InfractionService infractionService = new(client: _client);
 
-        // Remove GID to make global (Production)
-        slashies.RegisterCommands<AdminCommands>(574341132826312736);
-        slashies.RegisterCommands<MinecraftCommands>(574341132826312736);
-        slashies.RegisterCommands<AdminCommands>(357597633566605313);
-        slashies.RegisterCommands<MinecraftCommands>(357597633566605313);
+        ServiceProvider services = new ServiceCollection()
+            .AddSingleton(infractionService)
+            .BuildServiceProvider();
 
-        AttachEvents();
+        SlashCommandsExtension slashies = _client.UseSlashCommands(new SlashCommandsConfiguration()
+        {
+            Services = services
+        });
+
+        slashies.RegisterCommands<AdminCommands>(1023986117428658187);
+        slashies.RegisterCommands<MinecraftCommands>();
+        slashies.RegisterCommands<FunCommands>(1023986117428658187);
+        slashies.RegisterCommands<UtilityCommands>(1023986117428658187);
+
+        AttachEvents(services);
     }
 
-    private void AttachEvents()
+
+    private void AttachEvents(ServiceProvider services)
     {
-        _clientEvents = new(_client, _config)
+        _clientEvents = new(_client)
         {
             UseMessageCreated = true,
             UseSlashCommandErrored = true,

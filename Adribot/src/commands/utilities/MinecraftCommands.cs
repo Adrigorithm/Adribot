@@ -1,25 +1,28 @@
 using System;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Adribot.entities.minecraft;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 
-class MinecraftCommands : ApplicationCommandModule
+namespace Adribot.commands.utilities;
+
+public class MinecraftCommands : ApplicationCommandModule
 {
-    private const string DatapackPath = "./temp/";
+    private const string DatapackPath = "../../../temp/";
 
     [SlashCommand("Datapack", "Compiles Emojiful datapacks from supplied DiscordEmoji")]
-    public async Task CreateDatapack(InteractionContext ctx, [Option("Category", "A name to categorise this emoji collection")] string category, [Option("Emojis", "A chain of DiscordEmoji")] string emojiList)
+    public async Task CreateDatapackAsync(InteractionContext ctx, [Option("Category", "A name to categorise this emoji collection")] string category, [Option("Emojis", "A chain of DiscordEmoji")] string emojiList)
     {
-        var emojiMatches = Regex.Matches(emojiList, "(<a?):(\\w+):(\\d{18})>");
+        MatchCollection emojiMatches = Regex.Matches(emojiList, "(<a?):(\\w+):(\\d{1,20})>");
+        Console.WriteLine(emojiMatches.Count);
         if (emojiMatches.Count > 0)
         {
-            foreach (var filePath in Directory.GetFiles(DatapackPath, "*?.zip"))
+            foreach (string filePath in Directory.GetFiles(DatapackPath, "*?.zip"))
             {
                 File.Delete(filePath);
             }
@@ -29,7 +32,7 @@ class MinecraftCommands : ApplicationCommandModule
 
             for (int i = 0; i < emojiMatches.Count; i++)
             {
-                var emoji = new EmojifulEmoji
+                EmojifulEmoji emoji = new EmojifulEmoji
                 {
                     Category = category,
                     Name = emojiMatches[i].Groups[2].Value,
@@ -41,7 +44,7 @@ class MinecraftCommands : ApplicationCommandModule
                 await JsonSerializer.SerializeAsync(fs, emoji);
                 await fs.DisposeAsync();
             }
-            var fileName = $"{ctx.User.Username}-" + category + "-emojiful-datapack.zip";
+            string fileName = $"{ctx.User.Username}-" + category + "-emojiful-datapack.zip";
             ZipFile.CreateFromDirectory(DatapackPath + "datapack/", DatapackPath + fileName);
 
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddFile(fileName, File.OpenRead(DatapackPath + fileName)).AsEphemeral());

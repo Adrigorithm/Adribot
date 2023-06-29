@@ -1,5 +1,7 @@
 using DSharpPlus.SlashCommands;
 
+namespace Adribot.constants.enums;
+
 public enum TimeSpanType{
     [ChoiceName("Seconds")]
     SECONDS,

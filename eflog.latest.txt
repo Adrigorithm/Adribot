@@ -1,0 +1,165 @@
+dbug: 28/02/2023 14:32:28.223 CoreEventId.ContextInitialized[10403] (Microsoft.EntityFrameworkCore.Infrastructure)
+      Entity Framework Core 7.0.2 initialized 'AdribotDB' using provider 'Microsoft.EntityFrameworkCore.SqlServer:7.0.2' with options: None
+dbug: 28/02/2023 14:32:28.260 RelationalEventId.ConnectionCreating[20005] (Microsoft.EntityFrameworkCore.Database.Connection)
+      Creating DbConnection.
+dbug: 28/02/2023 14:32:28.331 RelationalEventId.ConnectionCreated[20006] (Microsoft.EntityFrameworkCore.Database.Connection)
+      Created DbConnection. (73ms).
+dbug: 28/02/2023 14:32:28.341 RelationalEventId.ConnectionOpening[20000] (Microsoft.EntityFrameworkCore.Database.Connection)
+      Opening connection to database '' on server '172.22.144.1'.
+dbug: 28/02/2023 14:32:28.684 RelationalEventId.ConnectionOpened[20001] (Microsoft.EntityFrameworkCore.Database.Connection)
+      Opened connection to database 'master' on server '172.22.144.1'.
+dbug: 28/02/2023 14:32:28.699 RelationalEventId.CommandCreating[20103] (Microsoft.EntityFrameworkCore.Database.Command)
+      Creating DbCommand for 'ExecuteNonQuery'.
+dbug: 28/02/2023 14:32:28.706 RelationalEventId.CommandCreated[20104] (Microsoft.EntityFrameworkCore.Database.Command)
+      Created DbCommand for 'ExecuteNonQuery' (6ms).
+dbug: 28/02/2023 14:32:28.709 RelationalEventId.CommandInitialized[20106] (Microsoft.EntityFrameworkCore.Database.Command)
+      Initialized DbCommand for 'ExecuteNonQuery' (12ms).
+dbug: 28/02/2023 14:32:28.716 RelationalEventId.CommandExecuting[20100] (Microsoft.EntityFrameworkCore.Database.Command)
+      Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+info: 28/02/2023 14:32:28.778 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command)
+      Executed DbCommand (62ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+dbug: 28/02/2023 14:32:28.787 RelationalEventId.ConnectionClosing[20002] (Microsoft.EntityFrameworkCore.Database.Connection)
+      Closing connection to database 'master' on server '172.22.144.1'.
+dbug: 28/02/2023 14:32:28.801 RelationalEventId.ConnectionClosed[20003] (Microsoft.EntityFrameworkCore.Database.Connection)
+      Closed connection to database '' on server '172.22.144.1' (11ms).
+dbug: 28/02/2023 14:32:28.814 RelationalEventId.CommandCreating[20103] (Microsoft.EntityFrameworkCore.Database.Command)
+      Creating DbCommand for 'ExecuteScalar'.
+dbug: 28/02/2023 14:32:28.814 RelationalEventId.CommandCreated[20104] (Microsoft.EntityFrameworkCore.Database.Command)
+      Created DbCommand for 'ExecuteScalar' (0ms).
+dbug: 28/02/2023 14:32:28.814 RelationalEventId.CommandInitialized[20106] (Microsoft.EntityFrameworkCore.Database.Command)
+      Initialized DbCommand for 'ExecuteScalar' (0ms).
+dbug: 28/02/2023 14:32:28.815 RelationalEventId.ConnectionOpening[20000] (Microsoft.EntityFrameworkCore.Database.Connection)
+      Opening connection to database '' on server '172.22.144.1'.
+dbug: 28/02/2023 14:32:28.816 RelationalEventId.ConnectionOpened[20001] (Microsoft.EntityFrameworkCore.Database.Connection)
+      Opened connection to database 'master' on server '172.22.144.1'.
+dbug: 28/02/2023 14:32:28.817 RelationalEventId.CommandExecuting[20100] (Microsoft.EntityFrameworkCore.Database.Command)
+
+      Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+
+      IF EXISTS
+          (SELECT *
+           FROM [sys].[objects] o
+           WHERE [o].[type] = 'U'
+           AND [o].[is_ms_shipped] = 0
+           AND NOT EXISTS (SELECT *
+               FROM [sys].[extended_properties] AS [ep]
+               WHERE [ep].[major_id] = [o].[object_id]
+                   AND [ep].[minor_id] = 0
+                   AND [ep].[class] = 1
+                   AND [ep].[name] = N'microsoft_database_tools_support'
+          )
+      )
+      SELECT 1 ELSE SELECT 0
+info: 28/02/2023 14:32:28.873 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command)
+      Executed DbCommand (56ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+
+      IF EXISTS
+          (SELECT *
+           FROM [sys].[objects] o
+           WHERE [o].[type] = 'U'
+           AND [o].[is_ms_shipped] = 0
+           AND NOT EXISTS (SELECT *
+               FROM [sys].[extended_properties] AS [ep]
+               WHERE [ep].[major_id] = [o].[object_id]
+                   AND [ep].[minor_id] = 0
+                   AND [ep].[class] = 1
+                   AND [ep].[name] = N'microsoft_database_tools_support'
+          )
+      )
+      SELECT 1 ELSE SELECT 0
+dbug: 28/02/2023 14:32:28.874 RelationalEventId.ConnectionClosing[20002] (Microsoft.EntityFrameworkCore.Database.Connection)
+      Closing connection to database 'master' on server '172.22.144.1'.
+dbug: 28/02/2023 14:32:28.874 RelationalEventId.ConnectionClosed[20003] (Microsoft.EntityFrameworkCore.Database.Connection)
+      Closed connection to database '' on server '172.22.144.1' (0ms).
+dbug: 28/02/2023 14:32:28.940 CoreEventId.QueryCompilationStarting[10111] (Microsoft.EntityFrameworkCore.Query)
+      Compiling query expression:
+      'DbSet<DGuild>()
+          .Count()'
+dbug: 28/02/2023 14:32:29.272 CoreEventId.QueryExecutionPlanned[10107] (Microsoft.EntityFrameworkCore.Query)
+      Generated query execution expression:
+      'queryContext => new SingleQueryingEnumerable<int>(
+          (RelationalQueryContext)queryContext,
+          RelationalCommandCache.QueryExpression(
+              Projection Mapping:
+                  EmptyProjectionMember -> 0
+              SELECT COUNT(*)
+              FROM DGuilds AS d),
+          null,
+          Func<QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator, int>,
+          AdribotDB,
+          False,
+          False,
+          True
+      )
+          .Single()'
+dbug: 28/02/2023 14:32:29.315 RelationalEventId.CommandCreating[20103] (Microsoft.EntityFrameworkCore.Database.Command)
+      Creating DbCommand for 'ExecuteReader'.
+dbug: 28/02/2023 14:32:29.315 RelationalEventId.CommandCreated[20104] (Microsoft.EntityFrameworkCore.Database.Command)
+      Created DbCommand for 'ExecuteReader' (0ms).
+dbug: 28/02/2023 14:32:29.315 RelationalEventId.CommandInitialized[20106] (Microsoft.EntityFrameworkCore.Database.Command)
+      Initialized DbCommand for 'ExecuteReader' (0ms).
+dbug: 28/02/2023 14:32:29.317 RelationalEventId.ConnectionOpening[20000] (Microsoft.EntityFrameworkCore.Database.Connection)
+      Opening connection to database '' on server '172.22.144.1'.
+dbug: 28/02/2023 14:32:29.321 RelationalEventId.ConnectionOpened[20001] (Microsoft.EntityFrameworkCore.Database.Connection)
+      Opened connection to database 'master' on server '172.22.144.1'.
+dbug: 28/02/2023 14:32:29.322 RelationalEventId.CommandExecuting[20100] (Microsoft.EntityFrameworkCore.Database.Command)
+
+      Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [DGuilds] AS [d]
+info: 28/02/2023 14:32:29.327 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command)
+      Executed DbCommand (5ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [DGuilds] AS [d]
+dbug: 28/02/2023 14:32:29.334 RelationalEventId.DataReaderClosing[20301] (Microsoft.EntityFrameworkCore.Database.Command)
+      Closing data reader to 'master' on server '172.22.144.1'.
+dbug: 28/02/2023 14:32:29.338 RelationalEventId.DataReaderDisposing[20300] (Microsoft.EntityFrameworkCore.Database.Command)
+      A data reader for 'master' on server '172.22.144.1' is being disposed after spending 7ms reading results.
+dbug: 28/02/2023 14:32:29.339 RelationalEventId.ConnectionClosing[20002] (Microsoft.EntityFrameworkCore.Database.Connection)
+      Closing connection to database 'master' on server '172.22.144.1'.
+dbug: 28/02/2023 14:32:29.340 RelationalEventId.ConnectionClosed[20003] (Microsoft.EntityFrameworkCore.Database.Connection)
+      Closed connection to database '' on server '172.22.144.1' (1ms).
+dbug: 28/02/2023 14:32:29.442 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking)
+      Context 'AdribotDB' started tracking 'DGuild' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 28/02/2023 14:32:29.486 CoreEventId.ReferenceChangeDetected[10805] (Microsoft.EntityFrameworkCore.ChangeTracking)
+      The navigation 'DMember.DGuild' was detected as changed. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 28/02/2023 14:32:29.506 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking)
+      Context 'AdribotDB' started tracking 'DMember' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 28/02/2023 14:32:29.506 CoreEventId.ReferenceChangeDetected[10805] (Microsoft.EntityFrameworkCore.ChangeTracking)
+      The navigation 'DMember.DGuild' was detected as changed. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 28/02/2023 14:32:29.507 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking)
+      Context 'AdribotDB' started tracking 'DMember' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 28/02/2023 14:32:29.507 CoreEventId.ReferenceChangeDetected[10805] (Microsoft.EntityFrameworkCore.ChangeTracking)
+      The navigation 'DMember.DGuild' was detected as changed. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 28/02/2023 14:32:29.507 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking)
+      Context 'AdribotDB' started tracking 'DMember' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 28/02/2023 14:32:29.508 CoreEventId.ReferenceChangeDetected[10805] (Microsoft.EntityFrameworkCore.ChangeTracking)
+      The navigation 'DMember.DGuild' was detected as changed. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 28/02/2023 14:32:29.508 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking)
+      Context 'AdribotDB' started tracking 'DMember' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 28/02/2023 14:32:29.513 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking)
+      Context 'AdribotDB' started tracking 'DGuild' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 28/02/2023 14:32:29.514 CoreEventId.ReferenceChangeDetected[10805] (Microsoft.EntityFrameworkCore.ChangeTracking)
+      The navigation 'DMember.DGuild' was detected as changed. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 28/02/2023 14:32:29.514 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking)
+      Context 'AdribotDB' started tracking 'DMember' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 28/02/2023 14:32:29.515 CoreEventId.ReferenceChangeDetected[10805] (Microsoft.EntityFrameworkCore.ChangeTracking)
+      The navigation 'DMember.DGuild' was detected as changed. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 28/02/2023 14:32:29.515 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking)
+      Context 'AdribotDB' started tracking 'DMember' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 28/02/2023 14:32:29.515 CoreEventId.ReferenceChangeDetected[10805] (Microsoft.EntityFrameworkCore.ChangeTracking)
+      The navigation 'DMember.DGuild' was detected as changed. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 28/02/2023 14:32:29.515 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking)
+      Context 'AdribotDB' started tracking 'DMember' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 28/02/2023 14:32:29.516 CoreEventId.ReferenceChangeDetected[10805] (Microsoft.EntityFrameworkCore.ChangeTracking)
+      The navigation 'DMember.DGuild' was detected as changed. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 28/02/2023 14:32:29.516 CoreEventId.StartedTracking[10806] (Microsoft.EntityFrameworkCore.ChangeTracking)
+      Context 'AdribotDB' started tracking 'DMember' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+dbug: 28/02/2023 14:32:29.589 CoreEventId.ContextDisposed[10407] (Microsoft.EntityFrameworkCore.Infrastructure)
+      'AdribotDB' disposed.
+dbug: 28/02/2023 14:32:29.592 RelationalEventId.ConnectionDisposing[20007] (Microsoft.EntityFrameworkCore.Database.Connection)
+      Disposing connection to database '' on server '172.22.144.1'.
+dbug: 28/02/2023 14:32:29.595 RelationalEventId.ConnectionDisposed[20008] (Microsoft.EntityFrameworkCore.Database.Connection)
+      Disposed connection to database '' on server '' (2ms).

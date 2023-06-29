@@ -364,5 +364,4 @@ FodyWeavers.xsd
 # Custom rules
 Adribot/secret/
 Adribot/temp/*.zip
-Adribot/data/
 Adribot/Migrations/

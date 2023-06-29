@@ -1,38 +1,43 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Adribot.entities.discord;
 using DSharpPlus.Entities;
 
-public static class DiscordObjectExtensions{
-    public static DGuild ToDGuild(this DiscordGuild guild){
-        return new(){
-            GuildId = guild.Id
-        };
-    }
+namespace Adribot.extensions;
 
-    public static List<DGuild> ToDGuild(this Dictionary<ulong, DiscordGuild> guilds){
+public static class DiscordObjectExtensions{
+    public static async Task<DGuild> ToDGuildAsync(this DiscordGuild guild, bool includeMembers = true) =>
+        new DGuild 
+        {
+            DGuildId = guild.Id,
+            Members = !includeMembers ? new() : (await guild.GetAllMembersAsync()).ToDMembers() 
+        };
+
+    public static DMember ToDMember(this DiscordMember member) =>
+        new DMember
+        {
+            DGuildId = member.Guild.Id,
+            DMemberId = member.Id
+        };
+
+    public static async Task<List<DGuild>> ToDGuildsAsync(this IEnumerable<DiscordGuild> guilds, bool includeMembers = true){
         List<DGuild> dGuilds = new();
 
-        foreach (var guild in guilds)
+        for (int i = 0; i < guilds.Count(); i++)
         {
-            dGuilds.Add(new(){
-                GuildId = guild.Key
-            });
+            dGuilds.Add(await guilds.ElementAt(i).ToDGuildAsync(includeMembers));
         }
+
         return dGuilds;
     }
 
-    public static DMember DoDMember(this DiscordMember member){
-        return new(){
-            MemberId = member.Id
-        };
-    }
-
-    public static List<DMember> DoDMember(this Dictionary<ulong, DiscordMember> members){
+    public static List<DMember> ToDMembers(this IEnumerable<DiscordMember> members)
+    {
         List<DMember> dMembers = new();
 
-        foreach (var user in members)
-        {
-            dMembers.Add(user.Value.DoDMember());
-        }
+        members.ToList().ForEach(m => dMembers.Add(m.ToDMember()));
+
         return dMembers;
     }
 }

@@ -1,46 +1,51 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Adribot.config;
+using Adribot.data;
+using Adribot.services;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using DSharpPlus.Exceptions;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
+using Microsoft.Extensions.DependencyInjection;
 
-class ClientEvents
+namespace Adribot.events;
+
+public class ClientEvents
 {
-    private DiscordClient _client;
-    private Config _config;
-
+    private readonly DiscordClient _client;
+    public IServiceProvider Services { internal get; set; } = new ServiceCollection().BuildServiceProvider(validateScopes: true);
+    public InfractionService InfractionService { private get; set; }
+    
     public bool UseMessageCreated;
     public bool UseGuildDownloadCompleted;
 
     // Slashies
     public bool UseSlashCommandErrored;
 
-    public ClientEvents(DiscordClient client, Config config) => (_client, _config) = (client, config);
-    
+    public ClientEvents(DiscordClient client) =>
+        _client = client;
+
     public void Attach()
     {
-        var slashies = _client.GetExtension<SlashCommandsExtension>();
+        SlashCommandsExtension slashies = _client.GetExtension<SlashCommandsExtension>();
 
         if (UseMessageCreated)
             _client.MessageCreated += MessageCreatedAsync;
         if (UseSlashCommandErrored)
-            slashies.SlashCommandErrored += SlashCommandErroredAsync;
+            slashies.SlashCommandErrored += SlashCommandErrored;
         if (UseGuildDownloadCompleted)
-            _client.GuildDownloadCompleted += GuildDownloadCompletedAsync;
+            _client.GuildDownloadCompleted += GuildDownloadCompleted;
     }
 
-    private Task GuildDownloadCompletedAsync(DiscordClient sender, GuildDownloadCompletedEventArgs e){
-        TimerServiceProvider.Init(_client, _config.SQLConnectionString);
+    private Task GuildDownloadCompleted(DiscordClient sender, GuildDownloadCompletedEventArgs e)
+    {
+        _ = Task.Run( () => new DataManager(sender));
         return Task.CompletedTask;
     }
 
-    private Task SlashCommandErroredAsync(SlashCommandsExtension sender, SlashCommandErrorEventArgs e)
+    private Task SlashCommandErrored(SlashCommandsExtension sender, SlashCommandErrorEventArgs e)
     {
         Console.WriteLine($"{e.Context.CommandName}\n{e.Exception.Message}");
 
@@ -49,20 +54,12 @@ class ClientEvents
 
     private async Task MessageCreatedAsync(DiscordClient client, MessageCreateEventArgs args)
     {
-        if (!args.Channel.IsPrivate && !args.Author.IsBot && args.MentionedUsers.Count > 0 && !((DiscordMember)args.Author).Permissions.HasPermission(Permissions.Administrator))
+        if (!args.Channel.IsPrivate &&
+            !args.Author.IsBot &&
+            !((DiscordMember)args.Author).Permissions.HasPermission(Permissions.Administrator) &&
+            args.MentionedUsers.Any(user => ((DiscordMember)user).Permissions.HasPermission(Permissions.Administrator)))
         {
-            foreach (var user in args.MentionedUsers)
-            {
-                if (((DiscordMember)user).Permissions.HasPermission(Permissions.Administrator) || user.Id == 135081249017430016)
-                    try
-                    {
-                        await args.Message.CreateReactionAsync(DiscordEmoji.FromName(client, ":killercat:"));
-                    }
-                    catch (NotFoundException)
-                    {
-                        await args.Message.CreateReactionAsync(DiscordEmoji.FromName(client, ":knife:"));
-                    }
-            }
+            await args.Message.CreateReactionAsync(DiscordEmoji.FromUnicode("💢"));
         }
     }
 }

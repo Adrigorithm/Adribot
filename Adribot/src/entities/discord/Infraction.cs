@@ -1,13 +1,30 @@
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Adribot.constants.enums;
 
-public record Infraction{
-    public int InfractionId {get; set;}
-    public DateTimeOffset Date {get; set;}
-    public DateTimeOffset EndDate {get; set;}
-    public InfractionType Type {get; set;}
-    public bool isExpired {get; set;}
+namespace Adribot.entities.discord;
 
-    public ulong MemberId {get; set;}
-    public ulong GuildId {get; set;}
-    public DMember DMember {get; set;}
+[Table("infractions")]
+public class Infraction
+{
+    [Key]
+    [Column("infractionid")]
+    public int InfractionId { get; set; }
+
+    [Column("date")]
+    public DateTimeOffset Date { get; set; }
+
+    [Column("enddate")]
+    public DateTimeOffset EndDate { get; set; }
+
+    [Column("type")]
+    public InfractionType Type { get; set; }
+
+    [Column("isexpired")]
+    public bool IsExpired { get; set; }
+    
+    [ForeignKey("dmemberid")]
+    public ulong DMemberId { get; set; }
+    public DMember DMember { get; set; }
 }
