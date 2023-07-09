@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Adribot.constants.enums;
 using Adribot.extensions;
@@ -18,32 +19,31 @@ public class AdminCommands : ApplicationCommandModule
 
     [SlashCommand("Clear", "Deletes given amount of messages")]
     [SlashRequirePermissions(Permissions.ManageMessages)]
-    public async Task DeleteMessagesAsync(InteractionContext ctx, [Option("Amount", "Amount of messages to delete"), Minimum(2), Maximum(100)] long amount = 10)
+    public async Task DeleteMessagesAsync(InteractionContext ctx, [Option("Amount", "Amount of messages to delete"), Minimum(1), Maximum(100)] long amount)
     {
         IReadOnlyList<DiscordMessage> messages = await ctx.Channel.GetMessagesAsync((int)amount);
         int index = messages.Count - 1;
-        while (index > -1)
+        while (index >= 0)
         {
             if (messages[index].Timestamp.UtcDateTime.AddDays(14).CompareTo(DateTime.UtcNow) >= 0)
-            {
                 break;
-            }
+
             index--;
         }
 
-        if(index > -1)
-        {
-            await ctx.Channel.DeleteMessagesAsync(messages.Take(index + 1));
-        }
+        int deletedMessages = index + 1;
 
-        if (index < messages.Count - 1)
-        {
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent($"Ink too dry! {messages.Count - index - 1} Messages could not be deleted.").AsEphemeral(true));
-        }
-        else
-        {
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent($"Deleted {messages.Count} Messages."));
-        }
+        if (index >= 0)
+            await ctx.Channel.DeleteMessagesAsync(messages.Take(deletedMessages));
+
+        int oldMessages = messages.Count - deletedMessages;
+        StringBuilder confirmMessage = new();
+
+        if (oldMessages > 0)
+            confirmMessage.AppendLine($"Ink too dry! {oldMessages} Message{(oldMessages > 1 ? "s" : "")} could not be deleted.");
+        confirmMessage.AppendLine($"Deleted {deletedMessages} Message{(deletedMessages > 1 ? "s" : "")}.");
+
+        await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().WithContent(confirmMessage.ToString()).AsEphemeral(true));
     }
 
     [SlashCommand("Mute", "Mutes member using a Timeout")]

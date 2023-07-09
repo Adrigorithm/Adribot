@@ -52,7 +52,8 @@ public class Bot
         {
             UseMessageCreated = true,
             UseSlashCommandErrored = true,
-            UseGuildDownloadCompleted = true
+            UseGuildDownloadCompleted = true,
+            Services = services
         };
         _clientEvents.Attach();
     }

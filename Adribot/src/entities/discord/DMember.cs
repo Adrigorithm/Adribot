@@ -1,24 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Adribot.entities.utilities;
+using Adribot.src.data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.discord;
 
-[Table("dmembers")]
 [PrimaryKey(nameof(DMemberId), nameof(DGuildId))]
-public class DMember : IComparable
+public class DMember : IComparable, IDataStructure
 {
-    [Column("dmemberid")]
     public ulong DMemberId { get; set; }
 
     public List<Infraction> Infractions { get; set; } = new();
     public List<Reminder> Reminders { get; set; } = new();
     public List<Tag> Tags { get; set; } = new();
 
-    [ForeignKey("dguildid")]
     public ulong DGuildId { get; set; }
     public DGuild DGuild { get; set; }
 

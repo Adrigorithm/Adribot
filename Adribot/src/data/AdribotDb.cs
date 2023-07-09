@@ -17,7 +17,6 @@ public class AdribotDb : DbContext
 
     public AdribotDb() =>
         _connectionString = Config.Configuration.SqlConnectionString;
-
     public DbSet<DGuild> DGuilds { get; set; }
     public DbSet<DMember> DMembers { get; set; }
     public DbSet<Infraction> Infractions { get; set; }
@@ -26,7 +25,7 @@ public class AdribotDb : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
-        options.UseNpgsql(_connectionString);
+        options.UseSqlServer(_connectionString);
         options.LogTo(Console.WriteLine);
     }
 }

@@ -7,7 +7,7 @@ namespace Adribot.services;
 public abstract class BaseTimerService : ITimerService
 {
     protected DiscordClient Client;
-    private  Timer _timer;
+    private Timer _timer;
 
     /// <summary>
     /// Initiates service dependencies.
@@ -21,7 +21,7 @@ public abstract class BaseTimerService : ITimerService
     }
     
     private async void CallbackAsync(object? state) =>
-        await Work();
+        await WorkAsync();
 
     public virtual async Task Start(int timerInterval)
     {
@@ -32,5 +32,5 @@ public abstract class BaseTimerService : ITimerService
     public async Task Stop() =>
         await _timer.DisposeAsync();
 
-    public virtual async Task Work() => await Task.CompletedTask;
+    public virtual async Task WorkAsync() => await Task.CompletedTask;
 }

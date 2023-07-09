@@ -1,17 +1,13 @@
+using Adribot.src.data;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 
 namespace Adribot.entities.discord;
 
-[Table("dguilds")]
-public class DGuild : IComparable
+public class DGuild : IComparable, IDataStructure
 {
-    [Key]
-    [Column("dguildid")]
     public ulong DGuildId { get; set; }
 
     public List<DMember> Members { get; set; } = new();

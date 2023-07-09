@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Adribot.data;
 using Adribot.services;
@@ -17,7 +16,7 @@ public class ClientEvents
     private readonly DiscordClient _client;
     public IServiceProvider Services { internal get; set; } = new ServiceCollection().BuildServiceProvider(validateScopes: true);
     public InfractionService InfractionService { private get; set; }
-    
+
     public bool UseMessageCreated;
     public bool UseGuildDownloadCompleted;
 
@@ -39,11 +38,8 @@ public class ClientEvents
             _client.GuildDownloadCompleted += GuildDownloadCompleted;
     }
 
-    private Task GuildDownloadCompleted(DiscordClient sender, GuildDownloadCompletedEventArgs e)
-    {
-        _ = Task.Run( () => new DataManager(sender));
-        return Task.CompletedTask;
-    }
+    private Task GuildDownloadCompleted(DiscordClient sender, GuildDownloadCompletedEventArgs e) =>
+        new DataManager(sender).AddGuildsAsync();
 
     private Task SlashCommandErrored(SlashCommandsExtension sender, SlashCommandErrorEventArgs e)
     {
@@ -54,10 +50,21 @@ public class ClientEvents
 
     private async Task MessageCreatedAsync(DiscordClient client, MessageCreateEventArgs args)
     {
-        if (!args.Channel.IsPrivate &&
-            !args.Author.IsBot &&
-            !((DiscordMember)args.Author).Permissions.HasPermission(Permissions.Administrator) &&
-            args.MentionedUsers.Any(user => ((DiscordMember)user).Permissions.HasPermission(Permissions.Administrator)))
+        var member = args.Author as DiscordMember;
+        bool pingedAdmin = false;
+        int counter = 0;
+
+        while (counter < args.MentionedUsers.Count && !pingedAdmin)
+        {
+            pingedAdmin = (args.MentionedUsers[counter] as DiscordMember)?.Permissions.HasPermission(Permissions.Administrator) ?? false;
+            counter++;
+        }
+
+        if (member is not null &&
+            !args.Channel.IsPrivate &&
+            !member.IsBot &&
+            !member.Permissions.HasPermission(Permissions.Administrator) &&
+            pingedAdmin)
         {
             await args.Message.CreateReactionAsync(DiscordEmoji.FromUnicode("💢"));
         }
