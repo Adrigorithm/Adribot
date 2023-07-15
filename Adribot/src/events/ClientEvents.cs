@@ -14,8 +14,6 @@ namespace Adribot.events;
 public class ClientEvents
 {
     private readonly DiscordClient _client;
-    public IServiceProvider Services { internal get; set; } = new ServiceCollection().BuildServiceProvider(validateScopes: true);
-    public InfractionService InfractionService { private get; set; }
 
     public bool UseMessageCreated;
     public bool UseGuildDownloadCompleted;
@@ -35,11 +33,14 @@ public class ClientEvents
         if (UseSlashCommandErrored)
             slashies.SlashCommandErrored += SlashCommandErrored;
         if (UseGuildDownloadCompleted)
-            _client.GuildDownloadCompleted += GuildDownloadCompleted;
+            _client.GuildDownloadCompleted += GuildDownloadCompletedAsync;
     }
 
-    private Task GuildDownloadCompleted(DiscordClient sender, GuildDownloadCompletedEventArgs e) =>
-        new DataManager(sender).AddGuildsAsync();
+    private async Task GuildDownloadCompletedAsync(DiscordClient sender, GuildDownloadCompletedEventArgs e)
+    {
+        using DataManager database = new(sender);
+        await database.AddGuildsAsync();
+    }
 
     private Task SlashCommandErrored(SlashCommandsExtension sender, SlashCommandErrorEventArgs e)
     {
@@ -56,7 +57,7 @@ public class ClientEvents
 
         while (counter < args.MentionedUsers.Count && !pingedAdmin)
         {
-            pingedAdmin = (args.MentionedUsers[counter] as DiscordMember)?.Permissions.HasPermission(Permissions.Administrator) ?? false;
+            pingedAdmin = (await args.Guild.GetMemberAsync(args.MentionedUsers[counter].Id))?.Permissions.HasPermission(Permissions.Administrator) ?? false;
             counter++;
         }
 

@@ -5,6 +5,7 @@ using Adribot.commands.utilities;
 using Adribot.config;
 using Adribot.events;
 using Adribot.services;
+using Adribot.src.services;
 using DSharpPlus;
 using DSharpPlus.SlashCommands;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,7 +19,7 @@ public class Bot
 
     public Bot()
     {
-        Task.Run(async () => await Config.LoadConfigAsync()).Wait();
+        Task.Run(Config.LoadConfigAsync).Wait();
 
         _client = new(new DiscordConfiguration
         {
@@ -26,10 +27,12 @@ public class Bot
             Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents
         });
 
-        InfractionService infractionService = new(client: _client);
+        InfractionService infractionService = new(_client);
+        TagService tagService = new(_client);
 
         ServiceProvider services = new ServiceCollection()
             .AddSingleton(infractionService)
+            .AddSingleton(tagService)
             .BuildServiceProvider();
 
         SlashCommandsExtension slashies = _client.UseSlashCommands(new SlashCommandsConfiguration()
@@ -42,18 +45,17 @@ public class Bot
         slashies.RegisterCommands<FunCommands>(1023986117428658187);
         slashies.RegisterCommands<UtilityCommands>(1023986117428658187);
 
-        AttachEvents(services);
+        AttachEvents();
     }
 
 
-    private void AttachEvents(ServiceProvider services)
+    private void AttachEvents()
     {
         _clientEvents = new(_client)
         {
             UseMessageCreated = true,
             UseSlashCommandErrored = true,
             UseGuildDownloadCompleted = true,
-            Services = services
         };
         _clientEvents.Attach();
     }

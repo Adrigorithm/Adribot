@@ -14,12 +14,13 @@ public static class DiscordObjectExtensions{
             Members = !includeMembers ? new() : (await guild.GetAllMembersAsync()).ToDMembers() 
         };
 
+    /// <summary>
+    /// Calling this method method individually will NOT reference to a DGuild in any way.
+    /// </summary>
+    /// <param name="member">The member to be converted</param>
+    /// <returns>The simplified DTO (DMember) representation of a DiscordMember</returns>
     public static DMember ToDMember(this DiscordMember member) =>
-        new DMember
-        {
-            DGuildId = member.Guild.Id,
-            DMemberId = member.Id
-        };
+        new DMember { DMemberId = member.Id };
 
     public static async Task<List<DGuild>> ToDGuildsAsync(this IEnumerable<DiscordGuild> guilds, bool includeMembers = true){
         List<DGuild> dGuilds = new();

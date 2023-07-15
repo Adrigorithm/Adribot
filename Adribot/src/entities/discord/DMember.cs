@@ -1,22 +1,26 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Adribot.entities.utilities;
 using Adribot.src.data;
-using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.discord;
 
-[PrimaryKey(nameof(DMemberId), nameof(DGuildId))]
 public class DMember : IComparable, IDataStructure
 {
+    [Key]
+    public int MemberId { get; set; }
+
     public ulong DMemberId { get; set; }
+
+    public int GuildId { get; set; }
+    [ForeignKey(nameof(GuildId))]
+    public DGuild DGuild { get; set; }
 
     public List<Infraction> Infractions { get; set; } = new();
     public List<Reminder> Reminders { get; set; } = new();
     public List<Tag> Tags { get; set; } = new();
-
-    public ulong DGuildId { get; set; }
-    public DGuild DGuild { get; set; }
 
     public int CompareTo(object? obj)
     {
@@ -29,11 +33,8 @@ public class DMember : IComparable, IDataStructure
                                     $"Make sure your instance is of type {GetType().Name}");
     }
 
-    public virtual bool Equals(DMember? other)
-    {
-        if (other is not DMember member) return false;
-        return member.DMemberId == DMemberId;
-    }
+    public override bool Equals(object? obj) =>
+        obj is DMember member && member.DMemberId == DMemberId;
 
     public override int GetHashCode() => DMemberId.GetHashCode();
 }

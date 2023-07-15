@@ -12,5 +12,8 @@ namespace Adribot.config
 
         [JsonPropertyName("sqlConnectionString")]
         public string SqlConnectionString { get; init; }
+
+        [JsonPropertyName("embedColour")]
+        public string EmbedColour { get; init; }
     }
 }

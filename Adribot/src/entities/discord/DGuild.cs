@@ -1,6 +1,7 @@
 using Adribot.src.data;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 
@@ -8,35 +9,22 @@ namespace Adribot.entities.discord;
 
 public class DGuild : IComparable, IDataStructure
 {
+    [Key]
+    public int GuildId { get; set; }
+
     public ulong DGuildId { get; set; }
 
     public List<DMember> Members { get; set; } = new();
 
-    public List<DMember> GetMembersDifference(List<DMember> members)
-    {
-        members.Sort();
-        Members.Sort();
-
-        List<DMember> membersToAdd = new();
-        for (int j = 0; j < members.Count; j++)
-        {
-            if (j > Members.Count - 1 || !Members[j].Equals(members[j]))
-                membersToAdd.Add(members[j]);
-        }
-
-        return membersToAdd;
-    }
+    public IEnumerable<DMember> GetMembersDifference(List<DMember> members) =>
+        Members.Except(members);
 
     public override bool Equals(object? obj)
     {
-        if (obj is not DGuild guild || DGuildId != guild.DGuildId) return false;
-        if (guild.Members.Count != Members.Count)
+        if (obj is not DGuild guild || DGuildId != guild.DGuildId || guild.Members.Count != Members.Count)
             return false;
 
-        guild.Members.Sort();
-        Members.Sort();
-
-        return !Members.Where((m, i) => m != guild.Members[i]).Any();
+        return Members.Except(guild.Members).Count() == 0;
     }
     
     public override int GetHashCode()
