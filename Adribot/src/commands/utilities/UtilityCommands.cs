@@ -31,7 +31,7 @@ namespace Adribot.commands.utilities
                             new DiscordMessageBuilder().WithContent($"Tag `{tag.Name}` could not be found")).AsEphemeral());
                     else
                     {
-                        DiscordMember member = await ctx.Guild.GetMemberAsync(tag.DMember.DMemberId);
+                        DiscordMember member = await ctx.Guild.GetMemberAsync(tag.DMemberId);
 
                         DiscordMessageBuilder messageBuilder = operation == CrudOperation.GET ?
                             new DiscordMessageBuilder().WithContent($"{tag.Content}") :
@@ -51,17 +51,21 @@ namespace Adribot.commands.utilities
                     break;
                 case CrudOperation.SET:
                 case CrudOperation.UPDATE:
-                    Tag? newTag = await CreateTagAsync(ctx, tagName, newContent);
+                    Tag? newTag = CreateTag(ctx, tagName, newContent);
                     if (newTag is null || !await TagService.TrySetTagAsync(newTag, operation == CrudOperation.UPDATE))
                         await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                             new DiscordMessageBuilder().WithContent($"{(newTag is null ? "Content option cannot be empty when creating new tags." : "A tag with the same name already exists.\nUse Update mode to force the change.")}")).AsEphemeral());
+                    else
+                        await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
 
                     break;
                 case CrudOperation.REMOVE:
                     if (!TagService.TryRemoveTag(tagName, ctx.Guild.Id))
                         await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                             new DiscordMessageBuilder().WithContent($"A tag with tagname {tagName} could not be found.")).AsEphemeral());
-                    
+                    else
+                        await ctx.CreateResponseAsync(InteractionResponseType.DeferredChannelMessageWithSource);
+
                     break;
                 case CrudOperation.LIST:
                     IEnumerable<Tag> tags = TagService.GetAllTags(ctx.Guild.Id);
@@ -89,20 +93,18 @@ namespace Adribot.commands.utilities
             }
         }
 
-        private async Task<Tag?> CreateTagAsync(InteractionContext context, string tagName, string content)
+        private Tag? CreateTag(InteractionContext context, string tagName, string content)
         {
             if (string.IsNullOrWhiteSpace(content))
                 return null;
-
-            var member = context.Member.ToDMember();
-            member.DGuild = await context.Guild.ToDGuildAsync(false);
 
             return new Tag
             {
                 Content = content,
                 Date = context.Interaction.CreationTimestamp,
-                DMember = member,
-                Name = tagName
+                DMemberId = context.Member.Id,
+                Name = tagName,
+                DGuildId = context.Guild.Id
             };
         }
     }

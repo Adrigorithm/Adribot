@@ -29,7 +29,7 @@ namespace Adribot.src.services
             for (int i = 0; i < Tags.Count; i++)
             {
                 if (Tags[i].Name == tag.Name &&
-                    Tags[i].DMember.DGuild.DGuildId == tag.DMember.DGuild.DGuildId)
+                    Tags[i].DGuildId == tag.DGuildId)
                 {
                     oldTag = Tags[i];
                     oldTagId = i;
@@ -58,11 +58,11 @@ namespace Adribot.src.services
         }
 
         public IEnumerable<Tag> GetAllTags(ulong guildId) =>
-            Tags.Where(t => t.DMember.DGuild.DGuildId == guildId);
+            Tags.Where(t => t.DGuildId == guildId);
             
 
         public Tag? TryGetTag(string tagName, ulong guildId) =>
-            Tags.FirstOrDefault(t => t.Name == tagName && t.DMember.DGuild.DGuildId == guildId);
+            Tags.FirstOrDefault(t => t.Name == tagName && t.DGuildId == guildId);
 
         public bool TryRemoveTag(string tagname, ulong guildId)
         {

@@ -10,14 +10,21 @@ namespace Adribot.entities.discord;
 public class DGuild : IComparable, IDataStructure
 {
     [Key]
-    public int GuildId { get; set; }
-
     public ulong DGuildId { get; set; }
 
     public List<DMember> Members { get; set; } = new();
 
-    public IEnumerable<DMember> GetMembersDifference(List<DMember> members) =>
-        Members.Except(members);
+    public List<DMember> GetMembersDifference(List<DMember> members)
+    {
+        List<DMember> membersMissing = new();
+        for (int i = 0; i < members.Count; i++)
+        {
+            if (Members.FirstOrDefault(m => m == members[i]) is null)
+                membersMissing.Add(members[i]);
+        }
+
+        return membersMissing;
+    }
 
     public override bool Equals(object? obj)
     {

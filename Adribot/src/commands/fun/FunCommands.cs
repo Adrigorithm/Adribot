@@ -28,7 +28,7 @@ public class FunCommands : ApplicationCommandModule
                 List<Cat> catApiObject = await JsonSerializer.DeserializeAsync<List<Cat>>(await _httpClient.GetStreamAsync($"{_catUriBase}?api_key={Config.Configuration.CatToken}"));
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
                 {
-                    Color = DiscordColor.MidnightBlue,
+                    Color = new DiscordColor(Config.Configuration.EmbedColour),
                     Title = "You asked, I delivered.",
                     ImageUrl = catApiObject[0].Url
                 }));
@@ -37,7 +37,7 @@ public class FunCommands : ApplicationCommandModule
                 List<Dog> dogApiObject = await JsonSerializer.DeserializeAsync<List<Dog>>(await _httpClient.GetStreamAsync($"{_dogUriBase}?api_key={Config.Configuration.CatToken}"));
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
                 {
-                    Color = DiscordColor.MidnightBlue,
+                    Color = new DiscordColor(Config.Configuration.EmbedColour),
                     Title = "You asked, I delivered.",
                     ImageUrl = dogApiObject[0].Url
                 }));
@@ -46,7 +46,7 @@ public class FunCommands : ApplicationCommandModule
                 Fox foxApiObject = await JsonSerializer.DeserializeAsync<Fox>(await _httpClient.GetStreamAsync("https://randomfox.ca/floof"));
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
                 {
-                    Color = DiscordColor.MidnightBlue,
+                    Color = new DiscordColor(Config.Configuration.EmbedColour),
                     Title = "You asked, I delivered.",
                     ImageUrl = foxApiObject.Image
                 }));

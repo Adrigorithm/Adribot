@@ -1,13 +1,16 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Adribot.data;
+using Adribot.entities.discord;
+using Adribot.extensions;
 using Adribot.services;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Adribot.events;
 
@@ -38,8 +41,38 @@ public class ClientEvents
 
     private async Task GuildDownloadCompletedAsync(DiscordClient sender, GuildDownloadCompletedEventArgs e)
     {
-        using DataManager database = new(sender);
-        await database.AddGuildsAsync();
+        List<DMember> membersToAdd = new();
+
+        using (var database = new DataManager(sender))
+        {
+            IEnumerable<DiscordGuild> guilds = sender.Guilds.Values;
+            IEnumerable<DGuild> cachedGuilds = database.GetAllInstances<DGuild>();
+
+            List<DGuild> guildsToAdd = new();
+
+            for (int i = 0; i < guilds.Count(); i++)
+            {
+                DGuild? selectedGuild = cachedGuilds.FirstOrDefault(g => g.DGuildId == guilds.ElementAt(i).Id);
+                if (selectedGuild is null)
+                {
+                    guildsToAdd.Add(await guilds.ElementAt(i).ToDGuildAsync(false));
+                    membersToAdd.AddRange((await guilds.ElementAt(i).GetAllMembersAsync()).ToDMembers());
+                }
+                else
+                {
+                    foreach (DMember member in selectedGuild.GetMembersDifference((await guilds.ElementAt(i).GetAllMembersAsync()).ToDMembers()))
+                    {
+                        member.DGuildId = selectedGuild.DGuildId;
+                        membersToAdd.Add(member);
+                    }
+                }
+            }
+
+            await database.AddAllInstancesAsync(guildsToAdd, true);
+        }
+
+        using var databaseMembers = new DataManager(sender);
+        await databaseMembers.AddAllInstancesAsync(membersToAdd);
     }
 
     private Task SlashCommandErrored(SlashCommandsExtension sender, SlashCommandErrorEventArgs e)

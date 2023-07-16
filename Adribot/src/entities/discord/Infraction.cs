@@ -17,7 +17,8 @@ public class Infraction : IDataStructure
     public bool IsExpired { get; set; }
     public string Reason { get; set; }
 
-    public int MemberId { get; set; }
-    [ForeignKey(nameof(MemberId))]
+    public ulong DMemberId { get; set; }
+    public ulong DGuildId { get; set; }
+    [ForeignKey($"{nameof(DMemberId)}, {nameof(DGuildId)}")]
     public DMember DMember { get; set; }
 }

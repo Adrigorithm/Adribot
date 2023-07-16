@@ -16,7 +16,7 @@ public class AdribotDb : DbContext
     /// </summary>
 
     public AdribotDb() =>
-        _connectionString = Config.Configuration.SqlConnectionString;
+        _connectionString = "Server=DESKTOP-QD7N10L\\SQL_2022;Database=AdribotDB;Encrypt=false;User Id=SA;Password=QB3F/kq=R5^m*Ccj"; //Config.Configuration.SqlConnectionString;
     public DbSet<DGuild> DGuilds { get; set; }
     public DbSet<DMember> DMembers { get; set; }
     public DbSet<Infraction> Infractions { get; set; }
@@ -27,5 +27,16 @@ public class AdribotDb : DbContext
     {
         options.UseSqlServer(_connectionString);
         options.LogTo(Console.WriteLine);
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<DMember>()
+            .Property(e => e.DGuildId)
+            .ValueGeneratedNever();
+
+        modelBuilder.Entity<DMember>()
+            .Property(e => e.DMemberId)
+            .ValueGeneratedNever();
     }
 }

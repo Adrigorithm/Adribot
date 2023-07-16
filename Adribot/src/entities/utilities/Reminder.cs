@@ -15,7 +15,8 @@ public class Reminder : IDataStructure
     public DateTimeOffset EndDate { get; set; }
     public string Content { get; set; }
 
-    public int MemberId { get; set; }
-    [ForeignKey(nameof(MemberId))]
+    public ulong DMemberId { get; set; }
+    public ulong DGuildId { get; set; }
+    [ForeignKey($"{nameof(DMemberId)}, {nameof(DGuildId)}")]
     public DMember DMember { get; set; }
 }

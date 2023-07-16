@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Adribot.constants.enums;
 using Adribot.data;
 using Adribot.entities.discord;
 using Adribot.extensions;
@@ -25,7 +26,7 @@ public sealed class InfractionService : BaseTimerService
         var member = user as DiscordMember;
         if (member is not null && !member.IsBot && !member.Permissions.HasPermission(Permissions.Administrator) && member.DisplayName[0] < 48)
         {
-            if (!_infractions.Any(i => i.DMember.DMemberId == member.Id && i.Type == constants.enums.InfractionType.HOIST && !i.IsExpired))
+            if (!_infractions.Any(i => i.DMemberId == member.Id && i.Type == InfractionType.HOIST && !i.IsExpired))
             {
                 using (var database = new DataManager(Client))
                 {
@@ -34,11 +35,12 @@ public sealed class InfractionService : BaseTimerService
                     await database.AddInstanceAsync(new Infraction
                     {
                         Date = currentUtcDate,
-                        DMember = member.ToDMember(),
+                        DMemberId = member.Id,
                         EndDate = currentUtcDate.AddHours(24),
                         IsExpired = false,
-                        Type = constants.enums.InfractionType.HOIST,
-                        Reason = "Hoisting is poop"
+                        Type = InfractionType.HOIST,
+                        Reason = "Hoisting is poop",
+                        DGuildId = member.Guild.Id
                     });
                 }
             }
@@ -67,13 +69,13 @@ public sealed class InfractionService : BaseTimerService
             {   
                 switch (infraction.Type)
                 {
-                    case constants.enums.InfractionType.HOIST:
-                        await (await (await Client.GetGuildAsync(infraction.DMember.DGuild.DGuildId)).GetMemberAsync(infraction.DMember.DMemberId)).ModifyAsync(m => m.Nickname = "");
+                    case InfractionType.HOIST:
+                        await (await (await Client.GetGuildAsync(infraction.DGuildId)).GetMemberAsync(infraction.DMemberId)).ModifyAsync(m => m.Nickname = "");
                         break;
-                    case constants.enums.InfractionType.BAN:
-                        DiscordGuild guild = await Client.GetGuildAsync(infraction.DMember.DGuild.DGuildId);
-                        await guild.UnbanMemberAsync(infraction.DMember.DMemberId, infraction.Reason);
-                        await ((DiscordMember) await Client.GetUserAsync(infraction.DMember.DMemberId)).SendMessageAsync($"You have been unbanned from {guild.Name}!\nDo not let it happen again.");
+                    case InfractionType.BAN:
+                        DiscordGuild guild = await Client.GetGuildAsync(infraction.DGuildId);
+                        await guild.UnbanMemberAsync(infraction.DMemberId, infraction.Reason);
+                        await ((DiscordMember) await Client.GetUserAsync(infraction.DMemberId)).SendMessageAsync($"You have been unbanned from {guild.Name}!\nDo not let it happen again.");
                         break;
                     default:
                         break;

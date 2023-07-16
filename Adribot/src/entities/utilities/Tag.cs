@@ -15,7 +15,8 @@ public class Tag : IDataStructure
     public string Content { get; set; }
     public DateTimeOffset Date { get; set; }
 
-    public int MemberId { get; set; }
-    [ForeignKey(nameof(MemberId))]
+    public ulong DMemberId { get; set; }
+    public ulong DGuildId { get; set; }
+    [ForeignKey($"{nameof(DMemberId)}, {nameof(DGuildId)}")]
     public DMember DMember { get; set; }
 }

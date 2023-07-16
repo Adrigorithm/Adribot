@@ -4,18 +4,17 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Adribot.entities.utilities;
 using Adribot.src.data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.discord;
 
+[PrimaryKey(nameof(DGuildId), nameof(DMemberId))]
 public class DMember : IComparable, IDataStructure
 {
-    [Key]
-    public int MemberId { get; set; }
-
     public ulong DMemberId { get; set; }
 
-    public int GuildId { get; set; }
-    [ForeignKey(nameof(GuildId))]
+    public ulong DGuildId { get; set; }
+    [ForeignKey(nameof(DGuildId))]
     public DGuild DGuild { get; set; }
 
     public List<Infraction> Infractions { get; set; } = new();
@@ -34,7 +33,7 @@ public class DMember : IComparable, IDataStructure
     }
 
     public override bool Equals(object? obj) =>
-        obj is DMember member && member.DMemberId == DMemberId;
+        obj is DMember member && member.DMemberId == DMemberId && member.DGuildId == DGuildId;
 
     public override int GetHashCode() => DMemberId.GetHashCode();
 }
