@@ -1,6 +1,6 @@
+using DSharpPlus;
 using System.Threading;
 using System.Threading.Tasks;
-using DSharpPlus;
 
 namespace Adribot.services;
 
@@ -8,6 +8,7 @@ public abstract class BaseTimerService : ITimerService
 {
     protected DiscordClient Client;
     private Timer _timer;
+    private bool _isDownloadCompleted;
 
     /// <summary>
     /// Initiates service dependencies.
@@ -17,11 +18,21 @@ public abstract class BaseTimerService : ITimerService
     protected BaseTimerService(DiscordClient client, int timerInterval = 10)
     {
         Client = client;
+        Client.GuildDownloadCompleted += GuildsReady;
         Task.Run(async () => await Start(timerInterval));
     }
-    
-    private async void CallbackAsync(object? state) =>
-        await WorkAsync();
+
+    private Task GuildsReady(DiscordClient sender, DSharpPlus.EventArgs.GuildDownloadCompletedEventArgs args)
+    {
+        _isDownloadCompleted = true;
+        return Task.CompletedTask;
+    }
+
+    private async void CallbackAsync(object? state)
+    {
+        if (_isDownloadCompleted)
+            await WorkAsync();
+    }
 
     public virtual async Task Start(int timerInterval)
     {

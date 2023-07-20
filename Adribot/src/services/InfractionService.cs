@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Adribot.constants.enums;
 using Adribot.data;
 using Adribot.entities.discord;
-using Adribot.extensions;
 using DSharpPlus;
 using DSharpPlus.Entities;
 

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Adribot.entities.utilities;
 using Adribot.src.data;
@@ -11,15 +10,15 @@ namespace Adribot.entities.discord;
 [PrimaryKey(nameof(DGuildId), nameof(DMemberId))]
 public class DMember : IComparable, IDataStructure
 {
-    public ulong DMemberId { get; set; }
-
     public ulong DGuildId { get; set; }
+    public ulong DMemberId { get; set; }
+    
     [ForeignKey(nameof(DGuildId))]
-    public DGuild DGuild { get; set; }
+    public virtual DGuild DGuild { get; set; }
 
-    public List<Infraction> Infractions { get; set; } = new();
-    public List<Reminder> Reminders { get; set; } = new();
-    public List<Tag> Tags { get; set; } = new();
+    public virtual List<Infraction> Infractions { get; set; } = new();
+    public virtual List<Reminder> Reminders { get; set; } = new();
+    public virtual List<Tag> Tags { get; set; } = new();
 
     public int CompareTo(object? obj)
     {

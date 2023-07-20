@@ -9,7 +9,7 @@ namespace Adribot.entities.discord;
 public class Infraction : IDataStructure
 {
     [Key]
-    public int InfractionId { get; set; }
+    public int? InfractionId { get; set; }
 
     public DateTimeOffset Date { get; set; }
     public DateTimeOffset EndDate { get; set; }
@@ -17,8 +17,8 @@ public class Infraction : IDataStructure
     public bool IsExpired { get; set; }
     public string Reason { get; set; }
 
-    public ulong DMemberId { get; set; }
     public ulong DGuildId { get; set; }
-    [ForeignKey($"{nameof(DMemberId)}, {nameof(DGuildId)}")]
-    public DMember DMember { get; set; }
+    public ulong DMemberId { get; set; }
+    [ForeignKey($"{nameof(DGuildId)}, {nameof(DMemberId)}")]
+    public virtual DMember DMember { get; set; }
 }

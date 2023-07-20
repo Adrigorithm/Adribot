@@ -11,12 +11,13 @@ public class Reminder : IDataStructure
     [Key]
     public int ReminderId { get; set; }
 
+    public ulong? Channel { get; set; }
     public DateTimeOffset Date { get; set; }
     public DateTimeOffset EndDate { get; set; }
     public string Content { get; set; }
 
-    public ulong DMemberId { get; set; }
     public ulong DGuildId { get; set; }
-    [ForeignKey($"{nameof(DMemberId)}, {nameof(DGuildId)}")]
-    public DMember DMember { get; set; }
+    public ulong DMemberId { get; set; }
+    [ForeignKey($"{nameof(DGuildId)}, {nameof(DMemberId)}")]
+    public virtual DMember DMember { get; set; }
 }

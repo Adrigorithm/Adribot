@@ -11,6 +11,10 @@ namespace Adribot.src.services
     {
         private readonly DiscordClient _client;
 
+        /// <summary>
+        /// TagId on the individual tags will be 0 when they are added later to minimise database interactions.
+        /// Do NOT depend on the ids.
+        /// </summary>
         public List<Tag> Tags { get; }
 
         public TagService(DiscordClient client)
@@ -24,7 +28,7 @@ namespace Adribot.src.services
         public async Task<bool> TrySetTagAsync(Tag tag, bool shouldOverwrite = false)
         {
             Tag? oldTag = null;
-            int oldTagId = -1;
+            int oldTagIndex = -1;
 
             for (int i = 0; i < Tags.Count; i++)
             {
@@ -32,7 +36,7 @@ namespace Adribot.src.services
                     Tags[i].DGuildId == tag.DGuildId)
                 {
                     oldTag = Tags[i];
-                    oldTagId = i;
+                    oldTagIndex = i;
                 }
             }
 
@@ -42,16 +46,16 @@ namespace Adribot.src.services
 
                 if (oldTag is null)
                 {
-                    Tags.Add(tag);
                     await database.AddInstanceAsync(tag);
+                    Tags.Add(tag);
                 }
                 else
                 {
                     tag.TagId = oldTag.TagId;
-                    Tags[oldTagId] = tag;
+                    Tags[oldTagIndex] = tag;
                     database.UpdateInstance(tag);
                 }
-                
+
                 return true;
             }
             return false;
@@ -59,7 +63,7 @@ namespace Adribot.src.services
 
         public IEnumerable<Tag> GetAllTags(ulong guildId) =>
             Tags.Where(t => t.DGuildId == guildId);
-            
+
 
         public Tag? TryGetTag(string tagName, ulong guildId) =>
             Tags.FirstOrDefault(t => t.Name == tagName && t.DGuildId == guildId);

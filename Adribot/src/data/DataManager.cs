@@ -1,14 +1,13 @@
+using Adribot.entities.discord;
+using Adribot.entities.utilities;
+using Adribot.src.data;
+using DSharpPlus;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Adribot.entities.discord;
-using Adribot.extensions;
-using Adribot.src.data;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Adribot.data;
 
@@ -55,15 +54,17 @@ public class DataManager : IDisposable
         }
     }
 
-    public List<Infraction> GetInfractionsToOldNotExpired(bool orderByDesc = true) =>
-        orderByDesc ? _database.Infractions.OrderByDescending(i => i.EndDate).Where(i => !i.IsExpired).ToList()
-                    : _database.Infractions.Where(i => !i.IsExpired).ToList();
+    public List<Infraction> GetInfractionsToOldNotExpired() =>
+        _database.Infractions.OrderByDescending(i => i.EndDate).Where(i => !i.IsExpired).ToList();
+
+    public List<Reminder> GetRemindersToOld() =>
+        _database.Reminders.OrderByDescending(r => r.EndDate).ToList();
+
+    public List<DGuild> GetDGuildsStarboardNotNull() =>
+        _database.DGuilds.Where(dg => dg.StarboardChannel != null).ToList();
 
     public IEnumerable<T> GetAllInstances<T>() where T : class, IDataStructure =>
         _database.Set<T>();
-
-    public List<DGuild> GetDGuilds() =>
-        _database.DGuilds.ToList();
 
     public void Dispose()
     {

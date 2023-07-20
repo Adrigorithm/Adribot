@@ -11,7 +11,7 @@ public static class DiscordObjectExtensions{
         new DGuild 
         {
             DGuildId = guild.Id,
-            Members = !includeMembers ? new() : (await guild.GetAllMembersAsync()).ToDMembers() 
+            Members = !includeMembers ? new() : (await guild.GetAllMembersAsync()).ToDMembers(guild.Id) 
         };
 
     /// <summary>
@@ -19,8 +19,12 @@ public static class DiscordObjectExtensions{
     /// </summary>
     /// <param name="member">The member to be converted</param>
     /// <returns>The simplified DTO (DMember) representation of a DiscordMember</returns>
-    public static DMember ToDMember(this DiscordMember member) =>
-        new DMember { DMemberId = member.Id };
+    public static DMember ToDMember(this DiscordMember member, ulong guildId) =>
+        new DMember
+        {
+            DMemberId = member.Id,
+            DGuildId = guildId
+        };
 
     public static async Task<List<DGuild>> ToDGuildsAsync(this IEnumerable<DiscordGuild> guilds, bool includeMembers = true){
         List<DGuild> dGuilds = new();
@@ -33,11 +37,11 @@ public static class DiscordObjectExtensions{
         return dGuilds;
     }
 
-    public static List<DMember> ToDMembers(this IEnumerable<DiscordMember> members)
+    public static List<DMember> ToDMembers(this IEnumerable<DiscordMember> members, ulong guildId)
     {
         List<DMember> dMembers = new();
 
-        members.ToList().ForEach(m => dMembers.Add(m.ToDMember()));
+        members.ToList().ForEach(m => dMembers.Add(m.ToDMember(guildId)));
 
         return dMembers;
     }

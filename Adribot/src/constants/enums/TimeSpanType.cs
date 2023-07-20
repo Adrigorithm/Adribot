@@ -2,19 +2,20 @@ using DSharpPlus.SlashCommands;
 
 namespace Adribot.constants.enums;
 
-public enum TimeSpanType{
-    [ChoiceName("Seconds")]
+public enum TimeSpanType
+{
+    [ChoiceName("seconds")]
     SECONDS,
-    [ChoiceName("Minutes")]
+    [ChoiceName("minutes")]
     MINUTES,
-    [ChoiceName("Hours")]
+    [ChoiceName("hours")]
     HOURS,
-    [ChoiceName("Days")]
+    [ChoiceName("days")]
     DAYS,
-    [ChoiceName("Weeks")]
+    [ChoiceName("weeks")]
     WEEKS,
-    [ChoiceName("Months")]
+    [ChoiceName("months")]
     MONTHS,
-    [ChoiceName("Years")]
+    [ChoiceName("years")]
     YEARS
 }

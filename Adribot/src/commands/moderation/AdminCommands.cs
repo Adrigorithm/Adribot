@@ -1,15 +1,16 @@
+using Adribot.constants.enums;
+using Adribot.extensions;
+using Adribot.services;
+using Adribot.src.helpers;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.SlashCommands;
+using DSharpPlus.SlashCommands.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Adribot.constants.enums;
-using Adribot.extensions;
-using Adribot.services;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.SlashCommands;
-using DSharpPlus.SlashCommands.Attributes;
 
 namespace Adribot.commands.moderation;
 
@@ -18,7 +19,7 @@ public class AdminCommands : ApplicationCommandModule
     public InfractionService InfractionService { private get; set; }
 
     [SlashCommand("Clear", "Deletes given amount of messages")]
-    [SlashRequirePermissions(Permissions.ManageMessages)]
+    [RequirePermissionOrOwner(Permissions.ManageMessages)]
     public async Task DeleteMessagesAsync(InteractionContext ctx, [Option("Amount", "Amount of messages to delete"), Minimum(1), Maximum(100)] long amount)
     {
         IReadOnlyList<DiscordMessage> messages = await ctx.Channel.GetMessagesAsync((int)amount);
@@ -48,9 +49,10 @@ public class AdminCommands : ApplicationCommandModule
 
     [SlashCommand("Mute", "Mutes member using a Timeout")]
     [SlashRequirePermissions(Permissions.MuteMembers)]
-    public async Task MuteMemberAsync(InteractionContext ctx, [Option("Member", "Member to mute")] DiscordUser member, [Option("Unit", "The duration multiplied by the factor parameter")] TimeSpanType type = TimeSpanType.MINUTES, [Option("Factor", "The amound of specified time units."), Minimum(1)] long factor = 3, [Option("Reason", "The reason for this infraction")] string reason = ""){
+    public async Task MuteMemberAsync(InteractionContext ctx, [Option("Member", "Member to mute")] DiscordUser member, [Option("Unit", "The duration multiplied by the factor parameter")] TimeSpanType type = TimeSpanType.MINUTES, [Option("Factor", "The amound of specified time units."), Minimum(1)] long factor = 3, [Option("Reason", "The reason for this infraction")] string reason = "")
+    {
         DateTimeOffset now = DateTimeOffset.UtcNow;
-        DateTimeOffset endDate = new KeyValuePair<TimeSpanType, long>(type, factor).ToEndDate(now);
+        DateTimeOffset endDate = type.ToEndDate((int)factor, now);
         //await TimerServiceProvider.AddDataAsync(new Infraction{
         //    Date = now,
         //    EndDate = endDate,
@@ -64,9 +66,10 @@ public class AdminCommands : ApplicationCommandModule
 
     [SlashCommand("Ban", "Bans members")]
     [SlashRequirePermissions(Permissions.BanMembers)]
-    public async Task BanMemberAsync(InteractionContext ctx, [Option("Member", "Member to ban")] DiscordUser member, [Option("Unit", "The duration multiplied by the factor parameter")] TimeSpanType type = TimeSpanType.MONTHS, [Option("Factor", "The amound of specified time units."), Minimum(1)] long factor = 1, [Option("Messages", "Anount of messages by this user to delete")] long deleteMessages = 0, [Option("Reason", "The reason for this infraction")] string reason = ""){
+    public async Task BanMemberAsync(InteractionContext ctx, [Option("Member", "Member to ban")] DiscordUser member, [Option("Unit", "The duration multiplied by the factor parameter")] TimeSpanType type = TimeSpanType.MONTHS, [Option("Factor", "The amound of specified time units."), Minimum(1)] long factor = 1, [Option("Messages", "Anount of messages by this user to delete")] long deleteMessages = 0, [Option("Reason", "The reason for this infraction")] string reason = "")
+    {
         DateTimeOffset now = DateTimeOffset.UtcNow;
-        DateTimeOffset endDate = new KeyValuePair<TimeSpanType, long>(type, factor).ToEndDate(now);
+        DateTimeOffset endDate = type.ToEndDate((int)factor, now);
         //await TimerServiceProvider.AddDataAsync(new Infraction{
         //    Date = now,
         //    EndDate = endDate,

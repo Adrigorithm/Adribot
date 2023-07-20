@@ -4,17 +4,17 @@ namespace Adribot.src.constants.enums
 {
     public enum CrudOperation
     {
-        [ChoiceName("Get")]
+        [ChoiceName("get")]
         GET,
-        [ChoiceName("Set")]
+        [ChoiceName("set")]
         SET,
-        [ChoiceName("New")]
-        UPDATE,
-        [ChoiceName("Delete")]
-        REMOVE,
-        [ChoiceName("Info")]
+        [ChoiceName("new")]
+        NEW,
+        [ChoiceName("delete")]
+        DELETE,
+        [ChoiceName("info")]
         INFO,
-        [ChoiceName("List")]
+        [ChoiceName("list")]
         LIST
     }
 }

@@ -1,13 +1,13 @@
+using Adribot.entities.minecraft;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.SlashCommands;
 using System;
 using System.IO;
 using System.IO.Compression;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Adribot.entities.minecraft;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.SlashCommands;
 
 namespace Adribot.commands.utilities;
 
@@ -27,12 +27,12 @@ public class MinecraftCommands : ApplicationCommandModule
                 File.Delete(filePath);
             }
 
-            Directory.Delete(DatapackPath + $"datapack/data/emojiful/recipes/", true);
-            Directory.CreateDirectory(DatapackPath + $"datapack/data/emojiful/recipes/");
+            Directory.Delete(DatapackPath + "datapack/data/emojiful/recipes/", true);
+            Directory.CreateDirectory(DatapackPath + "datapack/data/emojiful/recipes/");
 
             for (int i = 0; i < emojiMatches.Count; i++)
             {
-                EmojifulEmoji emoji = new EmojifulEmoji
+                var emoji = new EmojifulEmoji
                 {
                     Category = category,
                     Name = emojiMatches[i].Groups[2].Value,

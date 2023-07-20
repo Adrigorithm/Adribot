@@ -15,5 +15,8 @@ namespace Adribot.config
 
         [JsonPropertyName("embedColour")]
         public string EmbedColour { get; init; }
+
+        [JsonPropertyName("devUserId")]
+        public ulong DevUserId { get; init; }
     }
 }

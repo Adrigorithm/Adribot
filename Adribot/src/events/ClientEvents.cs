@@ -52,15 +52,16 @@ public class ClientEvents
 
             for (int i = 0; i < guilds.Count(); i++)
             {
-                DGuild? selectedGuild = cachedGuilds.FirstOrDefault(g => g.DGuildId == guilds.ElementAt(i).Id);
+                DiscordGuild guildCurrent = guilds.ElementAt(i);
+                DGuild? selectedGuild = cachedGuilds.FirstOrDefault(g => g.DGuildId == guildCurrent.Id);
                 if (selectedGuild is null)
                 {
-                    guildsToAdd.Add(await guilds.ElementAt(i).ToDGuildAsync(false));
-                    membersToAdd.AddRange((await guilds.ElementAt(i).GetAllMembersAsync()).ToDMembers());
+                    guildsToAdd.Add(await guildCurrent.ToDGuildAsync(false));
+                    membersToAdd.AddRange((await guildCurrent.GetAllMembersAsync()).ToDMembers(guildCurrent.Id));
                 }
                 else
                 {
-                    foreach (DMember member in selectedGuild.GetMembersDifference((await guilds.ElementAt(i).GetAllMembersAsync()).ToDMembers()))
+                    foreach (DMember member in selectedGuild.GetMembersDifference((await guildCurrent.GetAllMembersAsync()).ToDMembers(guildCurrent.Id)))
                     {
                         member.DGuildId = selectedGuild.DGuildId;
                         membersToAdd.Add(member);

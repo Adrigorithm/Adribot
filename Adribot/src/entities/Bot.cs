@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Adribot.commands.fun;
 using Adribot.commands.moderation;
 using Adribot.commands.utilities;
@@ -9,6 +8,7 @@ using Adribot.src.services;
 using DSharpPlus;
 using DSharpPlus.SlashCommands;
 using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
 
 namespace Adribot.entities;
 
@@ -29,10 +29,12 @@ public class Bot
 
         InfractionService infractionService = new(_client);
         TagService tagService = new(_client);
+        RemindMeSerivce remindMeSerivce = new(_client);
 
         ServiceProvider services = new ServiceCollection()
             .AddSingleton(infractionService)
             .AddSingleton(tagService)
+            .AddSingleton(remindMeSerivce)
             .BuildServiceProvider();
 
         SlashCommandsExtension slashies = _client.UseSlashCommands(new SlashCommandsConfiguration()
