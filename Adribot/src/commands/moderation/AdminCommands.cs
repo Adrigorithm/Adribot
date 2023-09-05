@@ -19,7 +19,7 @@ public class AdminCommands : ApplicationCommandModule
     public InfractionService InfractionService { private get; set; }
 
     [SlashCommand("Clear", "Deletes given amount of messages")]
-    [RequirePermissionOrOwner(Permissions.ManageMessages)]
+    [RequirePermissionOrDev(Permissions.ManageMessages)]
     public async Task DeleteMessagesAsync(InteractionContext ctx, [Option("Amount", "Amount of messages to delete"), Minimum(1), Maximum(100)] long amount)
     {
         IReadOnlyList<DiscordMessage> messages = await ctx.Channel.GetMessagesAsync((int)amount);

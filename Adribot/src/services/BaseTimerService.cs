@@ -7,6 +7,8 @@ namespace Adribot.services;
 public abstract class BaseTimerService : ITimerService
 {
     protected DiscordClient Client;
+    protected bool IsDatabaseDataLoaded;
+
     private Timer _timer;
     private bool _isDownloadCompleted;
 

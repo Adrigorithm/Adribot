@@ -1,4 +1,5 @@
 using Adribot.entities.minecraft;
+using Adribot.src.constants.strings;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -18,7 +19,7 @@ public class MinecraftCommands : ApplicationCommandModule
     [SlashCommand("Datapack", "Compiles Emojiful datapacks from supplied DiscordEmoji")]
     public async Task CreateDatapackAsync(InteractionContext ctx, [Option("Category", "A name to categorise this emoji collection")] string category, [Option("Emojis", "A chain of DiscordEmoji")] string emojiList)
     {
-        MatchCollection emojiMatches = Regex.Matches(emojiList, "(<a?):(\\w+):(\\d{1,20})>");
+        MatchCollection emojiMatches = Regex.Matches(emojiList, ConstantStrings.EmojiRegex);
         Console.WriteLine(emojiMatches.Count);
         if (emojiMatches.Count > 0)
         {

@@ -1,9 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using Adribot.entities.utilities;
 using Adribot.src.data;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Adribot.entities.discord;
 
@@ -12,7 +12,6 @@ public class DMember : IComparable, IDataStructure
 {
     public ulong DGuildId { get; set; }
     public ulong DMemberId { get; set; }
-    
     [ForeignKey(nameof(DGuildId))]
     public virtual DGuild DGuild { get; set; }
 
@@ -23,7 +22,7 @@ public class DMember : IComparable, IDataStructure
     public int CompareTo(object? obj)
     {
         if (obj is DMember member)
-            return member.DMemberId < DMemberId ? 
+            return member.DMemberId < DMemberId ?
                 1 : member.DMemberId > DMemberId ? -1 : 0;
 
         string typeName = obj is null ? "null" : obj.GetType().Name;

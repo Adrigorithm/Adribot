@@ -143,7 +143,7 @@ namespace Adribot.commands.utilities
         }
 
         [SlashCommand("config", "Configure several bot services")]
-        [RequirePermissionOrOwner(Permissions.Administrator)]
+        [RequirePermissionOrDev(Permissions.Administrator)]
         public async Task ConfigureBotAsync(InteractionContext ctx, [Option("configOption", "option to configure")] ConfiguratorOption configOption, [Option("channel", "defaults to current channel")] DiscordChannel channel = null, [Option("emoji", "emoji name without `:` - defaults to star emoji")] string emoji = null)
         {
             using var database = new DataManager(ctx.Client);

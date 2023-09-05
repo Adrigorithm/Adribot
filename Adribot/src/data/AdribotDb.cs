@@ -1,6 +1,7 @@
 using Adribot.config;
 using Adribot.entities.discord;
 using Adribot.entities.utilities;
+using Adribot.src.entities.utilities;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -22,6 +23,8 @@ public class AdribotDb : DbContext
     public DbSet<Infraction> Infractions { get; set; }
     public DbSet<Reminder> Reminders { get; set; }
     public DbSet<Tag> Tags { get; set; }
+    public DbSet<IcsCalendar> IcsCalendars { get; set; }
+    public DbSet<Event> Events { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
