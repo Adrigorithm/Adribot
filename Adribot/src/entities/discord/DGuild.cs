@@ -1,11 +1,13 @@
+using Adribot.src.config;
 using Adribot.src.data;
+using Adribot.src.entities.utilities;
+using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 
-namespace Adribot.entities.discord;
+namespace Adribot.src.entities.discord;
 
 public class DGuild : IComparable, IDataStructure
 {
@@ -60,15 +62,14 @@ public class DGuild : IComparable, IDataStructure
                                     $"Make sure your instance is of type {GetType().Name}");
     }
 
-    public override string ToString()
-    {
-        var sb = new StringBuilder($"-- Guild[{DGuildId}: {Members.Count}] --{Environment.NewLine}");
-
-        for (int i = 1; i <= Members.Count; i++)
+    public DiscordEmbedBuilder GenerateEmbedBuilder() =>
+        new DiscordEmbedBuilder
         {
-            sb.AppendLine($"Member {i}: {Members[i - 1].DMemberId}");
-        }
-
-        return sb.ToString();
-    }
+            Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = "<@608275633218519060>" },
+            Color = new DiscordColor(Config.Configuration.EmbedColour),
+            Title = DGuildId.ToString(),
+            Description = $"This guild contains {Members.Count} members.\n" +
+                $"Starred messages ({StarEmoji} >=3) are sent to channel {StarboardChannel}.\n" +
+                $"For this guild, {Calendars.Count(c => c.DGuildId == DGuildId)} calendars are registered."
+        };
 }

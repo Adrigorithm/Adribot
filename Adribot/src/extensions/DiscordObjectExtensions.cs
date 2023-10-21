@@ -1,17 +1,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Adribot.entities.discord;
+using Adribot.src.entities.discord;
 using DSharpPlus.Entities;
 
-namespace Adribot.extensions;
+namespace Adribot.src.extensions;
 
-public static class DiscordObjectExtensions{
+public static class DiscordObjectExtensions
+{
     public static async Task<DGuild> ToDGuildAsync(this DiscordGuild guild, bool includeMembers = true) =>
-        new DGuild 
+        new DGuild
         {
             DGuildId = guild.Id,
-            Members = !includeMembers ? new() : (await guild.GetAllMembersAsync()).ToDMembers(guild.Id) 
+            Members = !includeMembers ? new() : (await guild.GetAllMembersAsync()).ToDMembers(guild.Id)
         };
 
     /// <summary>
@@ -26,7 +27,8 @@ public static class DiscordObjectExtensions{
             DGuildId = guildId
         };
 
-    public static async Task<List<DGuild>> ToDGuildsAsync(this IEnumerable<DiscordGuild> guilds, bool includeMembers = true){
+    public static async Task<List<DGuild>> ToDGuildsAsync(this IEnumerable<DiscordGuild> guilds, bool includeMembers = true)
+    {
         List<DGuild> dGuilds = new();
 
         for (int i = 0; i < guilds.Count(); i++)

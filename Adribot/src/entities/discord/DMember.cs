@@ -1,11 +1,14 @@
-using Adribot.entities.utilities;
+using Adribot.src.config;
 using Adribot.src.data;
+using Adribot.src.entities.utilities;
+using DSharpPlus.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
-namespace Adribot.entities.discord;
+namespace Adribot.src.entities.discord;
 
 [PrimaryKey(nameof(DGuildId), nameof(DMemberId))]
 public class DMember : IComparable, IDataStructure
@@ -32,6 +35,15 @@ public class DMember : IComparable, IDataStructure
 
     public override bool Equals(object? obj) =>
         obj is DMember member && member.DMemberId == DMemberId && member.DGuildId == DGuildId;
+    public DiscordEmbedBuilder GenerateEmbedBuilder() =>
+        new DiscordEmbedBuilder
+        {
+            Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = "<@608275633218519060>" },
+            Color = new DiscordColor(Config.Configuration.EmbedColour),
+            Title = DMemberId.ToString(),
+            Description = $"This member has set {Reminders.Count} reminders and {Tags.Count} tags.\n" +
+                $"They have {Infractions.Count} infractions of which {Infractions.Count(i => !i.IsExpired)} are still pending."
+        };
 
     public override int GetHashCode() => DMemberId.GetHashCode();
 }

@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Adribot.config
+namespace Adribot.src.config
 {
     public record ConfigValueType
     {

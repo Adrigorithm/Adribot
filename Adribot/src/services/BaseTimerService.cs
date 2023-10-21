@@ -2,7 +2,7 @@ using DSharpPlus;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Adribot.services;
+namespace Adribot.src.services;
 
 public abstract class BaseTimerService : ITimerService
 {

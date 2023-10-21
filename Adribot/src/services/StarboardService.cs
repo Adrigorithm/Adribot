@@ -1,7 +1,6 @@
-using Adribot.config;
-using Adribot.data;
-using Adribot.entities.discord;
-using Adribot.services;
+using Adribot.src.config;
+using Adribot.src.data;
+using Adribot.src.entities.discord;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using System.Collections.Generic;
@@ -21,7 +20,7 @@ namespace Adribot.src.services
         {
             client.MessageReactionAdded += MessageReactionAddedAsync;
 
-            using var database = new DataManager(client);
+            using var database = new DataManager();
             _outputChannels = database.GetDGuildsStarboardNotNull().ToDictionary(dg => dg.DGuildId, dg => ((ulong)dg.StarboardChannel, DiscordEmoji.FromName(client, dg.StarEmoji ?? ":star:")));
         }
 
@@ -44,7 +43,7 @@ namespace Adribot.src.services
 
         public void Configure(ulong guildId, ulong channelId, string emoji)
         {
-            using var database = new DataManager(Client);
+            using var database = new DataManager();
 
             DGuild guild = database.GetAllInstances<DGuild>().First(g => g.DGuildId == guildId);
             guild.StarboardChannel = channelId;

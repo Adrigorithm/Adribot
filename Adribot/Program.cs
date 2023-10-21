@@ -1,17 +1,15 @@
 using System.Threading.Tasks;
-using Adribot.entities;
+using Adribot.src.entities;
 
-namespace Adribot
+namespace Adribot;
+
+internal static class Program
 {
-    internal static class Program
+    private static async Task Main(string[] args)
     {
-        // ReSharper disable once InconsistentNaming
-        private static async Task Main(string[] args)
-        {
-            Bot bot = new();
-            await bot.StartAsync();
-        
-            await Task.Delay(-1);
-        }
+        Bot bot = new();
+        await bot.StartAsync();
+
+        await Task.Delay(-1);
     }
 }

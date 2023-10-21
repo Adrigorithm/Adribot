@@ -3,13 +3,13 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Adribot.config;
+namespace Adribot.src.config;
 
 public static class Config
 {
     // Debug
     private const string ConfigPath = "../../../secret/config.json";
-    
+
     public static ConfigValueType Configuration { get; private set; }
 
     public static async Task LoadConfigAsync()

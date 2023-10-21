@@ -1,16 +1,15 @@
-using Adribot.commands.fun;
-using Adribot.commands.moderation;
-using Adribot.commands.utilities;
-using Adribot.config;
-using Adribot.events;
-using Adribot.services;
+using Adribot.src.commands.fun;
+using Adribot.src.commands.moderation;
+using Adribot.src.commands.utilities;
+using Adribot.src.config;
+using Adribot.src.events;
 using Adribot.src.services;
 using DSharpPlus;
 using DSharpPlus.SlashCommands;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
-namespace Adribot.entities;
+namespace Adribot.src.entities;
 
 public class Bot
 {

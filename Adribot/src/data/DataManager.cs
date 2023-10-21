@@ -1,7 +1,5 @@
-using Adribot.entities.discord;
-using Adribot.entities.utilities;
-using Adribot.src.data;
-using DSharpPlus;
+using Adribot.src.entities.discord;
+using Adribot.src.entities.utilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
@@ -9,12 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Adribot.data;
+namespace Adribot.src.data;
 
 public class DataManager : IDisposable
 {
     private readonly AdribotDb _database;
-    private readonly DiscordClient _client;
     private string _insertionTableName;
 
     /// <summary>
@@ -23,11 +20,8 @@ public class DataManager : IDisposable
     /// While it could theoretically be reused, I do suggest you reinstantiate everytime work on the database is to be done as it takes up a considerable amount of space in memory.
     /// </summary>
     /// <param name="client">The client should be provided to allow real-time tracking of entities</param>
-    public DataManager(DiscordClient client)
-    {
+    public DataManager() =>
         _database = new();
-        _client = client;
-    }
 
     public void UpdateInstance<T>(T entity) where T : IDataStructure =>
         _database.Update(entity);
@@ -59,7 +53,10 @@ public class DataManager : IDisposable
 
     public List<IcsCalendar> GetIcsCalendarsNotExpired(DateTimeOffset now) =>
         _database.IcsCalendars.Where(c => c.Events.Last().End > now).ToList();
-        
+
+    public List<string> GetIcsCalendarNames() =>
+        _database.IcsCalendars.Select(c => c.Name).ToList();
+
     public List<Reminder> GetRemindersToOld() =>
         _database.Reminders.OrderByDescending(r => r.EndDate).ToList();
 

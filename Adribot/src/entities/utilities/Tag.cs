@@ -1,11 +1,12 @@
+using Adribot.src.config;
+using Adribot.src.data;
+using Adribot.src.entities.discord;
+using DSharpPlus.Entities;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
-using Adribot.entities.discord;
-using Adribot.src.data;
 
-namespace Adribot.entities.utilities;
+namespace Adribot.src.entities.utilities;
 
 public class Tag : IDataStructure
 {
@@ -21,13 +22,19 @@ public class Tag : IDataStructure
     [ForeignKey($"{nameof(DGuildId)}, {nameof(DMemberId)}")]
     public virtual DMember DMember { get; set; }
 
-    public override string ToString()
+    public DiscordEmbedBuilder GenerateEmbedBuilder()
     {
-        var tagString = new StringBuilder($"-- Tag[{(TagId == 0 ? "Unknown" : TagId)} - {Name}] from Guild {DGuildId} --{Environment.NewLine}");
-        tagString.Append($"Content: {Content[..(Content.Length < 100 ? Content.Length : 100)]}");
+        string tagContent = Content;
         if (Content.Length > 100)
-            tagString.Append(" ...");
+            tagContent = Content.Substring(0, 100) + " ...";
 
-        return tagString.ToString();
+        return new DiscordEmbedBuilder
+        {
+            Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = $"<@{DMemberId}>" },
+            Color = new DiscordColor(Config.Configuration.EmbedColour),
+            Title = $"{Name}",
+            Description = $"{tagContent}"
+        };
     }
+
 }

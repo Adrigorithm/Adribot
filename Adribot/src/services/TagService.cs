@@ -1,9 +1,9 @@
-using Adribot.data;
-using Adribot.entities.utilities;
-using DSharpPlus;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Adribot.src.data;
+using Adribot.src.entities.utilities;
+using DSharpPlus;
 
 namespace Adribot.src.services
 {
@@ -21,7 +21,7 @@ namespace Adribot.src.services
         {
             _client = client;
 
-            using var database = new DataManager(_client);
+            using var database = new DataManager();
             Tags = database.GetAllInstances<Tag>().ToList();
         }
 
@@ -42,7 +42,7 @@ namespace Adribot.src.services
 
             if (oldTag is null || shouldOverwrite)
             {
-                using var database = new DataManager(_client);
+                using var database = new DataManager();
 
                 if (oldTag is null)
                 {
@@ -75,8 +75,8 @@ namespace Adribot.src.services
             {
                 Tags.Remove(tag);
 
-                using (var database = new DataManager(_client))
-                    database.RemoveInstance(tag);
+                using var database = new DataManager();
+                database.RemoveInstance(tag);
 
                 return true;
             }

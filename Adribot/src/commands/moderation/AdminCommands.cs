@@ -1,7 +1,6 @@
-using Adribot.constants.enums;
-using Adribot.extensions;
-using Adribot.services;
-using Adribot.src.helpers;
+using Adribot.src.constants.enums;
+using Adribot.src.extensions;
+using Adribot.src.services;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -11,8 +10,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Adribot.src.helpers;
 
-namespace Adribot.commands.moderation;
+namespace Adribot.src.commands.moderation;
 
 public class AdminCommands : ApplicationCommandModule
 {

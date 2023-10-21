@@ -1,7 +1,5 @@
-using Adribot.config;
-using Adribot.data;
-using Adribot.entities.discord;
-using Adribot.services;
+using Adribot.src.config;
+using Adribot.src.data;
 using Adribot.src.entities.utilities;
 using Adribot.src.extensions;
 using DSharpPlus;
@@ -17,41 +15,39 @@ namespace Adribot.src.services
 {
     public class DaySchemeService : BaseTimerService
     {
-        private List<IcsCalendar> _calendars;
+        private readonly List<IcsCalendar> _calendars;
 
         public DaySchemeService(DiscordClient client, int timerInterval = 60) : base(client, timerInterval)
         {
+            DateTimeOffset today = DateTimeOffset.UtcNow;
+
+            using var database = new DataManager();
+            _calendars = database.GetIcsCalendarsNotExpired(today);
         }
 
         public override async Task WorkAsync()
         {
-            DateTimeOffset today = DateTimeOffset.UtcNow;
-
-            if (!IsDatabaseDataLoaded)
+            if (_calendars.Count > 0)
             {
-                using var database = new DataManager(Client);
-                _calendars = database.GetIcsCalendarsNotExpired(today);
+                DateTimeOffset today = DateTimeOffset.UtcNow;
 
-                IsDatabaseDataLoaded = true;
-            }
-
-            foreach (IcsCalendar calendar in _calendars)
-            {
-                List<Event> eventsToPost = new();
-                int counter = calendar.Events.Count - 1;
-
-                while (counter >= 0 && calendar.Events[counter].End > today)
+                foreach (IcsCalendar calendar in _calendars)
                 {
-                    TimeSpan eventStartsInTimeSpan = calendar.Events[counter].Start - today;
-                    if (!calendar.Events[counter].isPosted && eventStartsInTimeSpan > TimeSpan.Zero && eventStartsInTimeSpan < TimeSpan.FromMinutes(10))
-                        eventsToPost.Add(calendar.Events[counter]);
+                    List<Event> eventsToPost = new();
+                    int counter = calendar.Events.Count - 1;
 
-                    counter--;
+                    while (counter >= 0 && calendar.Events[counter].End > today)
+                    {
+                        TimeSpan eventStartsInTimeSpan = calendar.Events[counter].Start - today;
+                        if (!calendar.Events[counter].IsPosted && eventStartsInTimeSpan > TimeSpan.Zero && eventStartsInTimeSpan < TimeSpan.FromMinutes(10))
+                            eventsToPost.Add(calendar.Events[counter]);
+
+                        counter--;
+                    }
+
+                    await PostEventsAsync(eventsToPost, calendar.DGuildId, calendar.ChannelId, calendar.IcsCalendarId);
                 }
-
-                await PostEventsAsync(eventsToPost, calendar.DGuildId, calendar.ChannelId, calendar.IcsCalendarId);
             }
-
         }
 
         /// <summary>
@@ -75,14 +71,20 @@ namespace Adribot.src.services
                 });
 
                 if (calendarId is not null)
-                    _calendars.First(c => c.IcsCalendarId == calendarId).Events.First(e => e.EventId == cEvent.EventId).isPosted = true;
+                    _calendars.First(c => c.IcsCalendarId == calendarId).Events.First(e => e.EventId == cEvent.EventId).IsPosted = true;
             }
         }
 
-        public Event? GetNextEventAsync(ulong guildId) =>
+        public string[] GetCalendarNames(ulong guildId) =>
+            _calendars.Where(c => c.DGuildId == guildId).Select(c => c.Name).ToArray();
+
+        public IcsCalendar? GetCalendarByName(ulong guildId, string name) =>
+            _calendars.FirstOrDefault(c => c.DGuildId == guildId && c.Name == name);
+
+        public Event? GetNextEvent(ulong guildId) =>
             _calendars.First(c => c.DGuildId == guildId).Events.FirstOrDefault(e => e.Start - DateTime.UtcNow > TimeSpan.Zero);
 
-        public async Task AddCalendarAsync(ulong guildId, ulong channelId, Uri? icsFileUri = null, string icsFileText = null)
+        public async Task AddCalendarAsync(ulong guildId, ulong channelId, Uri? icsFileUri = null, string? icsFileText = null)
         {
             var icsCalendar = new IcsCalendar
             {
@@ -94,7 +96,7 @@ namespace Adribot.src.services
             calendar.Events.ToList().ForEach(e => icsCalendar.Events.Add(e.ToEvent()));
             _calendars.Add(icsCalendar);
 
-            using var database = new DataManager(Client);
+            using var database = new DataManager();
             await database.AddInstanceAsync(icsCalendar);
 
             static async Task<string> GetRemoteFileContent(Uri uri)

@@ -1,53 +1,54 @@
-using Adribot.config;
-using Adribot.data;
-using Adribot.entities.utilities;
-using Adribot.services;
-using DSharpPlus;
-using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Adribot.src.config;
+using Adribot.src.data;
+using Adribot.src.entities.utilities;
+using DSharpPlus;
+using DSharpPlus.Entities;
 
 namespace Adribot.src.services
 {
     public class RemindMeSerivce : BaseTimerService
     {
-        private List<Reminder> _reminders = new();
+        private readonly List<Reminder> _reminders = new();
 
-        public RemindMeSerivce(DiscordClient client, int timerInterval = 10) : base(client, timerInterval) { }
-
+        public RemindMeSerivce(DiscordClient client, int timerInterval = 10) : base(client, timerInterval)
+        {
+            using var database = new DataManager();
+            _reminders = database.GetRemindersToOld();
+        }
         public override async Task Start(int timerInterval) =>
             await base.Start(timerInterval);
 
         public override async Task WorkAsync()
         {
-            using var database = new DataManager(Client);
-
-            if (_reminders.Count == 0)
-                _reminders = database.GetRemindersToOld();
-
-            Reminder? reminder = _reminders.Count > 0 && _reminders[0].EndDate.CompareTo(DateTimeOffset.UtcNow) <= 0 ? _reminders[0] : null;
-
-            if (reminder is not null)
+            if (_reminders.Count > 0)
             {
-                DiscordMember member = await (await Client.GetGuildAsync(reminder.DGuildId)).GetMemberAsync(reminder.DMemberId);
+                using var database = new DataManager();
+                Reminder? reminder = _reminders.Count > 0 && _reminders[0].EndDate.CompareTo(DateTimeOffset.UtcNow) <= 0 ? _reminders[0] : null;
 
-                DiscordMessageBuilder remindMessage = new DiscordMessageBuilder().WithEmbed(new DiscordEmbedBuilder()
+                if (reminder is not null)
                 {
-                    Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = Convert.ToString(member is null ? "404" : $"<@{member.Id}") },
-                    Color = new DiscordColor(Config.Configuration.EmbedColour),
-                    Description = reminder.Content,
-                    Timestamp = reminder.Date,
-                    Title = "You wanted to be reminded of the following:"
-                });
+                    DiscordMember member = await (await Client.GetGuildAsync(reminder.DGuildId)).GetMemberAsync(reminder.DMemberId);
 
-                DiscordGuild guild = await Client.GetGuildAsync(reminder.DGuildId);
-                _ = reminder.Channel is null
-                    ? await (await guild.GetMemberAsync(reminder.DMemberId)).SendMessageAsync(remindMessage)
-                    : await guild.Channels[(ulong)reminder.Channel].SendMessageAsync(remindMessage);
+                    DiscordMessageBuilder remindMessage = new DiscordMessageBuilder().WithEmbed(new DiscordEmbedBuilder()
+                    {
+                        Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = Convert.ToString(member is null ? "404" : $"<@{member.Id}") },
+                        Color = new DiscordColor(Config.Configuration.EmbedColour),
+                        Description = reminder.Content,
+                        Timestamp = reminder.Date,
+                        Title = "You wanted to be reminded of the following:"
+                    });
 
-                _reminders.Remove(reminder);
-                database.RemoveInstance(reminder);
+                    DiscordGuild guild = await Client.GetGuildAsync(reminder.DGuildId);
+                    _ = reminder.Channel is null
+                        ? await (await guild.GetMemberAsync(reminder.DMemberId)).SendMessageAsync(remindMessage)
+                        : await guild.Channels[(ulong)reminder.Channel].SendMessageAsync(remindMessage);
+
+                    _reminders.Remove(reminder);
+                    database.RemoveInstance(reminder);
+                }
             }
         }
 
@@ -59,7 +60,7 @@ namespace Adribot.src.services
             else
                 _reminders.Insert(indexOlderReminder, reminder);
 
-            using var database = new DataManager(Client);
+            using var database = new DataManager();
             await database.AddInstanceAsync(reminder);
         }
     }

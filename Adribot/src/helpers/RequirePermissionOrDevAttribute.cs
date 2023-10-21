@@ -1,7 +1,7 @@
-using Adribot.config;
+using System.Threading.Tasks;
+using Adribot.src.config;
 using DSharpPlus;
 using DSharpPlus.SlashCommands;
-using System.Threading.Tasks;
 
 namespace Adribot.src.helpers
 {

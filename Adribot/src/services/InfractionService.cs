@@ -2,20 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Adribot.constants.enums;
-using Adribot.data;
-using Adribot.entities.discord;
+using Adribot.src.constants.enums;
+using Adribot.src.data;
+using Adribot.src.entities.discord;
 using DSharpPlus;
 using DSharpPlus.Entities;
 
-namespace Adribot.services;
+namespace Adribot.src.services;
 
 public sealed class InfractionService : BaseTimerService
 {
-    private List<Infraction> _infractions = new();
+    private readonly List<Infraction> _infractions = new();
 
-    public InfractionService(DiscordClient client, int timerInterval = 10) : base(client, timerInterval) =>
+    public InfractionService(DiscordClient client, int timerInterval = 10) : base(client, timerInterval)
+    {
         Client.UserUpdated += ClientUserupdatedAsync;
+
+        using var database = new DataManager();
+        _infractions = database.GetInfractionsToOldNotExpired();
+    }
 
     private async Task ClientUserupdatedAsync(DiscordClient sender, DSharpPlus.EventArgs.UserUpdateEventArgs args) =>
         await CheckHoistAsync(args.UserAfter);
@@ -27,21 +32,19 @@ public sealed class InfractionService : BaseTimerService
         {
             if (!_infractions.Any(i => i.DMemberId == member.Id && i.Type == InfractionType.HOIST && !i.IsExpired))
             {
-                using (var database = new DataManager(Client))
-                {
-                    DateTimeOffset currentUtcDate = DateTimeOffset.UtcNow;
+                using var database = new DataManager();
+                DateTimeOffset currentUtcDate = DateTimeOffset.UtcNow;
 
-                    await database.AddInstanceAsync(new Infraction
-                    {
-                        Date = currentUtcDate,
-                        DMemberId = member.Id,
-                        EndDate = currentUtcDate.AddHours(24),
-                        IsExpired = false,
-                        Type = InfractionType.HOIST,
-                        Reason = "Hoisting is poop",
-                        DGuildId = member.Guild.Id
-                    });
-                }
+                await database.AddInstanceAsync(new Infraction
+                {
+                    Date = currentUtcDate,
+                    DMemberId = member.Id,
+                    EndDate = currentUtcDate.AddHours(24),
+                    IsExpired = false,
+                    Type = InfractionType.HOIST,
+                    Reason = "Hoisting is poop",
+                    DGuildId = member.Guild.Id
+                });
             }
 
             if (member.DisplayName != "💩")
@@ -49,7 +52,7 @@ public sealed class InfractionService : BaseTimerService
                 await member.ModifyAsync(m => m.Nickname = "💩");
                 await member.SendMessageAsync("You were trying to hoist, stop trying to hoist.\n" +
                     "I have therefore changed your name to 💩 for 24 hours.");
-            }   
+            }
         }
     }
     public override async Task Start(int timerInterval) =>
@@ -57,15 +60,13 @@ public sealed class InfractionService : BaseTimerService
 
     public override async Task WorkAsync()
     {
-        using (var database = new DataManager(Client))
+        if (_infractions.Count > 0)
         {
-            if (_infractions.Count == 0)
-                _infractions = database.GetInfractionsToOldNotExpired();
-
+            using var database = new DataManager();
             Infraction? infraction = _infractions.FirstOrDefault(i => i.EndDate.CompareTo(DateTimeOffset.UtcNow) <= 0);
-            
+
             if (infraction is not null)
-            {   
+            {
                 switch (infraction.Type)
                 {
                     case InfractionType.HOIST:
@@ -74,7 +75,7 @@ public sealed class InfractionService : BaseTimerService
                     case InfractionType.BAN:
                         DiscordGuild guild = await Client.GetGuildAsync(infraction.DGuildId);
                         await guild.UnbanMemberAsync(infraction.DMemberId, infraction.Reason);
-                        await ((DiscordMember) await Client.GetUserAsync(infraction.DMemberId)).SendMessageAsync($"You have been unbanned from {guild.Name}!\nDo not let it happen again.");
+                        await ((DiscordMember)await Client.GetUserAsync(infraction.DMemberId)).SendMessageAsync($"You have been unbanned from {guild.Name}!\nDo not let it happen again.");
                         break;
                     default:
                         break;
@@ -102,7 +103,7 @@ public sealed class InfractionService : BaseTimerService
         if (!isAdded)
             _infractions.Add(infraction);
 
-        using var database = new DataManager(Client);
+        using var database = new DataManager();
         await database.AddInstanceAsync(infraction);
     }
 }

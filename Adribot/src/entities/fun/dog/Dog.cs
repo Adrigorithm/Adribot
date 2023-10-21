@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Adribot.entities.fun.dog;
+namespace Adribot.src.entities.fun.dog;
 
 public record Dog(
     [property: JsonPropertyName("id")] string Id,

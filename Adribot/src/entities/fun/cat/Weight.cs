@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Adribot.entities.fun.cat;
+namespace Adribot.src.entities.fun.cat;
 
 public record Weight(
     [property: JsonPropertyName("imperial")] string Imperial,

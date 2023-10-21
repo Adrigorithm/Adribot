@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adribot", "Adribot.csproj", "{BFD25571-E31E-4A84-8FA5-2417C4AC77E9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BFD25571-E31E-4A84-8FA5-2417C4AC77E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BFD25571-E31E-4A84-8FA5-2417C4AC77E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BFD25571-E31E-4A84-8FA5-2417C4AC77E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BFD25571-E31E-4A84-8FA5-2417C4AC77E9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {54E90A6F-C5C3-43C6-9F1F-851A4CAB10FC}
+	EndGlobalSection
+EndGlobal

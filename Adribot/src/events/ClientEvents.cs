@@ -2,17 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Adribot.data;
-using Adribot.entities.discord;
-using Adribot.extensions;
-using Adribot.services;
+using Adribot.src.data;
+using Adribot.src.entities.discord;
+using Adribot.src.extensions;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
 
-namespace Adribot.events;
+namespace Adribot.src.events;
 
 public class ClientEvents
 {
@@ -43,7 +42,7 @@ public class ClientEvents
     {
         List<DMember> membersToAdd = new();
 
-        using (var database = new DataManager(sender))
+        using (var database = new DataManager())
         {
             IEnumerable<DiscordGuild> guilds = sender.Guilds.Values;
             IEnumerable<DGuild> cachedGuilds = database.GetAllInstances<DGuild>();
@@ -72,7 +71,7 @@ public class ClientEvents
             await database.AddAllInstancesAsync(guildsToAdd, true);
         }
 
-        using var databaseMembers = new DataManager(sender);
+        using var databaseMembers = new DataManager();
         await databaseMembers.AddAllInstancesAsync(membersToAdd);
     }
 

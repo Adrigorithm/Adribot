@@ -1,4 +1,4 @@
-namespace Adribot.constants.enums;
+namespace Adribot.src.constants.enums;
 
 public enum InfractionType{
     HOIST,

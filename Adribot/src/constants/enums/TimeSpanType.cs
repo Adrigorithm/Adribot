@@ -1,6 +1,6 @@
 using DSharpPlus.SlashCommands;
 
-namespace Adribot.constants.enums;
+namespace Adribot.src.constants.enums;
 
 public enum TimeSpanType
 {

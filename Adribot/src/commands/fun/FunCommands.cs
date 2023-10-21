@@ -1,9 +1,8 @@
-using Adribot.config;
-using Adribot.constants.enums;
-using Adribot.entities.fun.cat;
-using Adribot.entities.fun.dog;
-using Adribot.entities.fun.fox;
+using Adribot.src.config;
 using Adribot.src.constants.enums;
+using Adribot.src.entities.fun.cat;
+using Adribot.src.entities.fun.dog;
+using Adribot.src.entities.fun.fox;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -14,7 +13,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Adribot.commands.fun;
+namespace Adribot.src.commands.fun;
 
 public class FunCommands : ApplicationCommandModule
 {
@@ -60,7 +59,7 @@ public class FunCommands : ApplicationCommandModule
     }
 
     [SlashCommand("pp", "Calculates your pp size")]
-    public async Task GetPPSizeAsync(InteractionContext ctx, [Option("user", "user to calculate the pp size for")] DiscordUser user = null, [Option("unit", "unit to display the pp size in")] DistanceUnit unit = DistanceUnit.INCH)
+    public async Task GetPpSizeAsync(InteractionContext ctx, [Option("user", "user to calculate the pp size for")] DiscordUser user = null, [Option("unit", "unit to display the pp size in")] DistanceUnit unit = DistanceUnit.INCH)
     {
         ulong memberId = user is null ? ctx.Member.Id : user.Id;
         short sum = 0;

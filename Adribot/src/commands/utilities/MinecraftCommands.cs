@@ -1,5 +1,4 @@
-using Adribot.entities.minecraft;
-using Adribot.src.constants.strings;
+using Adribot.src.entities.minecraft;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
@@ -9,8 +8,9 @@ using System.IO.Compression;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Adribot.src.constants.strings;
 
-namespace Adribot.commands.utilities;
+namespace Adribot.src.commands.utilities;
 
 public class MinecraftCommands : ApplicationCommandModule
 {

@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Adribot.entities.minecraft;
+namespace Adribot.src.entities.minecraft;
 
 public record EmojifulEmoji
 {
@@ -12,7 +12,7 @@ public record EmojifulEmoji
 
     [JsonPropertyName("url")]
     public string Url { get; set; }
-    
+
     [JsonPropertyName("type")]
     public string Type { get; set; }
 }

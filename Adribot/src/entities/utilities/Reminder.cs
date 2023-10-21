@@ -1,10 +1,12 @@
+using Adribot.src.config;
+using Adribot.src.data;
+using Adribot.src.entities.discord;
+using DSharpPlus.Entities;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Adribot.entities.discord;
-using Adribot.src.data;
 
-namespace Adribot.entities.utilities;
+namespace Adribot.src.entities.utilities;
 
 public class Reminder : IDataStructure
 {
@@ -20,4 +22,13 @@ public class Reminder : IDataStructure
     public ulong DMemberId { get; set; }
     [ForeignKey($"{nameof(DGuildId)}, {nameof(DMemberId)}")]
     public virtual DMember DMember { get; set; }
+
+    public DiscordEmbedBuilder GenerateEmbedBuilder() =>
+        new DiscordEmbedBuilder
+        {
+            Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = $"<@{DMemberId}>" },
+            Color = new DiscordColor(Config.Configuration.EmbedColour),
+            Title = "",
+            Description = $"A reminder set on `{Date:g}` to trigger on {EndDate:g}\n\nwith content `{Content}`"
+        };
 }
