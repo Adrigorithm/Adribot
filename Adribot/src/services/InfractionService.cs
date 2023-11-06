@@ -90,8 +90,8 @@ public sealed class InfractionService : BaseTimerService
 
     public async Task AddInfractionAsync(Infraction infraction)
     {
-        bool isAdded = false;
-        for (int i = 0; i < _infractions.Count; i++)
+        var isAdded = false;
+        for (var i = 0; i < _infractions.Count; i++)
         {
             if (_infractions[i].EndDate.CompareTo(infraction.EndDate) > 0)
             {

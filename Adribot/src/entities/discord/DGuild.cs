@@ -1,11 +1,11 @@
-using Adribot.src.config;
-using Adribot.src.data;
-using Adribot.src.entities.utilities;
-using DSharpPlus.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Adribot.src.config;
+using Adribot.src.data;
+using Adribot.src.entities.utilities;
+using DSharpPlus.Entities;
 
 namespace Adribot.src.entities.discord;
 
@@ -25,7 +25,7 @@ public class DGuild : IComparable, IDataStructure
         var membersUpdated = Members.ToHashSet();
         List<DMember> missingMembers = new();
 
-        for (int i = 0; i < members.Count; i++)
+        for (var i = 0; i < members.Count; i++)
         {
             if (membersUpdated.Add(members[i]))
                 missingMembers.Add(members[i]);
@@ -54,10 +54,12 @@ public class DGuild : IComparable, IDataStructure
     public int CompareTo(object? obj)
     {
         if (obj is DGuild guild)
+        {
             return guild.DGuildId < DGuildId ?
                 1 : guild.DGuildId > DGuildId ? -1 : 0;
+        }
 
-        string typeName = obj is null ? "null" : obj.GetType().Name;
+        var typeName = obj is null ? "null" : obj.GetType().Name;
         throw new ArgumentException($"Instances of type {typeName} are not supported.\n" +
                                     $"Make sure your instance is of type {GetType().Name}");
     }

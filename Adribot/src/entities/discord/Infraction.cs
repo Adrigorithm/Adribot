@@ -1,10 +1,10 @@
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Adribot.src.config;
 using Adribot.src.constants.enums;
 using Adribot.src.data;
 using DSharpPlus.Entities;
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Adribot.src.entities.discord;
 

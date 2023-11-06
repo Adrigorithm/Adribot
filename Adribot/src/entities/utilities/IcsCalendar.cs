@@ -1,9 +1,9 @@
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Adribot.src.config;
 using Adribot.src.data;
 using Adribot.src.entities.discord;
 using DSharpPlus.Entities;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Adribot.src.entities.utilities;
 

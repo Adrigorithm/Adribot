@@ -54,7 +54,7 @@ namespace Adribot.src.services
 
         public async Task AddRemindMeAsync(Reminder reminder)
         {
-            int indexOlderReminder = _reminders.FindIndex(r => r.EndDate.CompareTo(reminder.EndDate) > 0);
+            var indexOlderReminder = _reminders.FindIndex(r => r.EndDate.CompareTo(reminder.EndDate) > 0);
             if (indexOlderReminder == -1)
                 _reminders.Add(reminder);
             else

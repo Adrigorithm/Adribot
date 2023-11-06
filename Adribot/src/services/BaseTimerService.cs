@@ -1,6 +1,6 @@
-using DSharpPlus;
 using System.Threading;
 using System.Threading.Tasks;
+using DSharpPlus;
 
 namespace Adribot.src.services;
 

@@ -1,10 +1,10 @@
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Adribot.src.config;
 using Adribot.src.data;
 using Adribot.src.entities.discord;
 using DSharpPlus.Entities;
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Adribot.src.entities.utilities;
 
@@ -24,7 +24,7 @@ public class Tag : IDataStructure
 
     public DiscordEmbedBuilder GenerateEmbedBuilder()
     {
-        string tagContent = Content;
+        var tagContent = Content;
         if (Content.Length > 100)
             tagContent = Content.Substring(0, 100) + " ...";
 

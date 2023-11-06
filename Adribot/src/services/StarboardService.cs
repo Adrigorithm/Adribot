@@ -1,11 +1,11 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Adribot.src.config;
 using Adribot.src.data;
 using Adribot.src.entities.discord;
 using DSharpPlus;
 using DSharpPlus.Entities;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Adribot.src.services
 {
@@ -28,8 +28,9 @@ namespace Adribot.src.services
         {
             if (_outputChannels.ContainsKey(args.Guild.Id))
             {
-                int starEmojiCount = args.Message.Reactions.Count(r => r.Emoji == _outputChannels[args.Guild.Id].starEmoji);
+                var starEmojiCount = args.Message.Reactions.Count(r => r.Emoji == _outputChannels[args.Guild.Id].starEmoji);
                 if (starEmojiCount >= 3)
+                {
                     await args.Guild.GetChannel(_outputChannels[args.Guild.Id].channelId).SendMessageAsync(new DiscordMessageBuilder().WithEmbed(new DiscordEmbedBuilder
                     {
                         Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = $"<@{args.User.Id}" },
@@ -38,6 +39,7 @@ namespace Adribot.src.services
                         Title = $"{_outputChannels[args.Guild.Id].starEmoji.Name} reacted {starEmojiCount} times!",
                         Footer = new DiscordEmbedBuilder.EmbedFooter() { Text = args.Message.JumpLink.OriginalString }
                     }));
+                }
             }
         }
 

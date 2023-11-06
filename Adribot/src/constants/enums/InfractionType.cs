@@ -1,6 +1,7 @@
 namespace Adribot.src.constants.enums;
 
-public enum InfractionType{
+public enum InfractionType
+{
     HOIST,
     TIMEOUT,
     BAN

@@ -1,13 +1,13 @@
-using Adribot.src.constants.enums;
-using Adribot.src.entities.utilities;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.SlashCommands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Adribot.src.constants.enums;
+using Adribot.src.entities.utilities;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.SlashCommands;
 
 namespace Adribot.src.commands.utilities
 {
@@ -23,8 +23,10 @@ namespace Adribot.src.commands.utilities
                 case CrudOperation.INFO:
                     Tag? tag = TagService.TryGetTag(tagName, ctx.Guild.Id);
                     if (tag is null)
+                    {
                         await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                             new DiscordMessageBuilder().WithContent($"Tag `{tagName}` could not be found")).AsEphemeral());
+                    }
                     else
                     {
                         DiscordMember member = await ctx.Guild.GetMemberAsync(tag.DMemberId);
@@ -44,31 +46,41 @@ namespace Adribot.src.commands.utilities
                 case CrudOperation.SET:
                     Tag? newTag = CreateTag(ctx, tagName, newContent);
                     if (newTag is null || !await TagService.TrySetTagAsync(newTag, operation == CrudOperation.SET))
+                    {
                         await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                             new DiscordMessageBuilder().WithContent($"{(newTag is null ? "Content option cannot be empty when creating new tags." : $"A tag with the same name already exists.\nUse `SET` mode to force the change.")}")).AsEphemeral());
+                    }
                     else
+                    {
                         await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                             new DiscordMessageBuilder().WithContent("Tag `" + tagName + "` craeted." + Environment.NewLine + "Check it out using `/tag {" + tagName + "} {GET|INFO}`")).AsEphemeral());
+                    }
 
                     break;
                 case CrudOperation.DELETE:
                     if (!TagService.TryRemoveTag(tagName, ctx.Guild.Id))
+                    {
                         await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                             new DiscordMessageBuilder().WithContent($"A tag with tagname `{tagName}` could not be found.")).AsEphemeral());
+                    }
                     else
+                    {
                         await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                             new DiscordMessageBuilder().WithContent($"Tag `{tagName}` disappeared in the void.")).AsEphemeral());
+                    }
 
                     break;
                 case CrudOperation.LIST:
                     IEnumerable<Tag> tags = TagService.GetAllTags(ctx.Guild.Id);
                     if (tags.Count() == 0)
+                    {
                         await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                             new DiscordMessageBuilder().WithContent($"No tags could be found.")).AsEphemeral());
+                    }
                     else
                     {
                         var tagStringBuilder = new StringBuilder();
-                        for (int i = 0; i < tags.Count(); i++)
+                        for (var i = 0; i < tags.Count(); i++)
                         {
                             if (i == tags.Count() - 1)
                                 tagStringBuilder.Append($"`{tags.ElementAt(i).Name}`");
@@ -86,19 +98,15 @@ namespace Adribot.src.commands.utilities
             }
         }
 
-        private Tag? CreateTag(InteractionContext context, string tagName, string content)
-        {
-            if (string.IsNullOrWhiteSpace(content))
-                return null;
-
-            return new Tag
-            {
-                Content = content,
-                Date = context.Interaction.CreationTimestamp.UtcDateTime,
-                DMemberId = context.Member.Id,
-                Name = tagName,
-                DGuildId = context.Guild.Id
-            };
-        }
+        private Tag? CreateTag(InteractionContext context, string tagName, string content) => string.IsNullOrWhiteSpace(content)
+                ? null
+                : new Tag
+                {
+                    Content = content,
+                    Date = context.Interaction.CreationTimestamp.UtcDateTime,
+                    DMemberId = context.Member.Id,
+                    Name = tagName,
+                    DGuildId = context.Guild.Id
+                };
     }
 }

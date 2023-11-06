@@ -1,48 +1,81 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Adribot.src.constants.enums;
 using Adribot.src.entities.utilities;
+using Adribot.src.helpers;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Adribot.src.commands.utilities
 {
     public partial class UtilityCommands
     {
-        [SlashCommand("nextEvent", "Grabs the first next event of a given calendar")]
+        [SlashCommand("calendar", "Perform various calendar tasks")]
         [SlashCommandPermissions(Permissions.SendMessages)]
-        public async Task GetNextCalendarEventAsync(InteractionContext ctx, [Option("calendar", "the calendar the get the first event for")] string calendar = "list")
+        public async Task GetNextCalendarEventAsync(InteractionContext ctx, [Option("mode", "the task to perform on the calendars")] CalendarCrudOperation option = CalendarCrudOperation.LIST, [Option("calendar", "the calendar name to perform the action on")] string? calendarName = null, [Option("calendarUri", "link to an external ical/ics file")] string? uri = null, [Option("channel", "channel this calendar will post events to")] long channelId = -1)
         {
-            string[] names = DaySchemeService.GetCalendarNames(ctx.Guild.Id);
+            IcsCalendar? calendar = option == CalendarCrudOperation.LIST || string.IsNullOrEmpty(calendarName) ? null : DaySchemeService.GetCalendarByName(ctx.Guild.Id, calendarName);
 
-            if (calendar == "list")
+            switch (option)
             {
-                StringBuilder sb = new($"Calendars found for guild [{ctx.Guild.Id}]\n\n");
-
-
-                for (int i = 0; i < names.Length; i++)
-                {
-                    if (i < names.Length - 1)
-                        sb.Append($"`{names[i]}, `");
+                case CalendarCrudOperation.NEW:
+                    if (calendar is not null || string.IsNullOrEmpty(calendarName))
+                    {
+                        await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent($"Calendar `{calendarName}` for guild [{ctx.Guild.Id}] already exists or is invalid. Try another name or remove it first.")).AsEphemeral());
+                    }
                     else
-                        sb.Append($"`{names[i]}`");
-                }
+                    {
+                        await DaySchemeService.AddCalendarAsync(ctx.Guild.Id, channelId != -1 ? (ulong)channelId : ctx.Channel.Id, new Uri(uri));
+                        await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent($"Calendar `{calendarName}` for guild [{ctx.Guild.Id}] was added successfully.")).AsEphemeral());
+                    }
 
-                if (names.Length > 0)
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent(sb.ToString())).AsEphemeral());
-                else
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent($"No calendars where found for guild [{ctx.Guild.Id}]")).AsEphemeral());
+                    break;
+                case CalendarCrudOperation.DELETE:
+                    if (calendar is null)
+                    {
+                        await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent($"Calendar `{calendarName}` for guild [{ctx.Guild.Id}] cannot be deleted because it does not exist.")).AsEphemeral());
+                    }
+                    else
+                    {
+                        DaySchemeService.DeleteCalendarAsync(calendar);
+                        await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent($"Calendar `{calendarName}` for guild [{ctx.Guild.Id}] was added successfully.")).AsEphemeral());
+                    }
+
+                    break;
+                case CalendarCrudOperation.INFO:
+                    if (calendar is null)
+                    {
+                        await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent($"Calendar `{calendarName}` for guild [{ctx.Guild.Id}] does not exist.")).AsEphemeral());
+                    }
+                    else
+                    {
+                        await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithEmbed(calendar.GenerateEmbedBuilder())));
+                    }
+
+                    break;
+                case CalendarCrudOperation.NEXT:
+                    if (calendar is null)
+                    {
+                        await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent($"Calendar `{calendarName}` for guild [{ctx.Guild.Id}] does not exist.")).AsEphemeral());
+                    }
+                    else
+                    {
+                        Event? cEvent = calendar.Events.FirstOrDefault(e => e.Start > DateTimeOffset.UtcNow);
+                        if (cEvent is null)
+                            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent($"Calendar `{calendarName}` for guild [{ctx.Guild.Id}] does not exist.")).AsEphemeral());
+                        else
+                            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithEmbed(cEvent.GenerateEmbedBuilder())).AsEphemeral());
+                    }
+
+                    break;
+                case CalendarCrudOperation.LIST:
+                    var calendarNames = DaySchemeService.GetCalendarNames(ctx.Guild.Id);
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent(FakeExtensions.GetMarkdownCSV(calendarNames))).AsEphemeral());
+
+                    break;
             }
-            else
-            {
-                IcsCalendar? requestedCalendar = DaySchemeService.GetCalendarByName(ctx.Guild.Id, calendar);
-
-                if (requestedCalendar is null)
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent($"Calendar `{calendar}` not found for guild [{ctx.Guild.Id}]")).AsEphemeral());
-                else
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithEmbed(requestedCalendar.GenerateEmbedBuilder().Build())).AsEphemeral());
-            }
-
         }
     }
 }

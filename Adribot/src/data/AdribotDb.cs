@@ -1,7 +1,7 @@
+using System;
 using Adribot.src.entities.discord;
 using Adribot.src.entities.utilities;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace Adribot.src.data;
 

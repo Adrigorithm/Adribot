@@ -28,9 +28,9 @@ namespace Adribot.src.services
         public async Task<bool> TrySetTagAsync(Tag tag, bool shouldOverwrite = false)
         {
             Tag? oldTag = null;
-            int oldTagIndex = -1;
+            var oldTagIndex = -1;
 
-            for (int i = 0; i < Tags.Count; i++)
+            for (var i = 0; i < Tags.Count; i++)
             {
                 if (Tags[i].Name == tag.Name &&
                     Tags[i].DGuildId == tag.DGuildId)

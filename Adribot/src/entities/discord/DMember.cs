@@ -1,12 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using Adribot.src.config;
 using Adribot.src.data;
 using Adribot.src.entities.utilities;
 using DSharpPlus.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 
 namespace Adribot.src.entities.discord;
 
@@ -25,10 +25,12 @@ public class DMember : IComparable, IDataStructure
     public int CompareTo(object? obj)
     {
         if (obj is DMember member)
+        {
             return member.DMemberId < DMemberId ?
                 1 : member.DMemberId > DMemberId ? -1 : 0;
+        }
 
-        string typeName = obj is null ? "null" : obj.GetType().Name;
+        var typeName = obj is null ? "null" : obj.GetType().Name;
         throw new ArgumentException($"Instances of type {typeName} are not supported.\n" +
                                     $"Make sure your instance is of type {GetType().Name}");
     }

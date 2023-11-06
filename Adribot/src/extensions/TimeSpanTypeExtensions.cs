@@ -1,5 +1,5 @@
-using Adribot.src.constants.enums;
 using System;
+using Adribot.src.constants.enums;
 
 namespace Adribot.src.extensions;
 

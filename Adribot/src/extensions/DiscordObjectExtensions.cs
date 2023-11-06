@@ -31,7 +31,7 @@ public static class DiscordObjectExtensions
     {
         List<DGuild> dGuilds = new();
 
-        for (int i = 0; i < guilds.Count(); i++)
+        for (var i = 0; i < guilds.Count(); i++)
         {
             dGuilds.Add(await guilds.ElementAt(i).ToDGuildAsync(includeMembers));
         }

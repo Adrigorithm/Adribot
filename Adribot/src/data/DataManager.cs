@@ -1,11 +1,11 @@
-using Adribot.src.entities.discord;
-using Adribot.src.entities.utilities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Adribot.src.entities.discord;
+using Adribot.src.entities.utilities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Adribot.src.data;
 
@@ -39,7 +39,7 @@ public class DataManager : IDisposable
 
     public async Task AddAllInstancesAsync<T>(IEnumerable<T> entityList, bool enableIdInsertion = false) where T : IDataStructure
     {
-        for (int i = 0; i < entityList.Count(); i++)
+        for (var i = 0; i < entityList.Count(); i++)
         {
             if (i == 0 && enableIdInsertion)
                 _insertionTableName = typeof(T).Name;

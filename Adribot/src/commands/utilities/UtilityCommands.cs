@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using Adribot.src.constants.enums;
 using Adribot.src.data;
 using Adribot.src.entities.utilities;
@@ -7,8 +9,6 @@ using Adribot.src.services;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
-using System;
-using System.Threading.Tasks;
 
 namespace Adribot.src.commands.utilities
 {
@@ -26,8 +26,10 @@ namespace Adribot.src.commands.utilities
             DateTimeOffset endDate = timeUnit.ToEndDate((int)factor, now);
 
             if (endDate - now < TimeSpan.FromMinutes(1))
+            {
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                     new DiscordMessageBuilder().WithContent($"Remind me's should be set at least 1 minute ahead in time.")).AsEphemeral());
+            }
             else
             {
                 await RemindMeService.AddRemindMeAsync(new Reminder

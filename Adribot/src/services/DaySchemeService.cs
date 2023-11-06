@@ -1,15 +1,13 @@
-using Adribot.src.config;
-using Adribot.src.data;
-using Adribot.src.entities.utilities;
-using Adribot.src.extensions;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using Ical.Net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Adribot.src.data;
+using Adribot.src.entities.utilities;
+using Adribot.src.extensions;
+using DSharpPlus;
+using Ical.Net;
 
 namespace Adribot.src.services
 {
@@ -34,7 +32,7 @@ namespace Adribot.src.services
                 foreach (IcsCalendar calendar in _calendars)
                 {
                     List<Event> eventsToPost = new();
-                    int counter = calendar.Events.Count - 1;
+                    var counter = calendar.Events.Count - 1;
 
                     while (counter >= 0 && calendar.Events[counter].End > today)
                     {
@@ -62,13 +60,7 @@ namespace Adribot.src.services
         {
             foreach (Event cEvent in cEvents)
             {
-                await (await Client.GetGuildAsync(guildId)).GetChannel(channelId).SendMessageAsync(new DiscordEmbedBuilder
-                {
-                    Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = $"{cEvent.Organiser}" },
-                    Color = new DiscordColor(Config.Configuration.EmbedColour),
-                    Description = $"{cEvent.Summary}\n\n{cEvent.Description}\n\n[{cEvent.Start:HH}] - [{cEvent.End:HH}] @ {cEvent.Location}",
-                    Title = cEvent.Name
-                });
+                await (await Client.GetGuildAsync(guildId)).GetChannel(channelId).SendMessageAsync(cEvent.GenerateEmbedBuilder().Build());
 
                 if (calendarId is not null)
                     _calendars.First(c => c.IcsCalendarId == calendarId).Events.First(e => e.EventId == cEvent.EventId).IsPosted = true;
@@ -89,15 +81,17 @@ namespace Adribot.src.services
             var icsCalendar = new IcsCalendar
             {
                 ChannelId = channelId,
-                DGuildId = guildId,
+                DGuildId = guildId
             };
 
             var calendar = Calendar.Load(string.IsNullOrEmpty(icsFileText) ? await GetRemoteFileContent(icsFileUri) : icsFileText);
+            icsCalendar.Name = calendar.Name;
             calendar.Events.ToList().ForEach(e => icsCalendar.Events.Add(e.ToEvent()));
             _calendars.Add(icsCalendar);
 
             using var database = new DataManager();
             await database.AddInstanceAsync(icsCalendar);
+            await database.AddAllInstancesAsync(icsCalendar.Events);
 
             static async Task<string> GetRemoteFileContent(Uri uri)
             {
@@ -106,6 +100,14 @@ namespace Adribot.src.services
 
                 return await response.Content.ReadAsStringAsync();
             }
+        }
+
+        public void DeleteCalendarAsync(IcsCalendar calendar)
+        {
+            _calendars.Remove(calendar);
+
+            using var database = new DataManager();
+            database.RemoveInstance(calendar);
         }
 
     }

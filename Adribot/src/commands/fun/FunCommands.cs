@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
 using Adribot.src.config;
 using Adribot.src.constants.enums;
 using Adribot.src.entities.fun.cat;
@@ -6,12 +12,6 @@ using Adribot.src.entities.fun.fox;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace Adribot.src.commands.fun;
 
@@ -61,12 +61,12 @@ public class FunCommands : ApplicationCommandModule
     [SlashCommand("pp", "Calculates your pp size")]
     public async Task GetPpSizeAsync(InteractionContext ctx, [Option("user", "user to calculate the pp size for")] DiscordUser user = null, [Option("unit", "unit to display the pp size in")] DistanceUnit unit = DistanceUnit.INCH)
     {
-        ulong memberId = user is null ? ctx.Member.Id : user.Id;
+        var memberId = user is null ? ctx.Member.Id : user.Id;
         short sum = 0;
 
         memberId.ToString().ToList().ForEach(c => sum += (short)char.GetNumericValue(c));
 
-        short ppSize = (short)(Math.Pow(memberId, 1.0 / sum) * 10 / char.GetNumericValue(memberId.ToString()[0]));
+        var ppSize = (short)(Math.Pow(memberId, 1.0 / sum) * 10 / char.GetNumericValue(memberId.ToString()[0]));
         if (unit == DistanceUnit.INCH)
             ppSize = (short)(ppSize / 2.5);
 

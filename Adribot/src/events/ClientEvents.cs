@@ -49,7 +49,7 @@ public class ClientEvents
 
             List<DGuild> guildsToAdd = new();
 
-            for (int i = 0; i < guilds.Count(); i++)
+            for (var i = 0; i < guilds.Count(); i++)
             {
                 DiscordGuild guildCurrent = guilds.ElementAt(i);
                 DGuild? selectedGuild = cachedGuilds.FirstOrDefault(g => g.DGuildId == guildCurrent.Id);
@@ -85,8 +85,8 @@ public class ClientEvents
     private async Task MessageCreatedAsync(DiscordClient client, MessageCreateEventArgs args)
     {
         var member = args.Author as DiscordMember;
-        bool pingedAdmin = false;
-        int counter = 0;
+        var pingedAdmin = false;
+        var counter = 0;
 
         while (counter < args.MentionedUsers.Count && !pingedAdmin)
         {

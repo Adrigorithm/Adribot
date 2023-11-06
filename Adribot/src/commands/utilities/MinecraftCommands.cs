@@ -1,7 +1,3 @@
-using Adribot.src.entities.minecraft;
-using DSharpPlus;
-using DSharpPlus.Entities;
-using DSharpPlus.SlashCommands;
 using System;
 using System.IO;
 using System.IO.Compression;
@@ -9,6 +5,10 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Adribot.src.constants.strings;
+using Adribot.src.entities.minecraft;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.SlashCommands;
 
 namespace Adribot.src.commands.utilities;
 
@@ -23,7 +23,7 @@ public class MinecraftCommands : ApplicationCommandModule
         Console.WriteLine(emojiMatches.Count);
         if (emojiMatches.Count > 0)
         {
-            foreach (string filePath in Directory.GetFiles(DatapackPath, "*?.zip"))
+            foreach (var filePath in Directory.GetFiles(DatapackPath, "*?.zip"))
             {
                 File.Delete(filePath);
             }
@@ -31,7 +31,7 @@ public class MinecraftCommands : ApplicationCommandModule
             Directory.Delete(DatapackPath + "datapack/data/emojiful/recipes/", true);
             Directory.CreateDirectory(DatapackPath + "datapack/data/emojiful/recipes/");
 
-            for (int i = 0; i < emojiMatches.Count; i++)
+            for (var i = 0; i < emojiMatches.Count; i++)
             {
                 var emoji = new EmojifulEmoji
                 {
@@ -45,7 +45,7 @@ public class MinecraftCommands : ApplicationCommandModule
                 await JsonSerializer.SerializeAsync(fs, emoji);
                 await fs.DisposeAsync();
             }
-            string fileName = $"{ctx.User.Username}-" + category + "-emojiful-datapack.zip";
+            var fileName = $"{ctx.User.Username}-" + category + "-emojiful-datapack.zip";
             ZipFile.CreateFromDirectory(DatapackPath + "datapack/", DatapackPath + fileName);
 
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddFile(fileName, File.OpenRead(DatapackPath + fileName)).AsEphemeral());
