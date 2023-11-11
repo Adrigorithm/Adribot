@@ -30,12 +30,14 @@ public class Bot
         TagService tagService = new(_client);
         RemindMeSerivce remindMeSerivce = new(_client);
         DaySchemeService daySchemeService = new(_client);
+        StarboardService starboardService = new(_client);
 
         ServiceProvider services = new ServiceCollection()
             .AddSingleton(infractionService)
             .AddSingleton(tagService)
             .AddSingleton(remindMeSerivce)
             .AddSingleton(daySchemeService)
+            .AddSingleton(starboardService)
             .BuildServiceProvider();
 
         SlashCommandsExtension slashies = _client.UseSlashCommands(new SlashCommandsConfiguration()
@@ -44,9 +46,11 @@ public class Bot
         });
 
         slashies.RegisterCommands<AdminCommands>(1023986117428658187);
-        slashies.RegisterCommands<MinecraftCommands>();
+        slashies.RegisterCommands<MinecraftCommands>(1023986117428658187);
         slashies.RegisterCommands<FunCommands>(1023986117428658187);
         slashies.RegisterCommands<UtilityCommands>(1023986117428658187);
+        slashies.RegisterCommands<TagCommands>(1023986117428658187);
+        slashies.RegisterCommands<CalendarCommands>(1023986117428658187);
 
         AttachEvents();
     }
@@ -63,6 +67,8 @@ public class Bot
         _clientEvents.Attach();
     }
 
-    public async Task StartAsync() => await _client.ConnectAsync();
-    public async Task StopAsync() => await _client.DisconnectAsync();
+    public async Task StartAsync() =>
+        await _client.ConnectAsync();
+    public async Task StopAsync() =>
+        await _client.DisconnectAsync();
 }

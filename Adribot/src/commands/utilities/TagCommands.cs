@@ -5,14 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using Adribot.src.constants.enums;
 using Adribot.src.entities.utilities;
+using Adribot.src.services;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 
 namespace Adribot.src.commands.utilities
 {
-    public partial class UtilityCommands : ApplicationCommandModule
+    public class TagCommands : ApplicationCommandModule
     {
+        public TagService TagService { get; set; }
+
         [SlashCommandPermissions(Permissions.SendMessages)]
         [SlashCommand("tag", "Display (information about) a tag")]
         public async Task ExecuteTagTaskAsync(InteractionContext ctx, [Option("tag", "The tag name to retrieve corresponding tag")] string tagName, [Option("mode", "Tag related operation to perform")] CrudOperation operation = CrudOperation.GET, [Option("content", "Update current tag content")] string newContent = null)
@@ -30,15 +33,11 @@ namespace Adribot.src.commands.utilities
                     else
                     {
                         DiscordMember member = await ctx.Guild.GetMemberAsync(tag.DMemberId);
-                        DiscordEmbedBuilder embed = operation == CrudOperation.GET ?
-                            new DiscordEmbedBuilder
-                            {
-                                Title = tag.Name,
-                                Description = tag.Content
-                            } :
-                            new Tag().GenerateEmbedBuilder();
+                        DiscordMessageBuilder messageBuilder = operation == CrudOperation.GET ?
+                            new DiscordMessageBuilder().WithContent($"**{tag.Name}**\n{tag.Content}") :
+                            new DiscordMessageBuilder().WithEmbed(tag.GenerateEmbedBuilder());
 
-                        await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithEmbed(embed)));
+                        await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(messageBuilder));
                     }
 
                     break;

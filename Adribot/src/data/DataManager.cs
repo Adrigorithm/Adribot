@@ -52,7 +52,7 @@ public class DataManager : IDisposable
         _database.Infractions.OrderByDescending(i => i.EndDate).Where(i => !i.IsExpired).ToList();
 
     public List<IcsCalendar> GetIcsCalendarsNotExpired(DateTimeOffset now) =>
-        _database.IcsCalendars.Where(c => c.Events.Last().End > now).ToList();
+        _database.IcsCalendars.Where(c => c.Events.OrderBy(e => e.Start).Last().End > now).ToList();
 
     public List<string> GetIcsCalendarNames() =>
         _database.IcsCalendars.Select(c => c.Name).ToList();

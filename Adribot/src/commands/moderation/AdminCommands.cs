@@ -22,7 +22,11 @@ public class AdminCommands : ApplicationCommandModule
     [RequirePermissionOrDev(Permissions.ManageMessages)]
     public async Task DeleteMessagesAsync(InteractionContext ctx, [Option("Amount", "Amount of messages to delete"), Minimum(1), Maximum(100)] long amount)
     {
-        IReadOnlyList<DiscordMessage> messages = await ctx.Channel.GetMessagesAsync((int)amount);
+        List<DiscordMessage> messages = new();
+
+        await foreach (DiscordMessage m in ctx.Channel.GetMessagesAsync((int)amount))
+            messages.Add(m);
+
         var index = messages.Count - 1;
         while (index >= 0)
         {

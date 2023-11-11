@@ -4,14 +4,17 @@ using System.Threading.Tasks;
 using Adribot.src.constants.enums;
 using Adribot.src.entities.utilities;
 using Adribot.src.helpers;
+using Adribot.src.services;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 
 namespace Adribot.src.commands.utilities
 {
-    public partial class UtilityCommands
+    public class CalendarCommands : ApplicationCommandModule
     {
+        public DaySchemeService DaySchemeService { get; set; }
+
         [SlashCommand("calendar", "Perform various calendar tasks")]
         [SlashCommandPermissions(Permissions.SendMessages)]
         public async Task GetNextCalendarEventAsync(InteractionContext ctx, [Option("mode", "the task to perform on the calendars")] CalendarCrudOperation option = CalendarCrudOperation.LIST, [Option("calendar", "the calendar name to perform the action on")] string? calendarName = null, [Option("calendarUri", "link to an external ical/ics file")] string? uri = null, [Option("channel", "channel this calendar will post events to")] long channelId = -1)

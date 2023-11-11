@@ -12,7 +12,7 @@ public static class DiscordObjectExtensions
         new DGuild
         {
             DGuildId = guild.Id,
-            Members = !includeMembers ? new() : (await guild.GetAllMembersAsync()).ToDMembers(guild.Id)
+            Members = !includeMembers ? new() : await guild.GetAllMembersAsync().ToDMembersAsync(guild.Id)
         };
 
     /// <summary>
@@ -37,6 +37,16 @@ public static class DiscordObjectExtensions
         }
 
         return dGuilds;
+    }
+
+    public static async Task<List<DMember>> ToDMembersAsync(this IAsyncEnumerable<DiscordMember> members, ulong guildId)
+    {
+        List<DMember> dMembers = new();
+
+        await foreach (DiscordMember m in members)
+            dMembers.Add(m.ToDMember(guildId));
+
+        return dMembers;
     }
 
     public static List<DMember> ToDMembers(this IEnumerable<DiscordMember> members, ulong guildId)

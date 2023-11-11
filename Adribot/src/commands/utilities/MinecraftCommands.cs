@@ -14,7 +14,7 @@ namespace Adribot.src.commands.utilities;
 
 public class MinecraftCommands : ApplicationCommandModule
 {
-    private const string DatapackPath = "../../../temp/";
+    private const string DatapackPath = "./temp/";
 
     [SlashCommand("Datapack", "Compiles Emojiful datapacks from supplied DiscordEmoji")]
     public async Task CreateDatapackAsync(InteractionContext ctx, [Option("Category", "A name to categorise this emoji collection")] string category, [Option("Emojis", "A chain of DiscordEmoji")] string emojiList)

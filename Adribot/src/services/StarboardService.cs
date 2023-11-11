@@ -20,8 +20,14 @@ namespace Adribot.src.services
         {
             client.MessageReactionAdded += MessageReactionAddedAsync;
 
-            using var database = new DataManager();
-            _outputChannels = database.GetDGuildsStarboardNotNull().ToDictionary(dg => dg.DGuildId, dg => ((ulong)dg.StarboardChannel, DiscordEmoji.FromName(client, dg.StarEmoji ?? ":star:")));
+            var outputChannels = new List<DGuild>();
+            using (var database = new DataManager())
+            {
+                outputChannels = database.GetDGuildsStarboardNotNull();
+            }
+
+            if (outputChannels.Count > 0)
+                _outputChannels = outputChannels.ToDictionary(dg => dg.DGuildId, dg => ((ulong)dg.StarboardChannel, DiscordEmoji.FromName(client, dg.StarEmoji ?? ":star:")));
         }
 
         private async Task MessageReactionAddedAsync(DiscordClient sender, DSharpPlus.EventArgs.MessageReactionAddEventArgs args)

@@ -34,7 +34,7 @@ namespace Adribot.src.services
 
                     DiscordMessageBuilder remindMessage = new DiscordMessageBuilder().WithEmbed(new DiscordEmbedBuilder()
                     {
-                        Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = Convert.ToString(member is null ? "404" : $"<@{member.Id}") },
+                        Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = Convert.ToString(member is null ? "404" : $"<@{member.Id}>") },
                         Color = new DiscordColor(Config.Configuration.EmbedColour),
                         Description = reminder.Content,
                         Timestamp = reminder.Date,

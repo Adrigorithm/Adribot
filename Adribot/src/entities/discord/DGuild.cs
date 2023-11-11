@@ -15,7 +15,7 @@ public class DGuild : IComparable, IDataStructure
     public ulong DGuildId { get; set; }
 
     public ulong? StarboardChannel { get; set; }
-    public string StarEmoji { get; set; }
+    public string? StarEmoji { get; set; }
 
     public virtual List<DMember> Members { get; set; } = new();
     public virtual List<IcsCalendar> Calendars { get; set; } = new();

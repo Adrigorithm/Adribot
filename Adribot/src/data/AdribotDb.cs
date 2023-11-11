@@ -1,4 +1,5 @@
 using System;
+using Adribot.src.config;
 using Adribot.src.entities.discord;
 using Adribot.src.entities.utilities;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,8 @@ public class AdribotDb : DbContext
     /// </summary>
 
     public AdribotDb() =>
-        _connectionString = "Server=DESKTOP-QD7N10L\\SQL_2022;Database=AdribotDB;Encrypt=false;User Id=SA;Password=QB3F/kq=R5^m*Ccj";//Config.Configuration.SqlConnectionString;
+        _connectionString = Config.Configuration.SqlConnectionString;
+
     public DbSet<DGuild> DGuilds { get; set; }
     public DbSet<DMember> DMembers { get; set; }
     public DbSet<Infraction> Infractions { get; set; }

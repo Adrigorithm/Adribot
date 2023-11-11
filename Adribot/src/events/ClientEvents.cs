@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Adribot.src.data;
 using Adribot.src.entities.discord;
 using Adribot.src.extensions;
+using Adribot.src.helpers;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -52,15 +53,15 @@ public class ClientEvents
             for (var i = 0; i < guilds.Count(); i++)
             {
                 DiscordGuild guildCurrent = guilds.ElementAt(i);
-                DGuild? selectedGuild = cachedGuilds.FirstOrDefault(g => g.DGuildId == guildCurrent.Id);
+                DGuild? selectedGuild = cachedGuilds.Any() ? cachedGuilds.FirstOrDefault(g => g.DGuildId == guildCurrent.Id) : null;
                 if (selectedGuild is null)
                 {
                     guildsToAdd.Add(await guildCurrent.ToDGuildAsync(false));
-                    membersToAdd.AddRange((await guildCurrent.GetAllMembersAsync()).ToDMembers(guildCurrent.Id));
+                    membersToAdd.AddRange(await guildCurrent.GetAllMembersAsync().ToDMembersAsync(guildCurrent.Id));
                 }
                 else
                 {
-                    foreach (DMember member in selectedGuild.GetMembersDifference((await guildCurrent.GetAllMembersAsync()).ToDMembers(guildCurrent.Id)))
+                    foreach (DMember member in selectedGuild.GetMembersDifference(await guildCurrent.GetAllMembersAsync().ToDMembersAsync(guildCurrent.Id)))
                     {
                         member.DGuildId = selectedGuild.DGuildId;
                         membersToAdd.Add(member);
@@ -68,6 +69,7 @@ public class ClientEvents
                 }
             }
 
+            FakeExtensions.PrintFormat(guildsToAdd);
             await database.AddAllInstancesAsync(guildsToAdd, true);
         }
 

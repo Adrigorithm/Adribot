@@ -12,17 +12,15 @@ using DSharpPlus.SlashCommands;
 
 namespace Adribot.src.commands.utilities
 {
-    public partial class UtilityCommands : ApplicationCommandModule
+    public class UtilityCommands : ApplicationCommandModule
     {
-        public TagService TagService { get; set; }
         public RemindMeSerivce RemindMeService { get; set; }
         public StarboardService StarboardService { get; set; }
-        public DaySchemeService DaySchemeService { get; set; }
 
         [SlashCommand("remindme", "Set an alert for something ahead of time")]
         public async Task ExecuteRemindTaskAsync(InteractionContext ctx, [Option("task", "What you should be reminded of")] string taskTodo, [Option("unit", "Time unit to be muliplied by the next factor parameter")] TimeSpanType timeUnit, [Option("factor", "Amount of instances of the specified time unit")] long factor, [Option("channel", "Only set this if you have dms blocked (or muted the bot)")] DiscordChannel altChannel = null)
         {
-            DateTimeOffset now = DateTimeOffset.UtcNow;
+            DateTimeOffset now = DateTimeOffset.Now;
             DateTimeOffset endDate = timeUnit.ToEndDate((int)factor, now);
 
             if (endDate - now < TimeSpan.FromMinutes(1))
