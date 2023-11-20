@@ -69,7 +69,7 @@ namespace Adribot.src.commands.utilities
                         if (cEvent is null)
                             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent($"Calendar `{calendarName}` for guild [{ctx.Guild.Id}] does not exist.")).AsEphemeral());
                         else
-                            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithEmbed(cEvent.GenerateEmbedBuilder())).AsEphemeral());
+                            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithEmbed(cEvent.GeneratePXLEmbedBuilder())).AsEphemeral());
                     }
 
                     break;

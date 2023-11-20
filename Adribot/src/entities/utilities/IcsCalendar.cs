@@ -22,7 +22,7 @@ public class IcsCalendar : IDataStructure
     public DiscordEmbedBuilder GenerateEmbedBuilder() =>
         new DiscordEmbedBuilder
         {
-            Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = "<@608275633218519060>" },
+            Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = "Adrigorithm" },
             Color = new DiscordColor(Config.Configuration.EmbedColour),
             Title = Name,
             Description = $"A cached calendar `{Name}` containing {Events.Count} events. You probably want to see an individual event instead."
