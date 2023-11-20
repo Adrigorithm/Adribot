@@ -26,7 +26,7 @@ public class Reminder : IDataStructure
     public DiscordEmbedBuilder GenerateEmbedBuilder() =>
         new DiscordEmbedBuilder
         {
-            Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = $"<@{DMemberId}>" },
+            Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = $"{DMember.Mention}" },
             Color = new DiscordColor(Config.Configuration.EmbedColour),
             Title = "",
             Description = $"A reminder set on `{Date:g}` to trigger on {EndDate:g}\n\nwith content `{Content}`"

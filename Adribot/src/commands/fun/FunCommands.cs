@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Adribot.src.config;
 using Adribot.src.constants.enums;
+using Adribot.src.constants.strings;
 using Adribot.src.entities.fun.cat;
 using Adribot.src.entities.fun.dog;
 using Adribot.src.entities.fun.fox;
@@ -17,8 +18,6 @@ namespace Adribot.src.commands.fun;
 
 public class FunCommands : ApplicationCommandModule
 {
-    private readonly string _catUriBase = "https://api.thecatapi.com/v1/images/search";
-    private readonly string _dogUriBase = "https://api.thedogapi.com/v1/images/search";
     private readonly HttpClient _httpClient = new();
 
     [SlashCommand("get", "Gets a random animal")]
@@ -27,7 +26,7 @@ public class FunCommands : ApplicationCommandModule
         switch (animal)
         {
             case AnimalType.CAT:
-                List<Cat> catApiObject = await JsonSerializer.DeserializeAsync<List<Cat>>(await _httpClient.GetStreamAsync($"{_catUriBase}?api_key={Config.Configuration.CatToken}"));
+                List<Cat> catApiObject = await JsonSerializer.DeserializeAsync<List<Cat>>(await _httpClient.GetStreamAsync($"{ConstantStrings.CatBaseUri}?api_key={Config.Configuration.CatToken}"));
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor(Config.Configuration.EmbedColour),
@@ -36,7 +35,7 @@ public class FunCommands : ApplicationCommandModule
                 }));
                 break;
             case AnimalType.DOG:
-                List<Dog> dogApiObject = await JsonSerializer.DeserializeAsync<List<Dog>>(await _httpClient.GetStreamAsync($"{_dogUriBase}?api_key={Config.Configuration.CatToken}"));
+                List<Dog> dogApiObject = await JsonSerializer.DeserializeAsync<List<Dog>>(await _httpClient.GetStreamAsync($"{ConstantStrings.DogBaseUri}?api_key={Config.Configuration.CatToken}"));
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor(Config.Configuration.EmbedColour),
@@ -45,7 +44,7 @@ public class FunCommands : ApplicationCommandModule
                 }));
                 break;
             case AnimalType.FOX:
-                Fox foxApiObject = await JsonSerializer.DeserializeAsync<Fox>(await _httpClient.GetStreamAsync("https://randomfox.ca/floof"));
+                Fox foxApiObject = await JsonSerializer.DeserializeAsync<Fox>(await _httpClient.GetStreamAsync(ConstantStrings.FoxUri));
                 await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor(Config.Configuration.EmbedColour),

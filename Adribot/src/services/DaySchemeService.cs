@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -76,7 +77,7 @@ namespace Adribot.src.services
         public Event? GetNextEvent(ulong guildId) =>
             _calendars.First(c => c.DGuildId == guildId).Events.FirstOrDefault(e => e.Start - DateTime.UtcNow > TimeSpan.Zero);
 
-        public async Task AddCalendarAsync(ulong guildId, ulong channelId, Uri? icsFileUri = null, string? icsFileText = null)
+        public async Task AddCalendarAsync(ulong guildId, ulong channelId, Uri? icsFileUri = null)
         {
             var icsCalendar = new IcsCalendar
             {
@@ -84,22 +85,29 @@ namespace Adribot.src.services
                 DGuildId = guildId
             };
 
-            var calendar = Calendar.Load(string.IsNullOrEmpty(icsFileText) ? await GetRemoteFileContent(icsFileUri) : icsFileText);
+            var calendar = Calendar.Load(await GetStreamFromUri(icsFileUri));
             icsCalendar.Name = calendar.Name;
             calendar.Events.ToList().ForEach(e => icsCalendar.Events.Add(e.ToEvent()));
             _calendars.Add(icsCalendar);
 
+            static async Task<Stream> GetStreamFromUri(Uri uri)
+            {
+                if (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
+                {
+                    using var httpClient = new HttpClient();
+                    return await httpClient.GetStreamAsync(uri);
+                }
+                else
+                {
+                    return uri.Scheme == Uri.UriSchemeFile
+                    ? (Stream)new FileStream(uri.LocalPath, FileMode.Open, FileAccess.Read)
+                    : throw new NotSupportedException("Unsupported Uri scheme");
+                }
+            }
+
             using var database = new DataManager();
             await database.AddInstanceAsync(icsCalendar);
             await database.AddAllInstancesAsync(icsCalendar.Events);
-
-            static async Task<string> GetRemoteFileContent(Uri uri)
-            {
-                using var httpClient = new HttpClient();
-                HttpResponseMessage response = await httpClient.GetAsync(uri);
-
-                return await response.Content.ReadAsStringAsync();
-            }
         }
 
         public void DeleteCalendarAsync(IcsCalendar calendar)

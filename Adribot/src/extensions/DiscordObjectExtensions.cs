@@ -24,7 +24,8 @@ public static class DiscordObjectExtensions
         new DMember
         {
             DMemberId = member.Id,
-            DGuildId = guildId
+            DGuildId = guildId,
+            Mention = member.Mention
         };
 
     public static async Task<List<DGuild>> ToDGuildsAsync(this IEnumerable<DiscordGuild> guilds, bool includeMembers = true)

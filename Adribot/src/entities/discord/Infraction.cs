@@ -30,7 +30,7 @@ public class Infraction : IDataStructure
             Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = "<@608275633218519060>" },
             Color = new DiscordColor(Config.Configuration.EmbedColour),
             Title = $"{Type}",
-            Description = $"This infraction belongs to <@{DMemberId}>.\n" +
+            Description = $"This infraction belongs to {DMember.Mention}.\n" +
                 $"It lastst from {Date:g} to {EndDate:g}\n" +
                 $"It was issued because `{Reason}`"
         };

@@ -58,7 +58,7 @@ public class DataManager : IDisposable
         _database.IcsCalendars.Select(c => c.Name).ToList();
 
     public List<Reminder> GetRemindersToOld() =>
-        _database.Reminders.OrderByDescending(r => r.EndDate).ToList();
+        _database.Reminders.OrderByDescending(r => r.EndDate).Include(r => r.DMember).ToList();
 
     public List<DGuild> GetDGuildsStarboardNotNull() =>
         _database.DGuilds.Where(dg => dg.StarboardChannel != null).ToList();
@@ -71,12 +71,12 @@ public class DataManager : IDisposable
         using IDbContextTransaction transaction = _database.Database.BeginTransaction();
 
         if (_insertionTableName is not null)
-            _database.Database.ExecuteSqlRaw($"SET IDENTITY_INSERT dbo.{_insertionTableName}s ON");
+            _database.Database.ExecuteSql($"SET IDENTITY_INSERT dbo.{_insertionTableName}s ON");
 
         _database.SaveChanges();
 
         if (_insertionTableName is not null)
-            _database.Database.ExecuteSqlRaw($"SET IDENTITY_INSERT dbo.{_insertionTableName}s OFF");
+            _database.Database.ExecuteSql($"SET IDENTITY_INSERT dbo.{_insertionTableName}s OFF");
 
         transaction.Commit();
 

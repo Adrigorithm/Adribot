@@ -15,6 +15,7 @@ public class DMember : IComparable, IDataStructure
 {
     public ulong DGuildId { get; set; }
     public ulong DMemberId { get; set; }
+    public string Mention { get; set; }
     [ForeignKey(nameof(DGuildId))]
     public virtual DGuild DGuild { get; set; }
 

@@ -55,7 +55,6 @@ public class Bot
         AttachEvents();
     }
 
-
     private void AttachEvents()
     {
         _clientEvents = new(_client)

@@ -30,16 +30,16 @@ namespace Adribot.src.services
 
                 if (reminder is not null)
                 {
-                    DiscordMember member = await (await Client.GetGuildAsync(reminder.DGuildId)).GetMemberAsync(reminder.DMemberId);
-
-                    DiscordMessageBuilder remindMessage = new DiscordMessageBuilder().WithEmbed(new DiscordEmbedBuilder()
-                    {
-                        Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = Convert.ToString(member is null ? "404" : $"<@{member.Id}>") },
-                        Color = new DiscordColor(Config.Configuration.EmbedColour),
-                        Description = reminder.Content,
-                        Timestamp = reminder.Date,
-                        Title = "You wanted to be reminded of the following:"
-                    });
+                    DiscordMessageBuilder remindMessage = new DiscordMessageBuilder()
+                        .WithContent($"{reminder.DMember.Mention}")
+                        .WithEmbed(new DiscordEmbedBuilder()
+                        {
+                            Color = new DiscordColor(Config.Configuration.EmbedColour),
+                            Description = reminder.Content,
+                            Timestamp = reminder.Date,
+                            Title = "You wanted to be reminded of the following:"
+                        });
+                    remindMessage.WithAllowedMention(new UserMention(reminder.DMemberId));
 
                     DiscordGuild guild = await Client.GetGuildAsync(reminder.DGuildId);
                     _ = reminder.Channel is null

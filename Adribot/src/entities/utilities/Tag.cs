@@ -30,7 +30,7 @@ public class Tag : IDataStructure
 
         return new DiscordEmbedBuilder
         {
-            Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = $"<@{DMemberId}>" },
+            Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = $"{DMember.Mention}" },
             Color = new DiscordColor(Config.Configuration.EmbedColour),
             Title = $"{Name}",
             Description = $"{tagContent}"
