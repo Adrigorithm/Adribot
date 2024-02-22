@@ -1,12 +1,11 @@
 using DSharpPlus.SlashCommands;
 
-namespace Adribot.src.constants.enums
+namespace Adribot.src.constants.enums;
+
+public enum DistanceUnit
 {
-    public enum DistanceUnit
-    {
-        [ChoiceName("inch")]
-        INCH,
-        [ChoiceName("cm")]
-        CM
-    }
+    [ChoiceName("inch")]
+    INCH,
+    [ChoiceName("cm")]
+    CM
 }

@@ -39,7 +39,7 @@ public class AdminCommands : ApplicationCommandModule
         var deletedMessages = index + 1;
 
         if (index >= 0)
-            await ctx.Channel.DeleteMessagesAsync(messages.Take(deletedMessages));
+            await ctx.Channel.DeleteMessagesAsync(messages.Take(deletedMessages).ToList());
 
         var oldMessages = messages.Count - deletedMessages;
         StringBuilder confirmMessage = new();

@@ -3,16 +3,15 @@ using Adribot.src.config;
 using DSharpPlus;
 using DSharpPlus.SlashCommands;
 
-namespace Adribot.src.helpers
+namespace Adribot.src.helpers;
+
+public class RequirePermissionOrDevAttribute : SlashCheckBaseAttribute
 {
-    public class RequirePermissionOrDevAttribute : SlashCheckBaseAttribute
-    {
-        private readonly Permissions _permission;
+    private readonly Permissions _permission;
 
-        public RequirePermissionOrDevAttribute(Permissions permission) =>
-            _permission = permission;
+    public RequirePermissionOrDevAttribute(Permissions permission) =>
+        _permission = permission;
 
-        public override Task<bool> ExecuteChecksAsync(InteractionContext ctx) =>
-            Task.FromResult(ctx.Member.Permissions.HasPermission(_permission) || ctx.User.Id == Config.Configuration.DevUserId);
-    }
+    public override Task<bool> ExecuteChecksAsync(InteractionContext ctx) =>
+        Task.FromResult(ctx.Member.Permissions.HasPermission(_permission) || ctx.User.Id == Config.Configuration.DevUserId);
 }

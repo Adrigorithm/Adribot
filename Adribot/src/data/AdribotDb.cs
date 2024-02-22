@@ -30,7 +30,6 @@ public class AdribotDb : DbContext
     {
         options.UseSqlServer(_connectionString);
         options.LogTo(Console.WriteLine);
-        options.UseLazyLoadingProxies();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

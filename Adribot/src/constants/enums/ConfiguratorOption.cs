@@ -1,10 +1,9 @@
 using DSharpPlus.SlashCommands;
 
-namespace Adribot.src.constants.enums
+namespace Adribot.src.constants.enums;
+
+public enum ConfiguratorOption
 {
-    public enum ConfiguratorOption
-    {
-        [ChoiceName("starboard <channel = current> <emoji = ⭐>")]
-        STARBOARD
-    }
+    [ChoiceName("starboard <channel = current> <emoji = ⭐>")]
+    STARBOARD
 }
