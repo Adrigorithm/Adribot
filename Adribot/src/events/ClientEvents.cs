@@ -53,7 +53,7 @@ public class ClientEvents
             for (var i = 0; i < guilds.Count(); i++)
             {
                 DiscordGuild guildCurrent = guilds.ElementAt(i);
-                DGuild? selectedGuild = cachedGuilds.Any() ? cachedGuilds.FirstOrDefault(g => g.DGuildId == guildCurrent.Id) : null;
+                DGuild? selectedGuild = cachedGuilds.Any() ? cachedGuilds.FirstOrDefault(g => g.GuildId == guildCurrent.Id) : null;
                 if (selectedGuild is null)
                 {
                     guildsToAdd.Add(await guildCurrent.ToDGuildAsync(false));
@@ -63,7 +63,7 @@ public class ClientEvents
                 {
                     foreach (DMember member in selectedGuild.GetMembersDifference(await guildCurrent.GetAllMembersAsync().ToDMembersAsync(guildCurrent.Id)))
                     {
-                        member.DGuildId = selectedGuild.DGuildId;
+                        member.DGuildId = selectedGuild.GuildId;
                         membersToAdd.Add(member);
                     }
                 }

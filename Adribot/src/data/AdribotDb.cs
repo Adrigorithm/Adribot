@@ -39,7 +39,7 @@ public class AdribotDb : DbContext
             .ValueGeneratedNever();
 
         modelBuilder.Entity<DMember>()
-            .Property(e => e.DMemberId)
+            .Property(e => e.MemberId)
             .ValueGeneratedNever();
     }
 }

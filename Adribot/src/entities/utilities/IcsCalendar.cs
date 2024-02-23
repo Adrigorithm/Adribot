@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Adribot.src.config;
 using Adribot.src.data;
 using Adribot.src.entities.discord;
@@ -9,15 +8,15 @@ namespace Adribot.src.entities.utilities;
 
 public class IcsCalendar : IDataStructure
 {
-    [Key]
-    public int IcsCalendarId { get; set; }
+    public int IcsCalendarId { get; }
+
     public ulong ChannelId { get; set; }
     public string Name { get; set; }
 
-    public virtual List<Event> Events { get; set; } = new();
+    public List<Event> Events { get; } = [];
 
-    public ulong DGuildId { get; set; }
-    public virtual DGuild DGuild { get; set; }
+    public int DGuildId { get; set; }
+    public DGuild DGuild { get; set; }
 
     public DiscordEmbedBuilder GenerateEmbedBuilder() =>
         new DiscordEmbedBuilder

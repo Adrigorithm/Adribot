@@ -27,7 +27,7 @@ public sealed class StarboardService : BaseTimerService
         }
 
         if (outputChannels.Count > 0)
-            _outputChannels = outputChannels.ToDictionary(dg => dg.DGuildId, dg => ((ulong)dg.StarboardChannel, DiscordEmoji.FromName(client, dg.StarEmoji), (int)dg.StarThreshold));
+            _outputChannels = outputChannels.ToDictionary(dg => dg.GuildId, dg => ((ulong)dg.StarboardChannel, DiscordEmoji.FromName(client, dg.StarEmoji), (int)dg.StarThreshold));
     }
 
     private async Task MessageReactionAddedAsync(DiscordClient sender, DSharpPlus.EventArgs.MessageReactionAddEventArgs args)
@@ -56,7 +56,7 @@ public sealed class StarboardService : BaseTimerService
     {
         using var database = new DataManager();
 
-        DGuild guild = database.GetAllInstances<DGuild>().First(g => g.DGuildId == guildId);
+        DGuild guild = database.GetAllInstances<DGuild>().First(g => g.GuildId == guildId);
         guild.StarboardChannel = channelId;
         guild.StarEmoji = guild.StarEmoji is null
             ? (emoji is null ? "star" : emoji)

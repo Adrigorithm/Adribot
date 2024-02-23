@@ -8,7 +8,7 @@ namespace Adribot.src.entities.utilities;
 
 public class Event : IDataStructure
 {
-    public int EventId { get; set; }
+    public int EventId { get; }
 
     public DateTimeOffset Start { get; set; }
     public DateTimeOffset End { get; set; }
@@ -26,7 +26,7 @@ public class Event : IDataStructure
         Start - End;
 
     public int IcsCalendarId { get; set; }
-    public virtual IcsCalendar IcsCalendar { get; set; }
+    public IcsCalendar IcsCalendar { get; set; }
 
     public DiscordEmbedBuilder GenerateEmbedBuilder() =>
         new DiscordEmbedBuilder

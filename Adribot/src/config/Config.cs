@@ -8,7 +8,7 @@ namespace Adribot.src.config;
 public static class Config
 {
     // Debug
-    private const string ConfigPath = "./secret/config.json";
+    private const string ConfigPath = "../../../secret/config.json";
 
     public static ConfigValueType Configuration { get; private set; }
 

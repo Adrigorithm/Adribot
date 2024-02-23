@@ -1,6 +1,4 @@
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Adribot.src.config;
 using Adribot.src.data;
 using Adribot.src.entities.discord;
@@ -10,17 +8,14 @@ namespace Adribot.src.entities.utilities;
 
 public class Tag : IDataStructure
 {
-    [Key]
-    public int TagId { get; set; }
+    public int TagId { get; }
 
     public string Name { get; set; }
     public string Content { get; set; }
     public DateTimeOffset Date { get; set; }
 
-    public ulong DGuildId { get; set; }
-    public ulong DMemberId { get; set; }
-    [ForeignKey($"{nameof(DGuildId)}, {nameof(DMemberId)}")]
-    public virtual DMember DMember { get; set; }
+    public int DMemberId { get; set; }
+    public DMember DMember { get; set; }
 
     public DiscordEmbedBuilder GenerateEmbedBuilder()
     {

@@ -11,7 +11,7 @@ public static class DiscordObjectExtensions
     public static async Task<DGuild> ToDGuildAsync(this DiscordGuild guild, bool includeMembers = true) =>
         new DGuild
         {
-            DGuildId = guild.Id,
+            GuildId = guild.Id,
             Members = !includeMembers ? new() : await guild.GetAllMembersAsync().ToDMembersAsync(guild.Id)
         };
 
@@ -23,7 +23,7 @@ public static class DiscordObjectExtensions
     public static DMember ToDMember(this DiscordMember member, ulong guildId) =>
         new DMember
         {
-            DMemberId = member.Id,
+            MemberId = member.Id,
             DGuildId = guildId,
             Mention = member.Mention
         };
