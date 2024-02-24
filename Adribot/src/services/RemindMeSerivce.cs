@@ -21,7 +21,7 @@ public sealed class RemindMeSerivce : BaseTimerService
     public override async Task Start(int timerInterval) =>
         await base.Start(timerInterval);
 
-    public override async Task WorkAsync()
+    public override async Task Work()
     {
         if (_reminders.Count > 0)
         {

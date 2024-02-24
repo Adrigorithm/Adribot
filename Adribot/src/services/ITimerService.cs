@@ -4,7 +4,7 @@ namespace Adribot.src.services;
 
 public interface ITimerService
 {
-    Task WorkAsync();
+    Task Work();
     Task Start(int timerInterval);
     Task Stop();
 }

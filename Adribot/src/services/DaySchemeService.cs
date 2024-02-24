@@ -4,49 +4,33 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Adribot.src.data;
+using Adribot.src.data.repositories;
 using Adribot.src.entities.utilities;
 using Adribot.src.extensions;
-using DSharpPlus;
+using Adribot.src.services.providers;
+using DSharpPlus.Entities;
 using Ical.Net;
 
 namespace Adribot.src.services;
 
-public sealed class DaySchemeService : BaseTimerService
+public sealed class DaySchemeService(IcsCalendarRepository _calendarRepository, DiscordClientProvider clientProvider, int timerInterval = 60) : BaseTimerService(clientProvider, timerInterval)
 {
-    private readonly List<IcsCalendar> _calendars;
+    private List<IcsCalendar> _calendars;
 
-    public DaySchemeService(DiscordClient client, int timerInterval = 60) : base(client, timerInterval)
+    public override Task Work()
     {
-        DateTimeOffset today = DateTimeOffset.UtcNow;
+        if (!IsDatabaseDataLoaded)
+            _calendars = _calendarRepository.GetIcsCalendarsNotExpired().ToList();
 
-        using var database = new DataManager();
-        _calendars = database.GetIcsCalendarsNotExpired(today);
-    }
-
-    public override async Task WorkAsync()
-    {
         if (_calendars.Count > 0)
         {
-            DateTimeOffset today = DateTimeOffset.UtcNow;
+            var eventsToPost = new List<(int calendarId, ulong guildId, ulong channelId, Event[] events)>();
+            _calendars.ForEach(c => eventsToPost.Add((c.IcsCalendarId, c.DGuild.GuildId, c.ChannelId, c.Events.Where(e => !e.IsPosted && e.End > DateTimeOffset.Now && e.End - DateTimeOffset.Now <= TimeSpan.FromMinutes(10)).ToArray())));
 
-            foreach (IcsCalendar calendar in _calendars)
-            {
-                List<Event> eventsToPost = new();
-                var counter = calendar.Events.Count - 1;
-
-                while (counter >= 0 && calendar.Events[counter].End > today)
-                {
-                    TimeSpan eventStartsInTimeSpan = calendar.Events[counter].Start - today;
-                    if (!calendar.Events[counter].IsPosted && eventStartsInTimeSpan > TimeSpan.Zero && eventStartsInTimeSpan < TimeSpan.FromMinutes(10))
-                        eventsToPost.Add(calendar.Events[counter]);
-
-                    counter--;
-                }
-
-                await PostEventsAsync(eventsToPost, calendar.DGuildId, calendar.ChannelId, calendar.IcsCalendarId);
-            }
+            PostEvents(eventsToPost);
         }
+
+        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -57,38 +41,47 @@ public sealed class DaySchemeService : BaseTimerService
     /// <param name="guildId">The guild the events are to be posted to</param>
     /// <param name="channelId">The channel in the event should be posted in</param>
     /// <returns></returns>
-    public async Task PostEventsAsync(IEnumerable<Event> cEvents, ulong guildId, ulong channelId, int? calendarId = null)
+    public void PostEvents(List<(int calendarId, ulong guildId, ulong channelId, Event[] events)> eventsContainer)
     {
-        foreach (Event cEvent in cEvents)
-        {
-            await (await Client.GetGuildAsync(guildId)).GetChannel(channelId).SendMessageAsync(cEvent.GenerateEmbedBuilder().Build());
+        Dictionary<int, List<(int eventId, bool IsPosted)>> eventsPosted = [];
+        DiscordChannel currentChannel;
 
-            if (calendarId is not null)
-                _calendars.First(c => c.IcsCalendarId == calendarId).Events.First(e => e.EventId == cEvent.EventId).IsPosted = true;
-        }
+        eventsContainer.ForEach(async eC =>
+        {
+            currentChannel = (await Client.GetGuildAsync(eC.guildId)).GetChannel(eC.channelId);
+            eC.events.ToList().ForEach(async e =>
+            {
+                try
+                {
+                    await currentChannel.SendMessageAsync(e.GeneratePXLEmbedBuilder().Build());
+                    eventsPosted[eC.calendarId] ??= [];
+                    eventsPosted[eC.calendarId].Add((e.EventId, true));
+                }
+                catch
+                {
+                    // Failed to send message - do nothing
+                }
+            });
+
+            _calendarRepository.ChangeEventsPostedStatus(eventsPosted);
+        });
     }
 
     public string[] GetCalendarNames(ulong guildId) =>
-        _calendars.Where(c => c.DGuildId == guildId).Select(c => c.Name).ToArray();
+        _calendars.Where(c => c.DGuild.GuildId == guildId).Select(c => c.Name).ToArray();
 
     public IcsCalendar? GetCalendarByName(ulong guildId, string name) =>
-        _calendars.FirstOrDefault(c => c.DGuildId == guildId && c.Name == name);
+        _calendars.FirstOrDefault(c => c.DGuild.GuildId == guildId && c.Name == name);
 
     public Event? GetNextEvent(ulong guildId) =>
-        _calendars.First(c => c.DGuildId == guildId).Events.FirstOrDefault(e => e.Start - DateTime.UtcNow > TimeSpan.Zero);
+        _calendars.First(c => c.DGuild.GuildId == guildId).Events.FirstOrDefault(e => e.Start - DateTime.UtcNow > TimeSpan.Zero);
 
     public async Task AddCalendarAsync(ulong guildId, ulong channelId, Uri? icsFileUri = null)
     {
-        var icsCalendar = new IcsCalendar
-        {
-            ChannelId = channelId,
-            DGuildId = guildId
-        };
-
         var calendar = Calendar.Load(await GetStreamFromUri(icsFileUri));
-        icsCalendar.Name = calendar.Name;
-        calendar.Events.ToList().ForEach(e => icsCalendar.Events.Add(e.ToEvent()));
-        _calendars.Add(icsCalendar);
+        IEnumerable<Event> calendarEvents = calendar.Events.ToList().Select(e => e.ToEvent());
+        
+        _calendars.Add(_calendarRepository.AddCalendar(calendar.Name, guildId, channelId, calendarEvents));
 
         static async Task<Stream> GetStreamFromUri(Uri uri)
         {
@@ -100,22 +93,16 @@ public sealed class DaySchemeService : BaseTimerService
             else
             {
                 return uri.Scheme == Uri.UriSchemeFile
-                ? (Stream)new FileStream(uri.LocalPath, FileMode.Open, FileAccess.Read)
-                : throw new NotSupportedException("Unsupported Uri scheme");
+                    ? (Stream)new FileStream(uri.LocalPath, FileMode.Open, FileAccess.Read)
+                    : throw new NotSupportedException("Unsupported Uri scheme");
             }
         }
-
-        using var database = new DataManager();
-        await database.AddInstanceAsync(icsCalendar);
-        await database.AddAllInstancesAsync(icsCalendar.Events);
     }
 
     public void DeleteCalendarAsync(IcsCalendar calendar)
     {
         _calendars.Remove(calendar);
-
-        using var database = new DataManager();
-        database.RemoveInstance(calendar);
+        _calendarRepository.RemoveCalendar(calendar);
     }
 
 }

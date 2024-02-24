@@ -1,12 +1,13 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Adribot.src.services.providers;
 using DSharpPlus;
 
 namespace Adribot.src.services;
 
 public abstract class BaseTimerService : ITimerService
 {
-    protected DiscordClient Client;
+    protected DiscordClient Client { get; init; }
     protected bool IsDatabaseDataLoaded;
 
     private Timer _timer;
@@ -17,10 +18,11 @@ public abstract class BaseTimerService : ITimerService
     /// </summary>
     /// <param name="client">The client on which the service should operate</param>
     /// <param name="timerInterval">Time in seconds between each timer tick.</param>
-    protected BaseTimerService(DiscordClient client, int timerInterval = 10)
+    protected BaseTimerService(DiscordClientProvider clientProvider, int timerInterval = 10)
     {
-        Client = client;
+        Client = clientProvider.Client;
         Client.GuildDownloadCompleted += GuildsReady;
+
         Task.Run(async () => await Start(timerInterval));
     }
 
@@ -33,7 +35,7 @@ public abstract class BaseTimerService : ITimerService
     private async void CallbackAsync(object? state)
     {
         if (_isDownloadCompleted)
-            await WorkAsync();
+            await Work();
     }
 
     public virtual async Task Start(int timerInterval)
@@ -45,5 +47,5 @@ public abstract class BaseTimerService : ITimerService
     public async Task Stop() =>
         await _timer.DisposeAsync();
 
-    public virtual async Task WorkAsync() => await Task.CompletedTask;
+    public virtual async Task Work() => await Task.CompletedTask;
 }

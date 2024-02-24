@@ -13,7 +13,7 @@ public class IcsCalendar : IDataStructure
     public ulong ChannelId { get; set; }
     public string Name { get; set; }
 
-    public List<Event> Events { get; } = [];
+    public List<Event> Events { get; set; } = [];
 
     public int DGuildId { get; set; }
     public DGuild DGuild { get; set; }

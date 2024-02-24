@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Adribot.src.constants.enums;
 using Adribot.src.data;
 using Adribot.src.entities.discord;
+using Adribot.src.services.providers;
 using DSharpPlus;
 using DSharpPlus.Entities;
 
@@ -14,7 +15,7 @@ public sealed class InfractionService : BaseTimerService
 {
     private readonly List<Infraction> _infractions = new();
 
-    public InfractionService(DiscordClient client, int timerInterval = 10) : base(client, timerInterval)
+    public InfractionService(DiscordClientProvider clientProvider, int timerInterval = 10) : base(clientProvider, timerInterval)
     {
         Client.UserUpdated += ClientUserupdatedAsync;
 
@@ -58,7 +59,7 @@ public sealed class InfractionService : BaseTimerService
     public override async Task Start(int timerInterval) =>
         await base.Start(timerInterval);
 
-    public override async Task WorkAsync()
+    public override async Task Work()
     {
         if (_infractions.Count > 0)
         {

@@ -1,12 +1,12 @@
 using System;
-using Adribot.src.config;
+//using Adribot.src.config;
 using Adribot.src.entities.discord;
 using Adribot.src.entities.utilities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.src.data;
 
-public class AdribotDb : DbContext
+public class AdribotContext : DbContext
 {
     private readonly string _connectionString;
 
@@ -14,9 +14,8 @@ public class AdribotDb : DbContext
     /// Before creating an instance of this class the static configuration class should be instantiated.
     /// This means Config.LoadConfigAsync() should've been called before successfully.
     /// </summary>
-
-    public AdribotDb() =>
-        _connectionString = Config.Configuration.SqlConnectionString;
+    public AdribotContext() =>
+        _connectionString = "Server=localhost;Database=AdribotDb;User Id=SA;Password=RTm%VbGMb#!P@3"; // Config.Configuration.SqlConnectionString;
 
     public DbSet<DGuild> DGuilds { get; set; }
     public DbSet<DMember> DMembers { get; set; }
@@ -30,16 +29,5 @@ public class AdribotDb : DbContext
     {
         options.UseSqlServer(_connectionString);
         options.LogTo(Console.WriteLine);
-    }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<DMember>()
-            .Property(e => e.DGuildId)
-            .ValueGeneratedNever();
-
-        modelBuilder.Entity<DMember>()
-            .Property(e => e.MemberId)
-            .ValueGeneratedNever();
     }
 }

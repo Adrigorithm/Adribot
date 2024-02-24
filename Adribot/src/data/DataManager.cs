@@ -11,7 +11,7 @@ namespace Adribot.src.data;
 
 public class DataManager : IDisposable
 {
-    private readonly AdribotDb _database;
+    private readonly AdribotContext _database;
     private string _insertionTableName;
 
     /// <summary>
