@@ -1,5 +1,5 @@
 using System;
-//using Adribot.src.config;
+using Adribot.src.config;
 using Adribot.src.entities.discord;
 using Adribot.src.entities.utilities;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +15,7 @@ public class AdribotContext : DbContext
     /// This means Config.LoadConfigAsync() should've been called before successfully.
     /// </summary>
     public AdribotContext() =>
-        _connectionString = "Server=localhost;Database=AdribotDb;User Id=SA;Password=RTm%VbGMb#!P@3"; // Config.Configuration.SqlConnectionString;
+        _connectionString = Config.Configuration.SqlConnectionString;
 
     public DbSet<DGuild> DGuilds { get; set; }
     public DbSet<DMember> DMembers { get; set; }
