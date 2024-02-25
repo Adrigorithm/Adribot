@@ -9,7 +9,7 @@ namespace Adribot.src.data.repositories;
 public class IcsCalendarRepository(AdribotContext _botContext)
 {
     public IEnumerable<IcsCalendar> GetIcsCalendarsNotExpired() =>
-        _botContext.IcsCalendars.Where(c => c.Events.Last().End > DateTimeOffset.Now);
+        _botContext.IcsCalendars.Include(c => c.Events).Include(c => c.DGuild).Where(c => c.Events.Last().End > DateTimeOffset.Now);
 
     public void ChangeEventsPostedStatus(Dictionary<int, List<(int eventId, bool posted)>> events)
     {

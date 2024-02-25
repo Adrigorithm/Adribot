@@ -13,7 +13,7 @@ using Ical.Net;
 
 namespace Adribot.src.services;
 
-public sealed class DaySchemeService(IcsCalendarRepository _calendarRepository, DiscordClientProvider clientProvider, int timerInterval = 60) : BaseTimerService(clientProvider, timerInterval)
+public sealed class DaySchemeService(IcsCalendarRepository _calendarRepository, SecretsProvider secretsProvider, DiscordClientProvider clientProvider, int timerInterval = 60) : BaseTimerService(clientProvider, secretsProvider, timerInterval)
 {
     private List<IcsCalendar> _calendars;
 

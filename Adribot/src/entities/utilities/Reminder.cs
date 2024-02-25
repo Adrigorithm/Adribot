@@ -1,5 +1,4 @@
 using System;
-using Adribot.src.config;
 using Adribot.src.data;
 using Adribot.src.entities.discord;
 using DSharpPlus.Entities;
@@ -22,7 +21,6 @@ public class Reminder : IDataStructure
         new DiscordEmbedBuilder
         {
             Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = $"{DMember.Mention}" },
-            Color = new DiscordColor(Config.Configuration.EmbedColour),
             Title = "",
             Description = $"A reminder set on `{Date:g}` to trigger on {EndDate:g}\n\nwith content `{Content}`"
         };

@@ -1,7 +1,7 @@
 using System;
-using Adribot.src.config;
 using Adribot.src.entities.discord;
 using Adribot.src.entities.utilities;
+using Adribot.src.services.providers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.src.data;
@@ -14,8 +14,8 @@ public class AdribotContext : DbContext
     /// Before creating an instance of this class the static configuration class should be instantiated.
     /// This means Config.LoadConfigAsync() should've been called before successfully.
     /// </summary>
-    public AdribotContext() =>
-        _connectionString = Config.Configuration.SqlConnectionString;
+    public AdribotContext(SecretsProvider secrets) =>
+        _connectionString = secrets.Config.SqlConnectionString;
 
     public DbSet<DGuild> DGuilds { get; set; }
     public DbSet<DMember> DMembers { get; set; }

@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Adribot.src.config;
 using Adribot.src.services.providers;
 using DSharpPlus;
 
@@ -8,6 +9,7 @@ namespace Adribot.src.services;
 public abstract class BaseTimerService : ITimerService
 {
     protected DiscordClient Client { get; init; }
+    protected ConfigValueType? Config { get; init; }
     protected bool IsDatabaseDataLoaded;
 
     private Timer _timer;
@@ -18,10 +20,11 @@ public abstract class BaseTimerService : ITimerService
     /// </summary>
     /// <param name="client">The client on which the service should operate</param>
     /// <param name="timerInterval">Time in seconds between each timer tick.</param>
-    protected BaseTimerService(DiscordClientProvider clientProvider, int timerInterval = 10)
+    protected BaseTimerService(DiscordClientProvider clientProvider, SecretsProvider? secretsProvider = null, int timerInterval = 10)
     {
         Client = clientProvider.Client;
         Client.GuildDownloadCompleted += GuildsReady;
+        Config = secretsProvider?.Config;
 
         Task.Run(async () => await Start(timerInterval));
     }

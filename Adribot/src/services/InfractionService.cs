@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Adribot.src.constants.enums;
 using Adribot.src.data;
+using Adribot.src.data.repositories;
 using Adribot.src.entities.discord;
 using Adribot.src.services.providers;
 using DSharpPlus;
@@ -13,14 +14,15 @@ namespace Adribot.src.services;
 
 public sealed class InfractionService : BaseTimerService
 {
-    private readonly List<Infraction> _infractions = new();
+    private readonly InfractionRepository _infractionRepository;
+    private readonly List<Infraction> _infractions = [];
 
-    public InfractionService(DiscordClientProvider clientProvider, int timerInterval = 10) : base(clientProvider, timerInterval)
+    public InfractionService(InfractionRepository infractionRepository, DiscordClientProvider clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
     {
         Client.UserUpdated += ClientUserupdatedAsync;
 
-        using var database = new DataManager();
-        _infractions = database.GetInfractionsToOldNotExpired();
+        _infractionRepository = infractionRepository;
+        _infractions = _infractionRepository.GetInfractionsToOldNotExpired().ToList();
     }
 
     private async Task ClientUserupdatedAsync(DiscordClient sender, DSharpPlus.EventArgs.UserUpdateEventArgs args) =>
@@ -31,21 +33,10 @@ public sealed class InfractionService : BaseTimerService
         var member = user as DiscordMember;
         if (member is not null && !member.IsBot && !member.Permissions.HasPermission(Permissions.Administrator) && member.DisplayName[0] < 48)
         {
-            if (!_infractions.Any(i => i.DMemberId == member.Id && i.Type == InfractionType.HOIST && !i.IsExpired))
+            if (!_infractions.Any(i => i.DMember.MemberId == member.Id && i.Type == InfractionType.HOIST && !i.IsExpired))
             {
-                using var database = new DataManager();
-                DateTimeOffset currentUtcDate = DateTimeOffset.UtcNow;
-
-                await database.AddInstanceAsync(new Infraction
-                {
-                    Date = currentUtcDate,
-                    DMemberId = member.Id,
-                    EndDate = currentUtcDate.AddHours(24),
-                    IsExpired = false,
-                    Type = InfractionType.HOIST,
-                    Reason = "Hoisting is poop",
-                    DGuildId = member.Guild.Id
-                });
+                Infraction infraction = _infractionRepository.AddInfraction(member.Id, TimeSpan.FromHours(24), InfractionType.HOIST, "Hoisting is poop");
+                AddInfraction(infraction);
             }
 
             if (member.DisplayName != "💩")
@@ -71,25 +62,24 @@ public sealed class InfractionService : BaseTimerService
                 switch (infraction.Type)
                 {
                     case InfractionType.HOIST:
-                        await (await (await Client.GetGuildAsync(infraction.DGuildId)).GetMemberAsync(infraction.DMemberId)).ModifyAsync(m => m.Nickname = "");
+                        await (await (await Client.GetGuildAsync(infraction.DMember.DGuild.GuildId)).GetMemberAsync(infraction.DMember.MemberId)).ModifyAsync(m => m.Nickname = "");
                         break;
                     case InfractionType.BAN:
-                        DiscordGuild guild = await Client.GetGuildAsync(infraction.DGuildId);
-                        await guild.UnbanMemberAsync(infraction.DMemberId, infraction.Reason);
-                        await ((DiscordMember)await Client.GetUserAsync(infraction.DMemberId)).SendMessageAsync($"You have been unbanned from {guild.Name}!\nDo not let it happen again.");
+                        DiscordGuild guild = await Client.GetGuildAsync(infraction.DMember.DGuild.GuildId);
+                        await guild.UnbanMemberAsync(infraction.DMember.MemberId, infraction.Reason);
+                        await ((DiscordMember)await Client.GetUserAsync(infraction.DMember.MemberId)).SendMessageAsync($"You have been unbanned from {guild.Name}!\nDo not let it happen again.");
                         break;
                     default:
                         break;
                 }
 
                 _infractions.Remove(infraction);
-                infraction.IsExpired = true;
-                database.UpdateInstance(infraction);
+                _infractionRepository.SetExpiredStatus(infraction, true);
             }
         }
     }
 
-    public async Task AddInfractionAsync(Infraction infraction)
+    private void AddInfraction(Infraction infraction)
     {
         var isAdded = false;
         for (var i = 0; i < _infractions.Count; i++)
@@ -103,8 +93,5 @@ public sealed class InfractionService : BaseTimerService
 
         if (!isAdded)
             _infractions.Add(infraction);
-
-        using var database = new DataManager();
-        await database.AddInstanceAsync(infraction);
     }
 }

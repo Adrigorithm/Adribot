@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using Adribot.src.config;
 using Adribot.src.data;
 using DSharpPlus.Entities;
 
@@ -32,7 +31,6 @@ public class Event : IDataStructure
         new DiscordEmbedBuilder
         {
             Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = Organiser },
-            Color = new DiscordColor(Config.Configuration.EmbedColour),
             Title = $"{Name}\n[{Start:HH:mm} - {End:HH:mm}]",
             Description = Summary,
             Footer = new DiscordEmbedBuilder.EmbedFooter() { Text = Location }
@@ -45,7 +43,6 @@ public class Event : IDataStructure
         return new DiscordEmbedBuilder
         {
             Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = descriptionLines[3].Substring(descriptionLines[3].IndexOf(':') + 2) },
-            Color = new DiscordColor(Config.Configuration.EmbedColour),
             Title = $"{descriptionLines[5].Substring(descriptionLines[5].IndexOf(':') + 2)}\n{Location} - [{Start:HH:mm} -> {End:HH:mm}]",
             Description = Summary
         };

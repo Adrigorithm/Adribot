@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Adribot.src.config;
 using Adribot.src.data;
 using Adribot.src.entities.utilities;
 using DSharpPlus.Entities;
@@ -41,7 +40,6 @@ public class DMember : IComparable, IDataStructure
         new DiscordEmbedBuilder
         {
             Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = "<@608275633218519060>" },
-            Color = new DiscordColor(Config.Configuration.EmbedColour),
             Title = MemberId.ToString(),
             Description = $"This member has set {Reminders.Count} reminders and {Tags.Count} tags.\n" +
                 $"They have {Infractions.Count} infractions of which {Infractions.Count(i => !i.IsExpired)} are still pending."

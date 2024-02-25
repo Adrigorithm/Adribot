@@ -1,23 +1,21 @@
 using System;
 using System.IO;
 using System.Text.Json;
-using System.Threading.Tasks;
+using Adribot.src.config;
 
-namespace Adribot.src.config;
+namespace Adribot.src.services.providers;
 
-public static class Config
+public class SecretsProvider
 {
-    // Debug
     private const string ConfigPath = "../../../secret/config.json";
 
-    public static ConfigValueType Configuration { get; private set; }
+    public ConfigValueType Config { get; init; }
 
-    public static async Task LoadConfigAsync()
+    public SecretsProvider()
     {
         try
         {
-            Console.WriteLine(Directory.GetCurrentDirectory());
-            Configuration = await JsonSerializer.DeserializeAsync<ConfigValueType>(File.OpenRead(ConfigPath));
+            Config = JsonSerializer.Deserialize<ConfigValueType>(File.OpenRead(ConfigPath));
         }
         catch (FileNotFoundException)
         {

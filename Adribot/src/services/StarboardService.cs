@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Adribot.src.config;
 using Adribot.src.data;
 using Adribot.src.entities.discord;
+using Adribot.src.services.providers;
 using DSharpPlus;
 using DSharpPlus.Entities;
 
@@ -16,9 +16,9 @@ public sealed class StarboardService : BaseTimerService
     /// </summary>
     private readonly Dictionary<ulong, (ulong channelId, DiscordEmoji starEmoji, int threshold)> _outputChannels;
 
-    public StarboardService(DiscordClient client, int timerInterval = 10) : base(client, timerInterval)
+    public StarboardService(DiscordClientProvider clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
     {
-        client.MessageReactionAdded += MessageReactionAddedAsync;
+        clientProvider.Client.MessageReactionAdded += MessageReactionAddedAsync;
 
         var outputChannels = new List<DGuild>();
         using (var database = new DataManager())
@@ -27,7 +27,7 @@ public sealed class StarboardService : BaseTimerService
         }
 
         if (outputChannels.Count > 0)
-            _outputChannels = outputChannels.ToDictionary(dg => dg.GuildId, dg => ((ulong)dg.StarboardChannel, DiscordEmoji.FromName(client, dg.StarEmoji), (int)dg.StarThreshold));
+            _outputChannels = outputChannels.ToDictionary(dg => dg.GuildId, dg => ((ulong)dg.StarboardChannel, DiscordEmoji.FromName(Client, dg.StarEmoji), (int)dg.StarThreshold));
     }
 
     private async Task MessageReactionAddedAsync(DiscordClient sender, DSharpPlus.EventArgs.MessageReactionAddEventArgs args)
@@ -43,7 +43,7 @@ public sealed class StarboardService : BaseTimerService
                 await args.Guild.GetChannel(channelId).SendMessageAsync(new DiscordMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                 {
                     Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = $"{args.User.Mention}" },
-                    Color = new DiscordColor(Config.Configuration.EmbedColour),
+                    Color = new DiscordColor(Config.EmbedColour),
                     Description = args.Message.Content,
                     Title = $"{starEmoji.Name} reacted {starEmojiCount} times!",
                     Footer = new DiscordEmbedBuilder.EmbedFooter() { Text = args.Message.JumpLink.OriginalString }

@@ -1,19 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Adribot.src.config;
 using Adribot.src.data;
 using Adribot.src.entities.utilities;
-using DSharpPlus;
+using Adribot.src.services.providers;
 using DSharpPlus.Entities;
 
 namespace Adribot.src.services;
 
 public sealed class RemindMeSerivce : BaseTimerService
 {
-    private readonly List<Reminder> _reminders = new();
+    private readonly List<Reminder> _reminders = [];
 
-    public RemindMeSerivce(DiscordClient client, int timerInterval = 10) : base(client, timerInterval)
+    public RemindMeSerivce(DiscordClientProvider client, SecretsProvider secretsProvider, int timerInterval = 10) : base(client, secretsProvider, timerInterval)
     {
         using var database = new DataManager();
         _reminders = database.GetRemindersToOld();
@@ -34,7 +33,7 @@ public sealed class RemindMeSerivce : BaseTimerService
                     .WithContent($"{reminder.DMember.Mention}")
                     .AddEmbed(new DiscordEmbedBuilder()
                     {
-                        Color = new DiscordColor(Config.Configuration.EmbedColour),
+                        Color = new DiscordColor(Config.EmbedColour),
                         Description = reminder.Content,
                         Timestamp = reminder.Date,
                         Title = "You wanted to be reminded of the following:"

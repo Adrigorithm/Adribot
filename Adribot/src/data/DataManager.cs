@@ -48,8 +48,7 @@ public class DataManager : IDisposable
         }
     }
 
-    public List<Infraction> GetInfractionsToOldNotExpired() =>
-        _database.Infractions.OrderByDescending(i => i.EndDate).Where(i => !i.IsExpired).ToList();
+    
 
     public List<IcsCalendar> GetIcsCalendarsNotExpired(DateTimeOffset now) =>
         _database.IcsCalendars.Where(c => c.Events.OrderBy(e => e.Start).Last().End > now).Include(c => c.Events).ToList();

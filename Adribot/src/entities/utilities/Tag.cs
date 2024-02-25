@@ -1,5 +1,4 @@
 using System;
-using Adribot.src.config;
 using Adribot.src.data;
 using Adribot.src.entities.discord;
 using DSharpPlus.Entities;
@@ -26,10 +25,11 @@ public class Tag : IDataStructure
         return new DiscordEmbedBuilder
         {
             Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = $"{DMember.Mention}" },
-            Color = new DiscordColor(Config.Configuration.EmbedColour),
             Title = $"{Name}",
             Description = $"{tagContent}"
         };
     }
 
+    public override bool Equals(object other) =>
+        other is Tag tag && Name == tag.Name && DMember.DGuildId == tag.DMember.DGuildId;
 }

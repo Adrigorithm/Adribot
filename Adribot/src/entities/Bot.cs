@@ -2,9 +2,10 @@ using System.Threading.Tasks;
 using Adribot.src.commands.fun;
 using Adribot.src.commands.moderation;
 using Adribot.src.commands.utilities;
-using Adribot.src.config;
+using Adribot.src.data;
 using Adribot.src.events;
 using Adribot.src.services;
+using Adribot.src.services.providers;
 using DSharpPlus;
 using DSharpPlus.SlashCommands;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,26 +19,23 @@ public class Bot
 
     public Bot()
     {
-        Task.Run(Config.LoadConfigAsync).Wait();
+        var secrets = new SecretsProvider();
 
         _client = new(new DiscordConfiguration
         {
-            Token = Config.Configuration.BotToken,
+            Token = secrets.Config.BotToken,
             Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents
         });
 
-        InfractionService infractionService = new(_client);
-        TagService tagService = new(_client);
-        RemindMeSerivce remindMeSerivce = new(_client);
-        DaySchemeService daySchemeService = new(_client);
-        StarboardService starboardService = new(_client);
-
         ServiceProvider services = new ServiceCollection()
-            .AddSingleton(infractionService)
-            .AddSingleton(tagService)
-            .AddSingleton(remindMeSerivce)
-            .AddSingleton(daySchemeService)
-            .AddSingleton(starboardService)
+            .AddSingleton(secrets)
+            .AddDbContext<AdribotContext>()
+            .AddSingleton(new DiscordClientProvider(_client))
+            .AddSingleton<BaseTimerService, InfractionService>()
+            .AddSingleton<BaseTimerService, RemindMeSerivce>()
+            .AddSingleton<BaseTimerService, DaySchemeService>()
+            .AddSingleton<BaseTimerService, StarboardService>()
+            .AddSingleton<TagService>()
             .BuildServiceProvider();
 
         SlashCommandsExtension slashies = _client.UseSlashCommands(new SlashCommandsConfiguration()

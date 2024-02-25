@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Adribot.src.config;
 using Adribot.src.data;
 using Adribot.src.entities.utilities;
 using DSharpPlus.Entities;
@@ -68,7 +67,6 @@ public class DGuild : IComparable, IDataStructure
         new DiscordEmbedBuilder
         {
             Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = "<@608275633218519060>" },
-            Color = new DiscordColor(Config.Configuration.EmbedColour),
             Title = GuildId.ToString(),
             Description = $"This guild contains {Members.Count} members.\n" +
                 $"Starred messages ({StarEmoji} >=3) are sent to channel {StarboardChannel}.\n" +

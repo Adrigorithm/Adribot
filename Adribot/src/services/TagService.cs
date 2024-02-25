@@ -15,14 +15,14 @@ public sealed class TagService
     /// TagId on the individual tags will be 0 when they are added later to minimise database interactions.
     /// Do NOT depend on the ids.
     /// </summary>
-    public List<Tag> Tags { get; }
+    private List<Tag> _tags { get; }
 
     public TagService(DiscordClient client)
     {
         _client = client;
 
         using var database = new DataManager();
-        Tags = database.GetAllInstances<Tag>().ToList();
+        _tags = database.GetAllInstances<Tag>().ToList();
     }
 
     public async Task<bool> TrySetTagAsync(Tag tag, bool shouldOverwrite = false)
@@ -30,14 +30,10 @@ public sealed class TagService
         Tag? oldTag = null;
         var oldTagIndex = -1;
 
-        for (var i = 0; i < Tags.Count; i++)
+        for (var i = 0; i < _tags.Count; i++)
         {
-            if (Tags[i].Name == tag.Name &&
-                Tags[i].DGuildId == tag.DGuildId)
-            {
-                oldTag = Tags[i];
-                oldTagIndex = i;
-            }
+            if (_tags[i] == tag)
+                (oldTag, oldTagIndex) = (_tags[i], i);
         }
 
         if (oldTag is null || shouldOverwrite)
@@ -47,12 +43,12 @@ public sealed class TagService
             if (oldTag is null)
             {
                 await database.AddInstanceAsync(tag);
-                Tags.Add(tag);
+                _tags.Add(tag);
             }
             else
             {
                 tag.TagId = oldTag.TagId;
-                Tags[oldTagIndex] = tag;
+                _tags[oldTagIndex] = tag;
                 database.UpdateInstance(tag);
             }
 
@@ -62,18 +58,18 @@ public sealed class TagService
     }
 
     public IEnumerable<Tag> GetAllTags(ulong guildId) =>
-        Tags.Where(t => t.DGuildId == guildId);
+        _tags.Where(t => t.DGuildId == guildId);
 
 
     public Tag? TryGetTag(string tagName, ulong guildId) =>
-        Tags.FirstOrDefault(t => t.Name == tagName && t.DGuildId == guildId);
+        _tags.FirstOrDefault(t => t.Name == tagName && t.DGuildId == guildId);
 
     public bool TryRemoveTag(string tagname, ulong guildId)
     {
         Tag? tag = TryGetTag(tagname, guildId);
         if (tag is not null)
         {
-            Tags.Remove(tag);
+            _tags.Remove(tag);
 
             using var database = new DataManager();
             database.RemoveInstance(tag);
