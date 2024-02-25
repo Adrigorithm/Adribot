@@ -12,12 +12,12 @@ public class InfractionRepository(AdribotContext _botContext)
     public IEnumerable<Infraction> GetInfractionsToOldNotExpired() =>
         _botContext.Infractions.Include(i => i.DMember).Include(i => i.DMember.DGuild).OrderByDescending(i => i.EndDate).Where(i => !i.IsExpired);
 
-    public Infraction AddInfraction(ulong memberId, TimeSpan duration, InfractionType type, string reason = "No reason provided", bool isExpired = false)
+    public Infraction AddInfraction(ulong guildId, ulong memberId, TimeSpan duration, InfractionType type, string reason = "No reason provided", bool isExpired = false)
     {
         DateTimeOffset now = DateTimeOffset.Now;
         var infraction = new Infraction {
             Date = now,
-            DMember = _botContext.DMembers.First(dm => dm.MemberId == memberId),
+            DMember = _botContext.DMembers.Include(dm => dm.DGuild).First(dm => dm.MemberId == memberId && dm.DGuild.GuildId == guildId),
             EndDate = now.Add(duration),
             IsExpired = isExpired,
             Reason = reason,
