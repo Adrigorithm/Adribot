@@ -12,10 +12,8 @@ using DSharpPlus.SlashCommands;
 
 namespace Adribot.src.commands.utilities;
 
-public class TagCommands : ApplicationCommandModule
+public class TagCommands(TagService _tagService) : ApplicationCommandModule
 {
-    public TagService TagService { get; set; }
-
     [SlashCommandPermissions(Permissions.SendMessages)]
     [SlashCommand("tag", "Display (information about) a tag")]
     public async Task ExecuteTagTaskAsync(InteractionContext ctx, [Option("tag", "The tag name to retrieve corresponding tag")] string tagName, [Option("mode", "Tag related operation to perform")] CrudOperation operation = CrudOperation.GET, [Option("content", "Update current tag content")] string newContent = null)
@@ -24,7 +22,7 @@ public class TagCommands : ApplicationCommandModule
         {
             case CrudOperation.GET:
             case CrudOperation.INFO:
-                Tag? tag = TagService.TryGetTag(tagName, ctx.Guild.Id);
+                Tag? tag = _tagService.TryGetTag(tagName, ctx.Guild.Id);
                 if (tag is null)
                 {
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
@@ -32,7 +30,6 @@ public class TagCommands : ApplicationCommandModule
                 }
                 else
                 {
-                    DiscordMember member = await ctx.Guild.GetMemberAsync(tag.DMemberId);
                     DiscordMessageBuilder messageBuilder = operation == CrudOperation.GET ?
                         new DiscordMessageBuilder().WithContent($"**{tag.Name}**\n{tag.Content}") :
                         new DiscordMessageBuilder().AddEmbed(tag.GenerateEmbedBuilder());
@@ -43,21 +40,22 @@ public class TagCommands : ApplicationCommandModule
                 break;
             case CrudOperation.NEW:
             case CrudOperation.SET:
-                Tag? newTag = CreateTag(ctx, tagName, newContent);
-                if (newTag is null || !await TagService.TrySetTagAsync(newTag, operation == CrudOperation.SET))
-                {
+                (Tag?, string?) tempTag = _tagService.CreateTempTag(ctx.Guild.Id, ctx.Member.Id, tagName, newContent, ctx.Interaction.CreationTimestamp, operation == CrudOperation.SET);
+                
+                if (tempTag.Item1 is null)
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
-                        new DiscordMessageBuilder().WithContent($"{(newTag is null ? "Content option cannot be empty when creating new tags." : $"A tag with the same name already exists.\nUse `SET` mode to force the change.")}")).AsEphemeral());
-                }
+                        new DiscordMessageBuilder().WithContent(tempTag.Item2)).AsEphemeral());
                 else
                 {
+                    _tagService.SetTag(ctx.Guild.Id, tempTag.Item1);
+
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                         new DiscordMessageBuilder().WithContent("Tag `" + tagName + "` craeted." + Environment.NewLine + "Check it out using `/tag {" + tagName + "} {GET|INFO}`")).AsEphemeral());
                 }
 
                 break;
             case CrudOperation.DELETE:
-                if (!TagService.TryRemoveTag(tagName, ctx.Guild.Id))
+                if (!_tagService.TryRemoveTag(tagName, ctx.Guild.Id))
                 {
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                         new DiscordMessageBuilder().WithContent($"A tag with tagname `{tagName}` could not be found.")).AsEphemeral());
@@ -70,7 +68,7 @@ public class TagCommands : ApplicationCommandModule
 
                 break;
             case CrudOperation.LIST:
-                IEnumerable<Tag> tags = TagService.GetAllTags(ctx.Guild.Id);
+                IEnumerable<Tag> tags = _tagService.GetAllTags(ctx.Guild.Id);
                 if (tags.Count() == 0)
                 {
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
@@ -96,15 +94,4 @@ public class TagCommands : ApplicationCommandModule
                 throw new NotImplementedException($"Tag operation {nameof(operation)} is not supported.");
         }
     }
-
-    private Tag? CreateTag(InteractionContext context, string tagName, string content) => string.IsNullOrWhiteSpace(content)
-            ? null
-            : new Tag
-            {
-                Content = content,
-                Date = context.Interaction.CreationTimestamp.UtcDateTime,
-                DMemberId = context.Member.Id,
-                Name = tagName,
-                DGuildId = context.Guild.Id
-            };
 }

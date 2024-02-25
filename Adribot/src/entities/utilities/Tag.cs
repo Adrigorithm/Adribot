@@ -20,7 +20,7 @@ public class Tag : IDataStructure
     {
         var tagContent = Content;
         if (Content.Length > 100)
-            tagContent = Content.Substring(0, 100) + " ...";
+            tagContent = string.Concat(Content.AsSpan(0, 100), " ...");
 
         return new DiscordEmbedBuilder
         {
@@ -28,6 +28,12 @@ public class Tag : IDataStructure
             Title = $"{Name}",
             Description = $"{tagContent}"
         };
+    }
+
+    public void Overwrite(Tag tag)
+    {
+        Content = tag.Content;
+        Date = DateTimeOffset.UtcNow;
     }
 
     public override bool Equals(object other) =>

@@ -1,81 +1,78 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Adribot.src.data;
+using Adribot.src.data.repositories;
 using Adribot.src.entities.utilities;
+using Adribot.src.services.providers;
 using DSharpPlus;
 
 namespace Adribot.src.services;
 
 public sealed class TagService
 {
+    private readonly TagRepository _tagRepository;
     private readonly DiscordClient _client;
 
-    /// <summary>
-    /// TagId on the individual tags will be 0 when they are added later to minimise database interactions.
-    /// Do NOT depend on the ids.
-    /// </summary>
-    private List<Tag> _tags { get; }
+    private Dictionary<ulong, Dictionary<string, Tag>> _tags { get; } = [];
 
-    public TagService(DiscordClient client)
+    public TagService(TagRepository tagRepository, DiscordClientProvider discordClientProvider)
     {
-        _client = client;
+        _client = discordClientProvider.Client;
+        _tagRepository = tagRepository;
 
-        using var database = new DataManager();
-        _tags = database.GetAllInstances<Tag>().ToList();
+        _tagRepository.GetAllTags().ToList().ForEach(t => {
+            if (!_tags.ContainsKey(t.DMember.DGuild.GuildId))
+                _tags[t.DMember.DGuild.GuildId] = [];
+            
+            _tags[t.DMember.DGuild.GuildId][t.Name] = t;
+        });
+        
     }
 
-    public async Task<bool> TrySetTagAsync(Tag tag, bool shouldOverwrite = false)
+    public void SetTag(ulong guildId, ulong memberId, Tag tag)
     {
-        Tag? oldTag = null;
-        var oldTagIndex = -1;
-
-        for (var i = 0; i < _tags.Count; i++)
+        if (_tags[guildId].ContainsKey(tag.Name))
         {
-            if (_tags[i] == tag)
-                (oldTag, oldTagIndex) = (_tags[i], i);
+            _tags[guildId][tag.Name].Overwrite(tag);
+            _tagRepository.UpdateTag(_tags[guildId][tag.Name]);
         }
-
-        if (oldTag is null || shouldOverwrite)
+        else
         {
-            using var database = new DataManager();
-
-            if (oldTag is null)
-            {
-                await database.AddInstanceAsync(tag);
-                _tags.Add(tag);
-            }
-            else
-            {
-                tag.TagId = oldTag.TagId;
-                _tags[oldTagIndex] = tag;
-                database.UpdateInstance(tag);
-            }
-
-            return true;
+            _tagRepository.AddTag(guildId, memberId, tag);
+            _tags[guildId][tag.Name] = tag;
         }
-        return false;
     }
 
     public IEnumerable<Tag> GetAllTags(ulong guildId) =>
-        _tags.Where(t => t.DGuildId == guildId);
+        _tags[guildId].Values;
 
 
     public Tag? TryGetTag(string tagName, ulong guildId) =>
-        _tags.FirstOrDefault(t => t.Name == tagName && t.DGuildId == guildId);
+        _tags[guildId].GetValueOrDefault(tagName);
 
     public bool TryRemoveTag(string tagname, ulong guildId)
     {
         Tag? tag = TryGetTag(tagname, guildId);
         if (tag is not null)
         {
-            _tags.Remove(tag);
-
-            using var database = new DataManager();
-            database.RemoveInstance(tag);
+            _tagRepository.Remove(tag);
+            _tags[guildId].Remove(tagname);
 
             return true;
         }
         return false;
     }
+
+    public (Tag?, string?) CreateTempTag(ulong guildId, ulong memberId, string tagName, string tagContent, DateTimeOffset createdAt, bool allowOverride)
+    {
+        if (string.IsNullOrWhiteSpace(tagContent) || string.IsNullOrWhiteSpace(tagName))
+            return (null, $"The {nameof(tagName)} and {nameof(tagContent)} cannot be empty.");
+        
+        return !_tags[guildId].ContainsKey(tagName) || (allowOverride && _tags[guildId][tagName].DMember.MemberId == memberId) ? (new Tag {
+            Content = tagContent,
+            Date = createdAt,
+            Name = tagName
+        }, null) : (null, "Tag name already taken");
+    }
+
 }
