@@ -16,7 +16,7 @@ public class DGuild : IComparable, IDataStructure
     public string? StarEmoji { get; set; }
     public int? StarThreshold { get; set; }
 
-    public List<DMember> Members { get; } = [];
+    public List<DMember> Members { get; set; } = [];
     public List<IcsCalendar> Calendars { get; } = [];
 
     public List<DMember> GetMembersDifference(List<DMember> members)

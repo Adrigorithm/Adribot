@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Adribot.src.data;
-using Adribot.src.entities.discord;
+using Adribot.src.data.repositories;
 using Adribot.src.services.providers;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -11,23 +10,18 @@ namespace Adribot.src.services;
 
 public sealed class StarboardService : BaseTimerService
 {
+    private readonly StarboardRepository _starboardRepository;
     /// <summary>
     /// A dictionary where the Key is a guild id
     /// </summary>
-    private readonly Dictionary<ulong, (ulong channelId, DiscordEmoji starEmoji, int threshold)> _outputChannels;
+    private readonly Dictionary<ulong, (ulong channelId, string? starEmoji, int? threshold)> _outputChannels = [];
 
-    public StarboardService(DiscordClientProvider clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
+    public StarboardService(StarboardRepository starboardRepository, DiscordClientProvider clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
     {
         clientProvider.Client.MessageReactionAdded += MessageReactionAddedAsync;
 
-        var outputChannels = new List<DGuild>();
-        using (var database = new DataManager())
-        {
-            outputChannels = database.GetDGuildsStarboardNotNull();
-        }
-
-        if (outputChannels.Count > 0)
-            _outputChannels = outputChannels.ToDictionary(dg => dg.GuildId, dg => ((ulong)dg.StarboardChannel, DiscordEmoji.FromName(Client, dg.StarEmoji), (int)dg.StarThreshold));
+        _starboardRepository = starboardRepository;
+        _outputChannels = _starboardRepository.GetStarboards();
     }
 
     private async Task MessageReactionAddedAsync(DiscordClient sender, DSharpPlus.EventArgs.MessageReactionAddEventArgs args)
@@ -35,9 +29,12 @@ public sealed class StarboardService : BaseTimerService
 
         if (_outputChannels.ContainsKey(args.Guild.Id))
         {
-            (var channelId, DiscordEmoji starEmoji, var threshold) = _outputChannels[args.Guild.Id];
+#pragma warning disable IDE0007 // Use implicit type
+            (var channelId, string? starEmoji, var threshold) = _outputChannels[args.Guild.Id];
+#pragma warning restore IDE0007 // Use implicit type
 
             var starEmojiCount = args.Message.Reactions.Count(r => r.Emoji == starEmoji);
+            
             if (starEmojiCount >= threshold)
             {
                 await args.Guild.GetChannel(channelId).SendMessageAsync(new DiscordMessageBuilder().AddEmbed(new DiscordEmbedBuilder
@@ -45,7 +42,7 @@ public sealed class StarboardService : BaseTimerService
                     Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = $"{args.User.Mention}" },
                     Color = new DiscordColor(Config.EmbedColour),
                     Description = args.Message.Content,
-                    Title = $"{starEmoji.Name} reacted {starEmojiCount} times!",
+                    Title = $":{starEmoji ?? "star"}: reacted {starEmojiCount} times!",
                     Footer = new DiscordEmbedBuilder.EmbedFooter() { Text = args.Message.JumpLink.OriginalString }
                 }));
             }
@@ -54,16 +51,8 @@ public sealed class StarboardService : BaseTimerService
 
     public void Configure(ulong guildId, ulong channelId, string? emoji, int starThreshold)
     {
-        using var database = new DataManager();
+        _starboardRepository.SetStarboard(guildId, channelId, emoji, starThreshold);
 
-        DGuild guild = database.GetAllInstances<DGuild>().First(g => g.GuildId == guildId);
-        guild.StarboardChannel = channelId;
-        guild.StarEmoji = guild.StarEmoji is null
-            ? (emoji is null ? "star" : emoji)
-            : (emoji is null ? guild.StarEmoji : emoji);
-        guild.StarThreshold = starThreshold;
-
-        _outputChannels[guildId] = (channelId, DiscordEmoji.FromName(Client, $":{guild.StarEmoji}:"), starThreshold);
-        database.UpdateInstance(guild);
+        _outputChannels[guildId] = (channelId, emoji, starThreshold);
     }
 }

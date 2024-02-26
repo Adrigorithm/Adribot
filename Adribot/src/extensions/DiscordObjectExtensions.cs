@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Adribot.src.entities.discord;
+using DSharpPlus;
 using DSharpPlus.Entities;
 
 namespace Adribot.src.extensions;
@@ -12,7 +13,7 @@ public static class DiscordObjectExtensions
         new DGuild
         {
             GuildId = guild.Id,
-            Members = !includeMembers ? new() : await guild.GetAllMembersAsync().ToDMembersAsync(guild.Id)
+            Members = !includeMembers ? [] : await guild.GetAllMembersAsync().ToDMembersAsync(guild.Id)
         };
 
     /// <summary>
@@ -58,4 +59,7 @@ public static class DiscordObjectExtensions
 
         return dMembers;
     }
+
+    public static DiscordEmoji ToDiscordEmoji(this string? emojiString, DiscordClient client, string emojiNameFallback) =>
+        DiscordEmoji.FromName(client, $":{emojiString ?? emojiNameFallback}:");
 }
