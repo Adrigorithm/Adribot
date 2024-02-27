@@ -26,7 +26,7 @@ public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository
         if (_calendars.Count > 0)
         {
             var eventsToPost = new List<(int calendarId, ulong guildId, ulong channelId, Event[] events)>();
-            _calendars.ForEach(c => eventsToPost.Add((c.IcsCalendarId, c.DMember.GuildId, c.ChannelId, c.Events.Where(e => !e.IsPosted && e.End > DateTimeOffset.Now && e.End - DateTimeOffset.Now <= TimeSpan.FromMinutes(10)).ToArray())));
+            _calendars.ForEach(c => eventsToPost.Add((c.IcsCalendarId, c.DMember.DGuild.GuildId, c.ChannelId, c.Events.Where(e => !e.IsPosted && e.End > DateTimeOffset.Now && e.End - DateTimeOffset.Now <= TimeSpan.FromMinutes(10)).ToArray())));
 
             PostEvents(eventsToPost);
         }
@@ -69,20 +69,20 @@ public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository
     }
 
     public string[] GetCalendarNames(ulong guildId) =>
-        _calendars.Where(c => c.DMember.GuildId == guildId).Select(c => c.Name).ToArray();
+        _calendars.Where(c => c.DMember.DGuild.GuildId == guildId).Select(c => c.Name).ToArray();
 
     public IcsCalendar? GetCalendarByName(ulong guildId, string name) =>
-        _calendars.FirstOrDefault(c => c.DMember.GuildId == guildId && c.Name == name);
+        _calendars.FirstOrDefault(c => c.DMember.DGuild.GuildId == guildId && c.Name == name);
 
     public Event? GetNextEvent(ulong guildId) =>
-        _calendars.First(c => c.DMember.GuildId == guildId).Events.FirstOrDefault(e => e.Start - DateTime.UtcNow > TimeSpan.Zero);
+        _calendars.First(c => c.DMember.DGuild.GuildId == guildId).Events.FirstOrDefault(e => e.Start - DateTime.UtcNow > TimeSpan.Zero);
 
-    public async Task AddCalendarAsync(ulong guildId, ulong channelId, Uri? icsFileUri = null)
+    public async Task AddCalendarAsync(ulong guildId, ulong memberId, ulong channelId, Uri? icsFileUri = null)
     {
         var calendar = Calendar.Load(await GetStreamFromUri(icsFileUri));
         IEnumerable<Event> calendarEvents = calendar.Events.ToList().Select(e => e.ToEvent());
         
-        _calendars.Add(_calendarRepository.AddCalendar(calendar.Name, guildId, channelId, calendarEvents));
+        _calendars.Add(_calendarRepository.AddCalendar(calendar.Name, guildId, memberId, channelId, calendarEvents));
 
         static async Task<Stream> GetStreamFromUri(Uri uri)
         {
@@ -104,7 +104,7 @@ public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository
     {
         if (!member.Permissions.HasPermission(Permissions.ManageMessages) || member.Id != calendar.DMember.MemberId)
             return false;
-            
+
         _calendars.Remove(calendar);
         _calendarRepository.RemoveCalendar(calendar);
 

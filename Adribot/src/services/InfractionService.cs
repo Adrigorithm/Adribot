@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Adribot.src.constants.enums;
-using Adribot.src.data;
 using Adribot.src.data.repositories;
 using Adribot.src.entities.discord;
 using Adribot.src.services.providers;
@@ -35,7 +34,7 @@ public sealed class InfractionService : BaseTimerService
         {
             if (!_infractions.Any(i => i.DMember.MemberId == member.Id && i.Type == InfractionType.HOIST && !i.IsExpired))
             {
-                Infraction infraction = _infractionRepository.AddInfraction(member.Id, TimeSpan.FromHours(24), InfractionType.HOIST, "Hoisting is poop");
+                Infraction infraction = _infractionRepository.AddInfraction(member.Guild.Id, member.Id, DateTimeOffset.UtcNow.AddHours(24), InfractionType.HOIST, "Hoisting is poop");
                 AddInfraction(infraction);
             }
 
@@ -54,7 +53,6 @@ public sealed class InfractionService : BaseTimerService
     {
         if (_infractions.Count > 0)
         {
-            using var database = new DataManager();
             Infraction? infraction = _infractions.FirstOrDefault(i => i.EndDate.CompareTo(DateTimeOffset.UtcNow) <= 0);
 
             if (infraction is not null)
@@ -79,7 +77,14 @@ public sealed class InfractionService : BaseTimerService
         }
     }
 
-    private void AddInfraction(Infraction infraction)
+    public void AddInfraction(ulong guildId, ulong memberId, DateTimeOffset endDate, InfractionType type, string reason, bool isExpired = false)
+    {
+        Infraction infraction = _infractionRepository.AddInfraction(guildId, memberId, endDate, type, reason, isExpired);
+
+        AddInfraction(infraction);
+    }
+
+    public void AddInfraction(Infraction infraction)
     {
         var isAdded = false;
         for (var i = 0; i < _infractions.Count; i++)
@@ -92,6 +97,6 @@ public sealed class InfractionService : BaseTimerService
         }
 
         if (!isAdded)
-            _infractions.Add(infraction);
+            _infractions.Add(infraction);   
     }
 }

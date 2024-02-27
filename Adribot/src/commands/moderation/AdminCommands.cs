@@ -14,15 +14,13 @@ using DSharpPlus.SlashCommands.Attributes;
 
 namespace Adribot.src.commands.moderation;
 
-public class AdminCommands : ApplicationCommandModule
+public class AdminCommands(InfractionService _infractionService) : ApplicationCommandModule
 {
-    public InfractionService InfractionService { private get; set; }
-
     [SlashCommand("Clear", "Deletes given amount of messages")]
     [RequirePermissionOrDev(Permissions.ManageMessages)]
     public async Task DeleteMessagesAsync(InteractionContext ctx, [Option("Amount", "Amount of messages to delete"), Minimum(1), Maximum(100)] long amount)
     {
-        List<DiscordMessage> messages = new();
+        List<DiscordMessage> messages = [];
 
         await foreach (DiscordMessage m in ctx.Channel.GetMessagesAsync((int)amount))
             messages.Add(m);
@@ -57,14 +55,7 @@ public class AdminCommands : ApplicationCommandModule
     {
         DateTimeOffset now = DateTimeOffset.UtcNow;
         DateTimeOffset endDate = type.ToEndDate((int)factor, now);
-        //await TimerServiceProvider.AddDataAsync(new Infraction{
-        //    Date = now,
-        //    EndDate = endDate,
-        //    DGuildId = ctx.Guild.Id,
-        //    isExpired = false,
-        //    DMemberId = member.Id,
-        //    Type = InfractionType.TIMEOUT
-        //});
+
         await ((DiscordMember)member).TimeoutAsync(endDate, reason);
     }
 
@@ -74,14 +65,9 @@ public class AdminCommands : ApplicationCommandModule
     {
         DateTimeOffset now = DateTimeOffset.UtcNow;
         DateTimeOffset endDate = type.ToEndDate((int)factor, now);
-        //await TimerServiceProvider.AddDataAsync(new Infraction{
-        //    Date = now,
-        //    EndDate = endDate,
-        //    DGuildId = ctx.Guild.Id,
-        //    isExpired = false,
-        //    DMemberId = member.Id,
-        //    Type = InfractionType.BAN
-        //});
+
+        _infractionService.AddInfraction(ctx.Guild.Id, ctx.Member.Id, endDate, InfractionType.BAN, reason);
+
         await ((DiscordMember)member).BanAsync(Convert.ToInt16(deleteMessages), reason);
     }
 }

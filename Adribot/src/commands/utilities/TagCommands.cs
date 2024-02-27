@@ -47,7 +47,7 @@ public class TagCommands(TagService _tagService) : ApplicationCommandModule
                         new DiscordMessageBuilder().WithContent(tempTag.Item2)).AsEphemeral());
                 else
                 {
-                    _tagService.SetTag(ctx.Guild.Id, tempTag.Item1);
+                    _tagService.SetTag(ctx.Guild.Id, ctx.Member.Id, tempTag.Item1);
 
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                         new DiscordMessageBuilder().WithContent("Tag `" + tagName + "` craeted." + Environment.NewLine + "Check it out using `/tag {" + tagName + "} {GET|INFO}`")).AsEphemeral());

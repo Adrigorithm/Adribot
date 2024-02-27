@@ -26,7 +26,7 @@ public class CalendarCommands(IcsCalendarService _icsCalendarService) : Applicat
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent($"Calendar `{calendarName}` for guild [{ctx.Guild.Id}] already exists or is invalid. Try another name or remove it first.")).AsEphemeral());
                 else
                 {
-                    await _icsCalendarService.AddCalendarAsync(ctx.Guild.Id, channelId != -1 ? (ulong)channelId : ctx.Channel.Id, new Uri(uri));
+                    await _icsCalendarService.AddCalendarAsync(ctx.Guild.Id, ctx.Member.Id, channelId != -1 ? (ulong)channelId : ctx.Channel.Id, new Uri(uri));
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent($"Calendar `{calendarName}` for guild [{ctx.Guild.Id}] was added successfully.")).AsEphemeral());
                 }
 
@@ -36,8 +36,8 @@ public class CalendarCommands(IcsCalendarService _icsCalendarService) : Applicat
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent($"Calendar `{calendarName}` for guild [{ctx.Guild.Id}] cannot be deleted because it does not exist.")).AsEphemeral());
                 else
                 {
-                    _icsCalendarService.DeleteCalendarAsync(calendar);
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent($"Calendar `{calendarName}` for guild [{ctx.Guild.Id}] was added successfully.")).AsEphemeral());
+                    var isDeleted = _icsCalendarService.TryDeleteCalendar(ctx.Member, calendar);
+                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent($"Calendar `{calendarName}` for guild [{ctx.Guild.Id}] {(isDeleted ? "was added successfully." : "is not to be deleted by you.")}")).AsEphemeral());
                 }
 
                 break;
