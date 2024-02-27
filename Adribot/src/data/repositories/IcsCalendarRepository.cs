@@ -9,7 +9,7 @@ namespace Adribot.src.data.repositories;
 public class IcsCalendarRepository(AdribotContext _botContext)
 {
     public IEnumerable<IcsCalendar> GetIcsCalendarsNotExpired() =>
-        _botContext.IcsCalendars.Include(c => c.Events).Include(c => c.DGuild).Where(c => c.Events.Last().End > DateTimeOffset.Now);
+        _botContext.IcsCalendars.Include(c => c.Events).Include(c => c.DMember).Where(c => c.Events.Last().End > DateTimeOffset.Now);
 
     public void ChangeEventsPostedStatus(Dictionary<int, List<(int eventId, bool posted)>> events)
     {
@@ -27,7 +27,7 @@ public class IcsCalendarRepository(AdribotContext _botContext)
         var calendar = new IcsCalendar {
             ChannelId = channelId,
             Name = calendarName,
-            DGuild = _botContext.DGuilds.First(dg => dg.GuildId == guildId),
+            DMember = _botContext.DGuilds.First(dg => dg.GuildId == guildId),
             Events = events.ToList()
         };
 

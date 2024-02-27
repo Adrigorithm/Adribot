@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Adribot.src.data;
-using Adribot.src.entities.utilities;
 using DSharpPlus.Entities;
 
 namespace Adribot.src.entities.discord;
@@ -17,7 +16,6 @@ public class DGuild : IComparable, IDataStructure
     public int? StarThreshold { get; set; }
 
     public List<DMember> Members { get; set; } = [];
-    public List<IcsCalendar> Calendars { get; } = [];
 
     public List<DMember> GetMembersDifference(List<DMember> members)
     {
@@ -69,7 +67,6 @@ public class DGuild : IComparable, IDataStructure
             Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = "<@608275633218519060>" },
             Title = GuildId.ToString(),
             Description = $"This guild contains {Members.Count} members.\n" +
-                $"Starred messages ({StarEmoji} >=3) are sent to channel {StarboardChannel}.\n" +
-                $"For this guild, {Calendars.Count(c => c.DGuild.GuildId == GuildId)} calendars are registered."
+                $"Starred messages ({StarEmoji} >=3) are sent to channel {StarboardChannel}."
         };
 }

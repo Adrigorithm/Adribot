@@ -17,6 +17,7 @@ public class DMember : IComparable, IDataStructure
     public int DGuildId { get; set; }
     public DGuild DGuild { get; set; }
 
+    public List<IcsCalendar> Calendars { get; } = [];
     public List<Infraction> Infractions { get; } = [];
     public List<Reminder> Reminders { get; } = [];
     public List<Tag> Tags { get; } = [];
@@ -42,7 +43,8 @@ public class DMember : IComparable, IDataStructure
             Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = "<@608275633218519060>" },
             Title = MemberId.ToString(),
             Description = $"This member has set {Reminders.Count} reminders and {Tags.Count} tags.\n" +
-                $"They have {Infractions.Count} infractions of which {Infractions.Count(i => !i.IsExpired)} are still pending."
+                $"They have {Infractions.Count} infractions of which {Infractions.Count(i => !i.IsExpired)} are still pending.\n" +
+                $"They have registered {Calendars.Count} calendars in total."
         };
 
     public override int GetHashCode() => MemberId.GetHashCode();

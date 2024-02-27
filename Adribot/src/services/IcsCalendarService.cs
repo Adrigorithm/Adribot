@@ -8,12 +8,13 @@ using Adribot.src.data.repositories;
 using Adribot.src.entities.utilities;
 using Adribot.src.extensions;
 using Adribot.src.services.providers;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using Ical.Net;
 
 namespace Adribot.src.services;
 
-public sealed class DaySchemeService(IcsCalendarRepository _calendarRepository, SecretsProvider secretsProvider, DiscordClientProvider clientProvider, int timerInterval = 60) : BaseTimerService(clientProvider, secretsProvider, timerInterval)
+public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository, SecretsProvider secretsProvider, DiscordClientProvider clientProvider, int timerInterval = 60) : BaseTimerService(clientProvider, secretsProvider, timerInterval)
 {
     private List<IcsCalendar> _calendars;
 
@@ -25,7 +26,7 @@ public sealed class DaySchemeService(IcsCalendarRepository _calendarRepository, 
         if (_calendars.Count > 0)
         {
             var eventsToPost = new List<(int calendarId, ulong guildId, ulong channelId, Event[] events)>();
-            _calendars.ForEach(c => eventsToPost.Add((c.IcsCalendarId, c.DGuild.GuildId, c.ChannelId, c.Events.Where(e => !e.IsPosted && e.End > DateTimeOffset.Now && e.End - DateTimeOffset.Now <= TimeSpan.FromMinutes(10)).ToArray())));
+            _calendars.ForEach(c => eventsToPost.Add((c.IcsCalendarId, c.DMember.GuildId, c.ChannelId, c.Events.Where(e => !e.IsPosted && e.End > DateTimeOffset.Now && e.End - DateTimeOffset.Now <= TimeSpan.FromMinutes(10)).ToArray())));
 
             PostEvents(eventsToPost);
         }
@@ -68,13 +69,13 @@ public sealed class DaySchemeService(IcsCalendarRepository _calendarRepository, 
     }
 
     public string[] GetCalendarNames(ulong guildId) =>
-        _calendars.Where(c => c.DGuild.GuildId == guildId).Select(c => c.Name).ToArray();
+        _calendars.Where(c => c.DMember.GuildId == guildId).Select(c => c.Name).ToArray();
 
     public IcsCalendar? GetCalendarByName(ulong guildId, string name) =>
-        _calendars.FirstOrDefault(c => c.DGuild.GuildId == guildId && c.Name == name);
+        _calendars.FirstOrDefault(c => c.DMember.GuildId == guildId && c.Name == name);
 
     public Event? GetNextEvent(ulong guildId) =>
-        _calendars.First(c => c.DGuild.GuildId == guildId).Events.FirstOrDefault(e => e.Start - DateTime.UtcNow > TimeSpan.Zero);
+        _calendars.First(c => c.DMember.GuildId == guildId).Events.FirstOrDefault(e => e.Start - DateTime.UtcNow > TimeSpan.Zero);
 
     public async Task AddCalendarAsync(ulong guildId, ulong channelId, Uri? icsFileUri = null)
     {
@@ -99,10 +100,15 @@ public sealed class DaySchemeService(IcsCalendarRepository _calendarRepository, 
         }
     }
 
-    public void DeleteCalendarAsync(IcsCalendar calendar)
+    public bool TryDeleteCalendar(DiscordMember member, IcsCalendar calendar)
     {
+        if (!member.Permissions.HasPermission(Permissions.ManageMessages) || member.Id != calendar.DMember.MemberId)
+            return false;
+            
         _calendars.Remove(calendar);
         _calendarRepository.RemoveCalendar(calendar);
+
+        return true;
     }
 
 }

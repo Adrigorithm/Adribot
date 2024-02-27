@@ -3,6 +3,7 @@ using Adribot.src.commands.fun;
 using Adribot.src.commands.moderation;
 using Adribot.src.commands.utilities;
 using Adribot.src.data;
+using Adribot.src.data.repositories;
 using Adribot.src.events;
 using Adribot.src.services;
 using Adribot.src.services.providers;
@@ -31,9 +32,14 @@ public class Bot
             .AddSingleton(secrets)
             .AddDbContext<AdribotContext>()
             .AddSingleton(new DiscordClientProvider(_client))
+            .AddSingleton<InfractionRepository>()
+            .AddSingleton<RemindMeRepository>()
+            .AddSingleton<IcsCalendarRepository>()
+            .AddSingleton<StarboardRepository>()
+            .AddSingleton<TagRepository>()
             .AddSingleton<BaseTimerService, InfractionService>()
             .AddSingleton<BaseTimerService, RemindMeSerivce>()
-            .AddSingleton<BaseTimerService, DaySchemeService>()
+            .AddSingleton<BaseTimerService, IcsCalendarService>()
             .AddSingleton<BaseTimerService, StarboardService>()
             .AddSingleton<TagService>()
             .BuildServiceProvider();

@@ -14,8 +14,8 @@ public class IcsCalendar : IDataStructure
 
     public List<Event> Events { get; set; } = [];
 
-    public int DGuildId { get; set; }
-    public DGuild DGuild { get; set; }
+    public int DMemberId { get; set; }
+    public DMember DMember { get; set; }
 
     public DiscordEmbedBuilder GenerateEmbedBuilder() =>
         new DiscordEmbedBuilder
