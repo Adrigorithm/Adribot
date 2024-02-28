@@ -7,7 +7,7 @@ namespace Adribot.src.entities.discord;
 
 public class Infraction : IDataStructure
 {
-    public int InfractionId { get; }
+    public int InfractionId { get; set; }
 
     public DateTimeOffset Date { get; set; }
     public DateTimeOffset EndDate { get; set; }

@@ -20,13 +20,14 @@ public sealed class TagService
         _client = discordClientProvider.Client;
         _tagRepository = tagRepository;
 
-        _tagRepository.GetAllTags().ToList().ForEach(t => {
+        _tagRepository.GetAllTags().ToList().ForEach(t =>
+        {
             if (!_tags.ContainsKey(t.DMember.DGuild.GuildId))
                 _tags[t.DMember.DGuild.GuildId] = [];
-            
+
             _tags[t.DMember.DGuild.GuildId][t.Name] = t;
         });
-        
+
     }
 
     public void SetTag(ulong guildId, ulong memberId, Tag tag)
@@ -63,16 +64,13 @@ public sealed class TagService
         return false;
     }
 
-    public (Tag?, string?) CreateTempTag(ulong guildId, ulong memberId, string tagName, string tagContent, DateTimeOffset createdAt, bool allowOverride)
-    {
-        if (string.IsNullOrWhiteSpace(tagContent) || string.IsNullOrWhiteSpace(tagName))
-            return (null, $"The {nameof(tagName)} and {nameof(tagContent)} cannot be empty.");
-        
-        return !_tags[guildId].ContainsKey(tagName) || (allowOverride && _tags[guildId][tagName].DMember.MemberId == memberId) ? (new Tag {
-            Content = tagContent,
-            Date = createdAt,
-            Name = tagName
-        }, null) : (null, "Tag name already taken");
-    }
+    public (Tag?, string?) CreateTempTag(ulong guildId, ulong memberId, string tagName, string tagContent, DateTimeOffset createdAt, bool allowOverride) => string.IsNullOrWhiteSpace(tagContent) || string.IsNullOrWhiteSpace(tagName)
+            ? (null, $"The {nameof(tagName)} and {nameof(tagContent)} cannot be empty.")
+            : !_tags[guildId].ContainsKey(tagName) || (allowOverride && _tags[guildId][tagName].DMember.MemberId == memberId) ? (new Tag
+            {
+                Content = tagContent,
+                Date = createdAt,
+                Name = tagName
+            }, null) : (null, "Tag name already taken");
 
 }

@@ -81,7 +81,7 @@ public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository
     {
         var calendar = Calendar.Load(await GetStreamFromUri(icsFileUri));
         IEnumerable<Event> calendarEvents = calendar.Events.ToList().Select(e => e.ToEvent());
-        
+
         _calendars.Add(_calendarRepository.AddCalendar(calendar.Name, guildId, memberId, channelId, calendarEvents));
 
         static async Task<Stream> GetStreamFromUri(Uri uri)

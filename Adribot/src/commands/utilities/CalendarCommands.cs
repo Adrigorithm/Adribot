@@ -23,7 +23,9 @@ public class CalendarCommands(IcsCalendarService _icsCalendarService) : Applicat
         {
             case CalendarCrudOperation.NEW:
                 if (calendar is not null || string.IsNullOrEmpty(calendarName))
+                {
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent($"Calendar `{calendarName}` for guild [{ctx.Guild.Id}] already exists or is invalid. Try another name or remove it first.")).AsEphemeral());
+                }
                 else
                 {
                     await _icsCalendarService.AddCalendarAsync(ctx.Guild.Id, ctx.Member.Id, channelId != -1 ? (ulong)channelId : ctx.Channel.Id, new Uri(uri));
@@ -33,7 +35,9 @@ public class CalendarCommands(IcsCalendarService _icsCalendarService) : Applicat
                 break;
             case CalendarCrudOperation.DELETE:
                 if (calendar is null)
+                {
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent($"Calendar `{calendarName}` for guild [{ctx.Guild.Id}] cannot be deleted because it does not exist.")).AsEphemeral());
+                }
                 else
                 {
                     var isDeleted = _icsCalendarService.TryDeleteCalendar(ctx.Member, calendar);

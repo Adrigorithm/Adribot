@@ -7,7 +7,7 @@ namespace Adribot.src.entities.utilities;
 
 public class Event : IDataStructure
 {
-    public int EventId { get; }
+    public int EventId { get; set; }
 
     public DateTimeOffset Start { get; set; }
     public DateTimeOffset End { get; set; }

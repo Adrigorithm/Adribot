@@ -20,7 +20,8 @@ public class RemindMeRepository(AdribotContext _botContext)
     public Reminder AddRemindMe(ulong guildId, ulong memberId, ulong channelId, string content, DateTimeOffset endDate)
     {
         DateTimeOffset now = DateTimeOffset.Now;
-        var reminder = new Reminder {
+        var reminder = new Reminder
+        {
             Channel = channelId,
             Content = content,
             Date = now,
@@ -33,5 +34,5 @@ public class RemindMeRepository(AdribotContext _botContext)
 
         return reminder;
     }
-        
+
 }

@@ -22,9 +22,10 @@ public class IcsCalendarRepository(AdribotContext _botContext)
         _botContext.SaveChanges();
     }
 
-    public IcsCalendar AddCalendar(string calendarName, ulong guildId, ulong memberId,  ulong channelId, IEnumerable<Event> events)
+    public IcsCalendar AddCalendar(string calendarName, ulong guildId, ulong memberId, ulong channelId, IEnumerable<Event> events)
     {
-        var calendar = new IcsCalendar {
+        var calendar = new IcsCalendar
+        {
             ChannelId = channelId,
             Name = calendarName,
             DMember = _botContext.DMembers.Include(dm => dm.DGuild).First(dm => dm.MemberId == memberId && dm.DGuild.GuildId == guildId),

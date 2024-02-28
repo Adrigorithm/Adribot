@@ -97,6 +97,6 @@ public sealed class InfractionService : BaseTimerService
         }
 
         if (!isAdded)
-            _infractions.Add(infraction);   
+            _infractions.Add(infraction);
     }
 }

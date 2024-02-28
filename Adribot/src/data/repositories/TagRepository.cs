@@ -7,7 +7,7 @@ namespace Adribot.src.data.repositories;
 
 public class TagRepository(AdribotContext _botContext)
 {
-    public IEnumerable<Tag> GetAllTags() => 
+    public IEnumerable<Tag> GetAllTags() =>
         _botContext.Tags.Include(t => t.DMember).Include(t => t.DMember.DGuild);
 
     public Tag AddTag(ulong guildId, ulong memberId, Tag tag)

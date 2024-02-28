@@ -41,10 +41,12 @@ public class TagCommands(TagService _tagService) : ApplicationCommandModule
             case CrudOperation.NEW:
             case CrudOperation.SET:
                 (Tag?, string?) tempTag = _tagService.CreateTempTag(ctx.Guild.Id, ctx.Member.Id, tagName, newContent, ctx.Interaction.CreationTimestamp, operation == CrudOperation.SET);
-                
+
                 if (tempTag.Item1 is null)
+                {
                     await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                         new DiscordMessageBuilder().WithContent(tempTag.Item2)).AsEphemeral());
+                }
                 else
                 {
                     _tagService.SetTag(ctx.Guild.Id, ctx.Member.Id, tempTag.Item1);

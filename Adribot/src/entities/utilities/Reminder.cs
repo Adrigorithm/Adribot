@@ -7,7 +7,7 @@ namespace Adribot.src.entities.utilities;
 
 public class Reminder : IDataStructure
 {
-    public int ReminderId { get; }
+    public int ReminderId { get; set; }
 
     public ulong? Channel { get; set; }
     public DateTimeOffset Date { get; set; }

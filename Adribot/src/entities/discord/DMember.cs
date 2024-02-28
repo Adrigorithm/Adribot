@@ -9,18 +9,18 @@ namespace Adribot.src.entities.discord;
 
 public class DMember : IComparable, IDataStructure
 {
-    public int DMemberId { get; }
+    public int DMemberId { get; set; }
 
     public ulong MemberId { get; set; }
     public string Mention { get; set; }
-    
+
     public int DGuildId { get; set; }
     public DGuild DGuild { get; set; }
 
-    public List<IcsCalendar> Calendars { get; } = [];
-    public List<Infraction> Infractions { get; } = [];
-    public List<Reminder> Reminders { get; } = [];
-    public List<Tag> Tags { get; } = [];
+    public List<IcsCalendar> Calendars { get; set; } = [];
+    public List<Infraction> Infractions { get; set; } = [];
+    public List<Reminder> Reminders { get; set; } = [];
+    public List<Tag> Tags { get; set; } = [];
 
     public int CompareTo(object? obj)
     {

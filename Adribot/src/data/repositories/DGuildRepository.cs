@@ -28,7 +28,7 @@ public class DGuildRepository(AdribotContext _botContext)
     public DGuild AddDGuild(DGuild dGuild)
     {
         EntityEntry<DGuild> dGuildUpdated = _botContext.DGuilds.Add(dGuild);
-        
+
         _botContext.Add(dGuildUpdated);
 
         return dGuildUpdated.Entity;
@@ -46,13 +46,16 @@ public class DGuildRepository(AdribotContext _botContext)
     public void AddMembersToGuild(ulong guildId, IEnumerable<(ulong, string)> membersToAdd)
     {
         DGuild guild = _botContext.DGuilds.First(dg => dg.GuildId == guildId);
-        
+
         foreach ((ulong, string) member in membersToAdd)
-            guild.Members.Add(new DMember {
+        {
+            guild.Members.Add(new DMember
+            {
                 DGuild = guild,
                 MemberId = member.Item1,
                 Mention = member.Item2
             });
+        }
 
         _botContext.Update(guild);
         _botContext.SaveChanges();

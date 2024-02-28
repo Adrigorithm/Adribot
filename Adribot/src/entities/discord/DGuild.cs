@@ -8,7 +8,7 @@ namespace Adribot.src.entities.discord;
 
 public class DGuild : IComparable, IDataStructure
 {
-    public int DGuildId { get; }
+    public int DGuildId { get; set; }
 
     public ulong GuildId { get; set; }
     public ulong? StarboardChannel { get; set; }

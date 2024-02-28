@@ -7,7 +7,7 @@ namespace Adribot.src.entities.utilities;
 
 public class Tag : IDataStructure
 {
-    public int TagId { get; }
+    public int TagId { get; set; }
 
     public string Name { get; set; }
     public string Content { get; set; }

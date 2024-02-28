@@ -34,7 +34,7 @@ public sealed class StarboardService : BaseTimerService
 #pragma warning restore IDE0007 // Use implicit type
 
             var starEmojiCount = args.Message.Reactions.Count(r => r.Emoji == starEmoji);
-            
+
             if (starEmojiCount >= threshold)
             {
                 await args.Guild.GetChannel(channelId).SendMessageAsync(new DiscordMessageBuilder().AddEmbed(new DiscordEmbedBuilder

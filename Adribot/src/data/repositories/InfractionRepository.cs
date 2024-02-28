@@ -15,7 +15,8 @@ public class InfractionRepository(AdribotContext _botContext)
     public Infraction AddInfraction(ulong guildId, ulong memberId, DateTimeOffset endDate, InfractionType type, string reason = "No reason provided", bool isExpired = false)
     {
         DateTimeOffset now = DateTimeOffset.UtcNow;
-        var infraction = new Infraction {
+        var infraction = new Infraction
+        {
             Date = now,
             DMember = _botContext.DMembers.Include(dm => dm.DGuild).First(dm => dm.MemberId == memberId && dm.DGuild.GuildId == guildId),
             EndDate = endDate,

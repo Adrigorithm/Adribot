@@ -7,7 +7,7 @@ namespace Adribot.src.entities.utilities;
 
 public class IcsCalendar : IDataStructure
 {
-    public int IcsCalendarId { get; }
+    public int IcsCalendarId { get; set; }
 
     public ulong ChannelId { get; set; }
     public string Name { get; set; }
