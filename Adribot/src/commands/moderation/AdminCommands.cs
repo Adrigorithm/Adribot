@@ -17,7 +17,7 @@ namespace Adribot.src.commands.moderation;
 public class AdminCommands(InfractionService _infractionService) : ApplicationCommandModule
 {
     [SlashCommand("Clear", "Deletes given amount of messages")]
-    [RequirePermissionOrDev(Permissions.ManageMessages)]
+    [RequirePermissionOrDev(135081249017430016, Permissions.ManageMessages)]
     public async Task DeleteMessagesAsync(InteractionContext ctx, [Option("Amount", "Amount of messages to delete"), Minimum(1), Maximum(100)] long amount)
     {
         List<DiscordMessage> messages = [];

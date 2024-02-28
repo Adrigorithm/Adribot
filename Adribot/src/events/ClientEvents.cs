@@ -1,11 +1,11 @@
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Adribot.src.data;
-using Adribot.src.entities.discord;
+using Adribot.src.data.repositories;
 using Adribot.src.extensions;
-using Adribot.src.helpers;
+using Adribot.src.services.providers;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -16,65 +16,55 @@ namespace Adribot.src.events;
 
 public class ClientEvents
 {
-    private readonly DiscordClient _client;
+    private readonly DiscordClientProvider _clientProvider;
+    private readonly DGuildRepository _dGuildRepository;
 
-    public bool UseMessageCreated;
-    public bool UseGuildDownloadCompleted;
-
-    // Slashies
-    public bool UseSlashCommandErrored;
-
-    public ClientEvents(DiscordClient client) =>
-        _client = client;
-
-    public void Attach()
+    public ClientEvents(DiscordClientProvider clientProvider, DGuildRepository dGuildRepository)
     {
-        SlashCommandsExtension slashies = _client.GetExtension<SlashCommandsExtension>();
+        _clientProvider = clientProvider;
+        _dGuildRepository = dGuildRepository;
 
-        if (UseMessageCreated)
-            _client.MessageCreated += MessageCreatedAsync;
-        if (UseSlashCommandErrored)
-            slashies.SlashCommandErrored += SlashCommandErrored;
-        if (UseGuildDownloadCompleted)
-            _client.GuildDownloadCompleted += GuildDownloadCompletedAsync;
+        SlashCommandsExtension slashies = _clientProvider.Client.GetExtension<SlashCommandsExtension>();
+
+        _clientProvider.Client.MessageCreated += MessageCreatedAsync;
+        slashies.SlashCommandErrored += SlashCommandErrored;
+        _clientProvider.Client.GuildDownloadCompleted += GuildDownloadCompletedAsync;
     }
 
     private async Task GuildDownloadCompletedAsync(DiscordClient sender, GuildDownloadCompletedEventArgs e)
     {
-        List<DMember> membersToAdd = new();
+        IEnumerable<DiscordGuild> guilds = sender.Guilds.Values;
+        FrozenDictionary<ulong, ulong[]> guildMembers = _dGuildRepository.GetGuildsWithMembers();
 
-        using (var database = new DataManager())
+        for (var i = 0; i < guilds.Count(); i++)
         {
-            IEnumerable<DiscordGuild> guilds = sender.Guilds.Values;
-            IEnumerable<DGuild> cachedGuilds = database.GetAllInstances<DGuild>();
+            DiscordGuild guildCurrent = guilds.ElementAt(i);
+            var isCachedGuild = guildMembers.ContainsKey(guildCurrent.Id);
 
-            List<DGuild> guildsToAdd = new();
-
-            for (var i = 0; i < guilds.Count(); i++)
+            if (!isCachedGuild)
             {
-                DiscordGuild guildCurrent = guilds.ElementAt(i);
-                DGuild? selectedGuild = cachedGuilds.Any() ? cachedGuilds.FirstOrDefault(g => g.GuildId == guildCurrent.Id) : null;
-                if (selectedGuild is null)
-                {
-                    guildsToAdd.Add(await guildCurrent.ToDGuildAsync(false));
-                    membersToAdd.AddRange(await guildCurrent.GetAllMembersAsync().ToDMembersAsync(guildCurrent.Id));
-                }
-                else
-                {
-                    foreach (DMember member in selectedGuild.GetMembersDifference(await guildCurrent.GetAllMembersAsync().ToDMembersAsync(guildCurrent.Id)))
-                    {
-                        member.DGuildId = selectedGuild.GuildId;
-                        membersToAdd.Add(member);
-                    }
-                }
+                _ = _dGuildRepository.AddDGuild(guildCurrent.ToDGuild());
+                List<(ulong, string)> membersToAdd = [];
+
+                await foreach (DiscordMember member in guildCurrent.GetAllMembersAsync())
+                    membersToAdd.Add((member.Id, member.Mention));
+
+                _dGuildRepository.AddMembersToGuild(guildCurrent.Id, membersToAdd);
             }
+            else
+            {
+                var cachedMembers = guildMembers[guildCurrent.Id].ToHashSet();
+                List<(ulong, string)> membersToAdd = [];
 
-            FakeExtensions.PrintFormat(guildsToAdd);
-            await database.AddAllInstancesAsync(guildsToAdd, true);
+                foreach (KeyValuePair<ulong, DiscordMember> newMember in guildCurrent.Members)
+                {
+                    if (cachedMembers.Add(newMember.Key))
+                        membersToAdd.Add((newMember.Key, newMember.Value.Mention));
+                }
+
+                _dGuildRepository.AddMembersToGuild(guildCurrent.Id, membersToAdd);
+            }
         }
-
-        using var databaseMembers = new DataManager();
-        await databaseMembers.AddAllInstancesAsync(membersToAdd);
     }
 
     private Task SlashCommandErrored(SlashCommandsExtension sender, SlashCommandErrorEventArgs e)

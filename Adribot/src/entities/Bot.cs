@@ -15,7 +15,6 @@ namespace Adribot.src.entities;
 
 public class Bot
 {
-    private ClientEvents? _clientEvents;
     private readonly DiscordClient _client;
 
     public Bot()
@@ -32,11 +31,13 @@ public class Bot
             .AddSingleton(secrets)
             .AddDbContext<AdribotContext>()
             .AddSingleton(new DiscordClientProvider(_client))
+            .AddSingleton<DGuildRepository>()
             .AddSingleton<InfractionRepository>()
             .AddSingleton<RemindMeRepository>()
             .AddSingleton<IcsCalendarRepository>()
-            .AddSingleton<StarboardRepository>()
+            .AddSingleton<DGuildRepository>()
             .AddSingleton<TagRepository>()
+            .AddSingleton<ClientEvents>()
             .AddSingleton<BaseTimerService, InfractionService>()
             .AddSingleton<BaseTimerService, RemindMeSerivce>()
             .AddSingleton<BaseTimerService, IcsCalendarService>()
@@ -55,19 +56,6 @@ public class Bot
         slashies.RegisterCommands<UtilityCommands>(1023986117428658187);
         slashies.RegisterCommands<TagCommands>(1023986117428658187);
         slashies.RegisterCommands<CalendarCommands>(1023986117428658187);
-
-        AttachEvents();
-    }
-
-    private void AttachEvents()
-    {
-        _clientEvents = new(_client)
-        {
-            UseMessageCreated = true,
-            UseSlashCommandErrored = true,
-            UseGuildDownloadCompleted = true,
-        };
-        _clientEvents.Attach();
     }
 
     public async Task StartAsync() =>

@@ -10,13 +10,13 @@ namespace Adribot.src.services;
 
 public sealed class StarboardService : BaseTimerService
 {
-    private readonly StarboardRepository _starboardRepository;
+    private readonly DGuildRepository _starboardRepository;
     /// <summary>
     /// A dictionary where the Key is a guild id
     /// </summary>
     private readonly Dictionary<ulong, (ulong channelId, string? starEmoji, int? threshold)> _outputChannels = [];
 
-    public StarboardService(StarboardRepository starboardRepository, DiscordClientProvider clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
+    public StarboardService(DGuildRepository starboardRepository, DiscordClientProvider clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
     {
         clientProvider.Client.MessageReactionAdded += MessageReactionAddedAsync;
 
