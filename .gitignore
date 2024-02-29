@@ -365,3 +365,4 @@ FodyWeavers.xsd
 Adribot/secret/
 Adribot/temp/*.zip
 Adribot/Migrations/
+Adribot/src/data/AdribotMigrationsContext.cs

@@ -7,7 +7,7 @@ namespace Adribot.src.services.providers;
 
 public class SecretsProvider
 {
-    private const string ConfigPath = "../../../secret/config.json";
+    private const string ConfigPath = "secret/config.json";
 
     public ConfigValueType Config { get; init; }
 
