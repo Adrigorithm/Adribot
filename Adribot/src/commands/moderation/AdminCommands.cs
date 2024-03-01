@@ -14,7 +14,7 @@ using DSharpPlus.SlashCommands.Attributes;
 
 namespace Adribot.src.commands.moderation;
 
-public class AdminCommands(InfractionService _infractionService) : ApplicationCommandModule
+public class AdminCommands(InfractionService _infractionService, EventsDataService _eventsDataService) : ApplicationCommandModule
 {
     [SlashCommand("Clear", "Deletes given amount of messages")]
     [RequirePermissionOrDev(135081249017430016, Permissions.ManageMessages)]

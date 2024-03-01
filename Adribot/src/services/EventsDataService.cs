@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,25 +8,19 @@ using Adribot.src.services.providers;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using DSharpPlus.SlashCommands;
-using DSharpPlus.SlashCommands.EventArgs;
 
-namespace Adribot.src.events;
+namespace Adribot.src.services;
 
-public class ClientEvents
+public class EventsDataService
 {
     private readonly DiscordClientProvider _clientProvider;
     private readonly DGuildRepository _dGuildRepository;
 
-    public ClientEvents(DiscordClientProvider clientProvider, DGuildRepository dGuildRepository)
+    public EventsDataService(DiscordClientProvider clientProvider, DGuildRepository dGuildRepository)
     {
         _clientProvider = clientProvider;
         _dGuildRepository = dGuildRepository;
 
-        SlashCommandsExtension slashies = _clientProvider.Client.GetExtension<SlashCommandsExtension>();
-
-        _clientProvider.Client.MessageCreated += MessageCreatedAsync;
-        slashies.SlashCommandErrored += SlashCommandErrored;
         _clientProvider.Client.GuildDownloadCompleted += GuildDownloadCompletedAsync;
     }
 
@@ -64,35 +57,6 @@ public class ClientEvents
 
                 _dGuildRepository.AddMembersToGuild(guildCurrent.Id, membersToAdd);
             }
-        }
-    }
-
-    private Task SlashCommandErrored(SlashCommandsExtension sender, SlashCommandErrorEventArgs e)
-    {
-        Console.WriteLine($"{e.Context.CommandName}\n{e.Exception.Message}");
-
-        return Task.CompletedTask;
-    }
-
-    private async Task MessageCreatedAsync(DiscordClient client, MessageCreateEventArgs args)
-    {
-        var member = args.Author as DiscordMember;
-        var pingedAdmin = false;
-        var counter = 0;
-
-        while (counter < args.MentionedUsers.Count && !pingedAdmin)
-        {
-            pingedAdmin = (await args.Guild.GetMemberAsync(args.MentionedUsers[counter].Id))?.Permissions.HasPermission(Permissions.Administrator) ?? false;
-            counter++;
-        }
-
-        if (member is not null &&
-            !args.Channel.IsPrivate &&
-            !member.IsBot &&
-            !member.Permissions.HasPermission(Permissions.Administrator) &&
-            pingedAdmin)
-        {
-            await args.Message.CreateReactionAsync(DiscordEmoji.FromUnicode("💢"));
         }
     }
 }
