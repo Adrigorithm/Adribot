@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Adribot.src.entities.discord;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Adribot.src.data.repositories;
 
@@ -25,13 +24,10 @@ public class DGuildRepository(AdribotContext _botContext)
     public FrozenDictionary<ulong, ulong[]> GetGuildsWithMembers() =>
         _botContext.DGuilds.Include(dg => dg.Members).ToFrozenDictionary(dg => dg.GuildId, dg => dg.Members.Select(dm => dm.MemberId).ToArray());
 
-    public DGuild AddDGuild(DGuild dGuild)
+    public void AddDGuild(DGuild dGuild)
     {
-        EntityEntry<DGuild> dGuildUpdated = _botContext.DGuilds.Add(dGuild);
-
-        _botContext.Add(dGuildUpdated);
-
-        return dGuildUpdated.Entity;
+        _botContext.DGuilds.Add(dGuild);
+        _botContext.SaveChanges();
     }
 
     public DGuild GetGuild(ulong guildId) =>

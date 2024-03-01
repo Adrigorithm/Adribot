@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Adribot.src.constants.enums;
@@ -14,32 +12,15 @@ using DSharpPlus.SlashCommands.Attributes;
 
 namespace Adribot.src.commands.moderation;
 
-public class AdminCommands(InfractionService _infractionService, EventsDataService _eventsDataService) : ApplicationCommandModule
+public class AdminCommands(InfractionService _infractionService) : ApplicationCommandModule
 {
     [SlashCommand("Clear", "Deletes given amount of messages")]
     [RequirePermissionOrDev(135081249017430016, Permissions.ManageMessages)]
     public async Task DeleteMessagesAsync(InteractionContext ctx, [Option("Amount", "Amount of messages to delete"), Minimum(1), Maximum(100)] long amount)
     {
-        List<DiscordMessage> messages = [];
+        var deletedMessages = await ctx.Channel.DeleteMessagesAsync(ctx.Channel.GetMessagesAsync((int)amount));
 
-        await foreach (DiscordMessage m in ctx.Channel.GetMessagesAsync((int)amount))
-            messages.Add(m);
-
-        var index = messages.Count - 1;
-        while (index >= 0)
-        {
-            if (messages[index].Timestamp.UtcDateTime.AddDays(14).CompareTo(DateTime.UtcNow) >= 0)
-                break;
-
-            index--;
-        }
-
-        var deletedMessages = index + 1;
-
-        if (index >= 0)
-            await ctx.Channel.DeleteMessagesAsync(messages.Take(deletedMessages).ToList());
-
-        var oldMessages = messages.Count - deletedMessages;
+        var oldMessages = amount - deletedMessages;
         StringBuilder confirmMessage = new();
 
         if (oldMessages > 0)

@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Frozen;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Adribot.src.commands.fun;
@@ -6,6 +9,7 @@ using Adribot.src.commands.moderation;
 using Adribot.src.commands.utilities;
 using Adribot.src.data;
 using Adribot.src.data.repositories;
+using Adribot.src.extensions;
 using Adribot.src.services;
 using Adribot.src.services.providers;
 using DSharpPlus;
@@ -20,6 +24,7 @@ namespace Adribot.src.entities;
 public class Bot
 {
     private readonly DiscordClient _client;
+    private readonly DGuildRepository _dGuildRepository;
 
     public Bot()
     {
@@ -28,7 +33,7 @@ public class Bot
         _client = new(new DiscordConfiguration
         {
             Token = secrets.Config.BotToken,
-            Intents = DiscordIntents.AllUnprivileged | DiscordIntents.MessageContents
+            Intents = DiscordIntents.All | DiscordIntents.MessageContents
         });
 
         ServiceProvider services = new ServiceCollection()
@@ -39,13 +44,11 @@ public class Bot
             .AddSingleton<InfractionRepository>()
             .AddSingleton<RemindMeRepository>()
             .AddSingleton<IcsCalendarRepository>()
-            .AddSingleton<DGuildRepository>()
-            .AddSingleton<EventsDataService>()
             .AddSingleton<TagRepository>()
-            .AddSingleton<BaseTimerService, InfractionService>()
-            .AddSingleton<BaseTimerService, RemindMeSerivce>()
-            .AddSingleton<BaseTimerService, IcsCalendarService>()
-            .AddSingleton<BaseTimerService, StarboardService>()
+            .AddSingleton<InfractionService>()
+            .AddSingleton<RemindMeSerivce>()
+            .AddSingleton<IcsCalendarService>()
+            .AddSingleton<StarboardService>()
             .AddSingleton<TagService>()
             .BuildServiceProvider();
 
@@ -54,8 +57,11 @@ public class Bot
             Services = services
         });
 
+        _dGuildRepository = services.GetService<DGuildRepository>();
+
         _client.MessageCreated += MessageCreatedAsync;
         slashies.SlashCommandErrored += SlashCommandErroredAsync;
+        _client.GuildDownloadCompleted += GuildDownloadCompletedAsync;
 
         slashies.RegisterCommands<AdminCommands>(1153306877288001629);
         slashies.RegisterCommands<MinecraftCommands>();
@@ -99,6 +105,42 @@ public class Bot
         Console.WriteLine($"\n{devider}\n\n{sb}\n\n{devider}\n");
 
         return Task.CompletedTask;
+    }
+
+    private async Task GuildDownloadCompletedAsync(DiscordClient sender, GuildDownloadCompletedEventArgs e)
+    {
+        IEnumerable<DiscordGuild> guilds = sender.Guilds.Values;
+        FrozenDictionary<ulong, ulong[]> guildMembers = _dGuildRepository.GetGuildsWithMembers();
+
+        for (var i = 0; i < guilds.Count(); i++)
+        {
+            DiscordGuild guildCurrent = guilds.ElementAt(i);
+            var isCachedGuild = guildMembers.ContainsKey(guildCurrent.Id);
+
+            if (!isCachedGuild)
+            {
+                _dGuildRepository.AddDGuild(guildCurrent.ToDGuild());
+                List<(ulong, string)> membersToAdd = [];
+
+                await foreach (DiscordMember member in guildCurrent.GetAllMembersAsync())
+                    membersToAdd.Add((member.Id, member.Mention));
+
+                _dGuildRepository.AddMembersToGuild(guildCurrent.Id, membersToAdd);
+            }
+            else
+            {
+                var cachedMembers = guildMembers[guildCurrent.Id].ToHashSet();
+                List<(ulong, string)> membersToAdd = [];
+
+                foreach (KeyValuePair<ulong, DiscordMember> newMember in guildCurrent.Members)
+                {
+                    if (cachedMembers.Add(newMember.Key))
+                        membersToAdd.Add((newMember.Key, newMember.Value.Mention));
+                }
+
+                _dGuildRepository.AddMembersToGuild(guildCurrent.Id, membersToAdd);
+            }
+        }
     }
 
     public async Task StartAsync() =>

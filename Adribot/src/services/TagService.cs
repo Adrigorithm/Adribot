@@ -4,20 +4,17 @@ using System.Linq;
 using Adribot.src.data.repositories;
 using Adribot.src.entities.utilities;
 using Adribot.src.services.providers;
-using DSharpPlus;
 
 namespace Adribot.src.services;
 
 public sealed class TagService
 {
     private readonly TagRepository _tagRepository;
-    private readonly DiscordClient _client;
 
     private Dictionary<ulong, Dictionary<string, Tag>> _tags { get; } = [];
 
     public TagService(TagRepository tagRepository, DiscordClientProvider discordClientProvider)
     {
-        _client = discordClientProvider.Client;
         _tagRepository = tagRepository;
 
         _tagRepository.GetAllTags().ToList().ForEach(t =>
