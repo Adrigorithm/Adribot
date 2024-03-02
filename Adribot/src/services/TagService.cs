@@ -29,24 +29,39 @@ public sealed class TagService
 
     public void SetTag(ulong guildId, ulong memberId, Tag tag)
     {
-        if (_tags[guildId].ContainsKey(tag.Name))
+        if (_tags.TryGetValue(guildId, out Dictionary<string, Tag>? tags))
         {
-            _tags[guildId][tag.Name].Overwrite(tag);
-            _tagRepository.UpdateTag(_tags[guildId][tag.Name]);
+            if (tags.TryGetValue(tag.Name, out Tag? cachedTag))
+            {
+                cachedTag.Overwrite(tag);
+                _tagRepository.UpdateTag(cachedTag);
+                _tags[guildId][cachedTag.Name] = cachedTag;
+
+                return;
+            }
+
+            Tag addedTag = _tagRepository.AddTag(guildId, memberId, tag);
+            _tags[guildId][addedTag.Name] = addedTag;
+
+            return;
         }
-        else
-        {
-            _tagRepository.AddTag(guildId, memberId, tag);
-            _tags[guildId][tag.Name] = tag;
-        }
+
+        Tag newTag = _tagRepository.AddTag(guildId, memberId, tag);
+
+        _tags[guildId] = [];
+        _tags[guildId][newTag.Name] = newTag;
     }
 
     public IEnumerable<Tag> GetAllTags(ulong guildId) =>
-        _tags[guildId].Values;
+        _tags.ContainsKey(guildId) 
+            ? _tags[guildId].Values
+            : [];
 
 
     public Tag? TryGetTag(string tagName, ulong guildId) =>
-        _tags[guildId].GetValueOrDefault(tagName);
+        _tags.ContainsKey(guildId) 
+            ? _tags[guildId].GetValueOrDefault(tagName)
+            : null;
 
     public bool TryRemoveTag(string tagname, ulong guildId)
     {
@@ -61,9 +76,10 @@ public sealed class TagService
         return false;
     }
 
-    public (Tag?, string?) CreateTempTag(ulong guildId, ulong memberId, string tagName, string tagContent, DateTimeOffset createdAt, bool allowOverride) => string.IsNullOrWhiteSpace(tagContent) || string.IsNullOrWhiteSpace(tagName)
+    public (Tag?, string?) CreateTempTag(ulong guildId, ulong memberId, string tagName, string tagContent, DateTimeOffset createdAt, bool allowOverride) => 
+        string.IsNullOrWhiteSpace(tagContent) || string.IsNullOrWhiteSpace(tagName)
             ? (null, $"The {nameof(tagName)} and {nameof(tagContent)} cannot be empty.")
-            : !_tags[guildId].ContainsKey(tagName) || (allowOverride && _tags[guildId][tagName].DMember.MemberId == memberId) ? (new Tag
+            : !_tags.ContainsKey(guildId) || !_tags[guildId].TryGetValue(tagName, out Tag tag) || (allowOverride && tag.DMember.MemberId == memberId) ? (new Tag
             {
                 Content = tagContent,
                 Date = createdAt,
