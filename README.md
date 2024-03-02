@@ -52,7 +52,7 @@ No you cannot. It is against Discord TOS. Do not scam/spam/... or avoid paying f
 Probably, create an issue for it.
 
 ### Todo
-- [ ] Check for chached guilds on Tag operations
+- [x] Check for chached guilds on Tag operations
 - [ ] Add automatic online ical sync
 - [ ] Provide clearer error messages / feedback for end user
 - [ ] Unit testing
