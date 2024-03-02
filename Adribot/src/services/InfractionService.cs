@@ -46,8 +46,6 @@ public sealed class InfractionService : BaseTimerService
             }
         }
     }
-    public override async Task Start(int timerInterval) =>
-        await base.Start(timerInterval);
 
     public override async Task Work()
     {

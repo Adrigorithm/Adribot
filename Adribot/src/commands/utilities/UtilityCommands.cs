@@ -16,7 +16,7 @@ public class UtilityCommands(RemindMeSerivce _remindMeService) : ApplicationComm
     [RequirePermissions(Permissions.SendMessages)]
     public async Task ExecuteRemindTaskAsync(InteractionContext ctx, [Option("task", "What you should be reminded of")] string taskTodo, [Option("unit", "Time unit to be muliplied by the next factor parameter")] TimeSpanType timeUnit, [Option("factor", "Amount of instances of the specified time unit")] long factor, [Option("channel", "Fallback for if you don't want the bot to dm you")] DiscordChannel altChannel = null)
     {
-        DateTimeOffset now = DateTimeOffset.Now;
+        DateTimeOffset now = DateTimeOffset.UtcNow;
         DateTimeOffset endDate = timeUnit.ToEndDate((int)factor, now);
 
         if (endDate - now < TimeSpan.FromMinutes(1))
@@ -29,7 +29,7 @@ public class UtilityCommands(RemindMeSerivce _remindMeService) : ApplicationComm
             _remindMeService.AddRemindMe(ctx.Guild.Id, ctx.Member.Id, altChannel?.Id ?? ctx.Channel.Id, taskTodo, endDate);
 
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
-                new DiscordMessageBuilder().WithContent($"I will remind you at {endDate:g}")).AsEphemeral());
+                new DiscordMessageBuilder().WithContent($"I will remind you { Formatter.Timestamp(endDate, TimestampFormat.RelativeTime) }")).AsEphemeral());
         }
     }
 }

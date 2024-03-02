@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Adribot.src.data.repositories;
 using Adribot.src.entities.utilities;
-using Adribot.src.services.providers;
 
 namespace Adribot.src.services;
 
@@ -13,7 +13,7 @@ public sealed class TagService
 
     private Dictionary<ulong, Dictionary<string, Tag>> _tags { get; } = [];
 
-    public TagService(TagRepository tagRepository, DiscordClientProvider discordClientProvider)
+    public TagService(TagRepository tagRepository)
     {
         _tagRepository = tagRepository;
 
@@ -52,11 +52,10 @@ public sealed class TagService
         _tags[guildId][newTag.Name] = newTag;
     }
 
-    public IEnumerable<Tag> GetAllTags(ulong guildId) =>
-        _tags.ContainsKey(guildId) 
-            ? _tags[guildId].Values
+    public ImmutableArray<Tag> GetAllTags(ulong guildId) =>
+        _tags.ContainsKey(guildId)
+            ? _tags[guildId].Values.ToImmutableArray()
             : [];
-
 
     public Tag? TryGetTag(string tagName, ulong guildId) =>
         _tags.ContainsKey(guildId) 

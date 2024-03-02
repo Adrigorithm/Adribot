@@ -20,9 +20,6 @@ public sealed class RemindMeSerivce : BaseTimerService
         _reminders = _remindMeRespository.GetRemindersToOld().ToList();
     }
 
-    public override async Task Start(int timerInterval) =>
-        await base.Start(timerInterval);
-
     public override async Task Work()
     {
         if (_reminders.Count > 0)
@@ -57,7 +54,10 @@ public sealed class RemindMeSerivce : BaseTimerService
     {
         Reminder reminder = _remindMeRespository.AddRemindMe(guildId, memberId, channelId, content, endDate);
 
-        var indexOlderReminder = _reminders.FindIndex(r => r.EndDate.CompareTo(reminder.EndDate) > 0);
+        var indexOlderReminder = _reminders.Count > 0 
+            ? _reminders.FindIndex(r => r.EndDate.CompareTo(reminder.EndDate) > 0)
+            : -1;
+
         if (indexOlderReminder == -1)
             _reminders.Add(reminder);
         else

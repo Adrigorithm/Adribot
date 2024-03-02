@@ -20,8 +20,7 @@ public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository
 
     public override Task Work()
     {
-        if (!IsDatabaseDataLoaded)
-            _calendars = _calendarRepository.GetIcsCalendarsNotExpired().ToList();
+        _calendars = _calendarRepository.GetIcsCalendarsNotExpired().ToList();
 
         if (_calendars.Count > 0)
         {
