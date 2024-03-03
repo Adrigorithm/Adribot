@@ -17,7 +17,7 @@ public class RemindMeRepository(AdribotContext _botContext)
         _botContext.SaveChanges();
     }
 
-    public Reminder AddRemindMe(ulong guildId, ulong memberId, ulong channelId, string content, DateTimeOffset endDate)
+    public Reminder AddRemindMe(ulong guildId, ulong memberId, ulong? channelId, string content, DateTimeOffset endDate)
     {
         DateTimeOffset now = DateTimeOffset.UtcNow;
         var reminder = new Reminder

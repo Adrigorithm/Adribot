@@ -26,7 +26,7 @@ public class UtilityCommands(RemindMeSerivce _remindMeService) : ApplicationComm
         }
         else
         {
-            _remindMeService.AddRemindMe(ctx.Guild.Id, ctx.Member.Id, altChannel?.Id ?? ctx.Channel.Id, taskTodo, endDate);
+            _remindMeService.AddRemindMe(ctx.Guild.Id, ctx.Member.Id, altChannel?.Id, taskTodo, endDate);
 
             await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                 new DiscordMessageBuilder().WithContent($"I will remind you { Formatter.Timestamp(endDate, TimestampFormat.RelativeTime) }")).AsEphemeral());

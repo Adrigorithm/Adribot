@@ -50,7 +50,7 @@ public sealed class RemindMeSerivce : BaseTimerService
         }
     }
 
-    public void AddRemindMe(ulong guildId, ulong memberId, ulong channelId, string content, DateTimeOffset endDate)
+    public void AddRemindMe(ulong guildId, ulong memberId, ulong? channelId, string content, DateTimeOffset endDate)
     {
         Reminder reminder = _remindMeRespository.AddRemindMe(guildId, memberId, channelId, content, endDate);
 
