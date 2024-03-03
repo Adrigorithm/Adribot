@@ -60,6 +60,7 @@ Yes.
 - [ ] Provide clearer error messages / feedback for end user
 - [ ] Unit testing
 - [x] Manually fully test all services
+- [ ] Add bussy api commands
 
 ## Support
 
