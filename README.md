@@ -3,6 +3,19 @@
 
 A feature rich general purpose discord bot written in C# using a discord api wrapper.
 
+## Features
+
+This list showcases a few of the more **visual** features and does in no way cover everything this bot does.
+
+### Fetch pictures of your favourite animals (currently supports cat, fox and dog)!
+![api floof](https://github.com/Adrigorithm/Adribot/assets/12832161/5e09df1a-19fd-4453-a8ba-f40b9d13a341)
+
+### Translate discord emoji's into an emoji format understandable by Minecraft
+![emojiful datapack](https://github.com/Adrigorithm/Adribot/assets/12832161/6428781c-eef9-442a-abca-9a2d7051cdca)
+
+### Schedules input from a calendar and notifies you beforehand (supports a specific format only for now because my University creates horrendous calendar files - everything in one string with newlines)
+![schedule](https://github.com/Adrigorithm/Adribot/assets/12832161/69856c2d-b4f0-4578-8d79-31bc4fd9947d)
+
 ## Acknowledgements
 
  - [D#+ Library](https://github.com/DSharpPlus/DSharpPlus)
