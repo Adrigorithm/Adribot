@@ -362,7 +362,7 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Custom rules
-Adribot/secret/
-Adribot/temp/*.zip
-Adribot/Migrations/
-Adribot/src/data/AdribotMigrationsContext.cs
+Adribot.App/secret/
+Adribot.App/temp/*.zip
+Adribot.App/Migrations/
+Adribot.App/src/data/AdribotMigrationsContext.cs
