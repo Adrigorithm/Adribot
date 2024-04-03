@@ -74,6 +74,7 @@ Yes.
 - [ ] Unit testing
 - [x] Manually fully test all services
 - [ ] Add bussy api commands
+- [ ] Add interactive ownly-only sessions to guilds
 
 ## Support
 
