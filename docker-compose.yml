@@ -1,0 +1,14 @@
+services:
+  bot:
+    build:
+      context: ./Adribot.App
+      dockerfile: Dockerfile
+  sql-server:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      MSSQL_SA_PASSWORD: 
+    secrets:
+      - db_password
+secrets:
+  db_password:
+    file: ./Secrets/db_password

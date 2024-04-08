@@ -366,3 +366,5 @@ Adribot.App/secret/
 Adribot.App/temp/*.zip
 Adribot.App/Migrations/
 Adribot.App/src/data/AdribotMigrationsContext.cs
+
+Secrets/
