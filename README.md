@@ -44,7 +44,7 @@ There are currently no official releases. In order to deploy the bot you will ne
 - Get all the required dependencies (run `dotnet restore` if not done automatically)
 - Create the database model using EF Core: `dotnet ef migrations add "InitialCreate"`
 - Creete the actual database (make sure the database can be reached using the above connectionString): `dotnet ef database update`
-- Provided everything went well you should now be able to build/run the bot. Since this is a dotnet core console app, you can run this on any OS (containers work fine too), just make sure you have a .net8 capable runtime and a mssql database)
+- Provided everything went well you should now be able to build/run the bot. Since this is a dotnet core console app, you can run this on any OS (containers work fine too), just make sure you have a .net9 capable runtime and a mssql database
 
 ## Contributing
 
