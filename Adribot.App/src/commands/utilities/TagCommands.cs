@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Adribot.src.constants.enums;
 using Adribot.src.entities.utilities;
 using Adribot.src.services;
-using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 
@@ -14,7 +13,7 @@ namespace Adribot.src.commands.utilities;
 
 public class TagCommands(TagService _tagService) : ApplicationCommandModule
 {
-    [SlashCommandPermissions(Permissions.SendMessages)]
+    [SlashCommandPermissions(DiscordPermissions.SendMessages)]
     [SlashCommand("tag", "Display (information about) a tag")]
     public async Task ExecuteTagTaskAsync(InteractionContext ctx, [Option("tag", "The tag name to retrieve corresponding tag")] string tagName, [Option("mode", "Tag related operation to perform")] CrudOperation operation = CrudOperation.GET, [Option("content", "Update current tag content")] string newContent = null)
     {
@@ -25,7 +24,7 @@ public class TagCommands(TagService _tagService) : ApplicationCommandModule
                 Tag? tag = _tagService.TryGetTag(tagName, ctx.Guild.Id);
                 if (tag is null)
                 {
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
+                    await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                         new DiscordMessageBuilder().WithContent($"Tag `{tagName}` could not be found")).AsEphemeral());
                 }
                 else
@@ -34,7 +33,7 @@ public class TagCommands(TagService _tagService) : ApplicationCommandModule
                         new DiscordMessageBuilder().WithContent($"**{tag.Name}**\n{tag.Content}") :
                         new DiscordMessageBuilder().AddEmbed(tag.GenerateEmbedBuilder());
 
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(messageBuilder));
+                    await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(messageBuilder));
                 }
 
                 break;
@@ -44,14 +43,14 @@ public class TagCommands(TagService _tagService) : ApplicationCommandModule
 
                 if (tempTag.Item1 is null)
                 {
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
+                    await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                         new DiscordMessageBuilder().WithContent(tempTag.Item2)).AsEphemeral());
                 }
                 else
                 {
                     _tagService.SetTag(ctx.Guild.Id, ctx.Member.Id, tempTag.Item1);
 
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
+                    await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                         new DiscordMessageBuilder().WithContent($"Tag `{ tagName }` { (operation == CrudOperation.SET ? "updated" : "created") }.{Environment.NewLine}Check it out using `/tag {tagName} [GET|INFO]`")).AsEphemeral());
                 }
 
@@ -59,12 +58,12 @@ public class TagCommands(TagService _tagService) : ApplicationCommandModule
             case CrudOperation.DELETE:
                 if (!_tagService.TryRemoveTag(tagName, ctx.Guild.Id))
                 {
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
+                    await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                         new DiscordMessageBuilder().WithContent($"A tag with tagname `{tagName}` could not be found.")).AsEphemeral());
                 }
                 else
                 {
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
+                    await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                         new DiscordMessageBuilder().WithContent($"Tag `{tagName}` disappeared in the void.")).AsEphemeral());
                 }
 
@@ -73,7 +72,7 @@ public class TagCommands(TagService _tagService) : ApplicationCommandModule
                 IEnumerable<Tag> tags = _tagService.GetAllTags(ctx.Guild.Id);
                 if (tags.Count() == 0)
                 {
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
+                    await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                         new DiscordMessageBuilder().WithContent($"No tags could be found.")).AsEphemeral());
                 }
                 else
@@ -87,7 +86,7 @@ public class TagCommands(TagService _tagService) : ApplicationCommandModule
                             tagStringBuilder.Append($"`{tags.ElementAt(i).Name}`, ");
                     }
 
-                    await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
+                    await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                         new DiscordMessageBuilder().WithContent($"Available tags:\n{tagStringBuilder}")).AsEphemeral());
                 }
 

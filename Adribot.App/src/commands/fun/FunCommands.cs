@@ -10,7 +10,6 @@ using Adribot.src.entities.fun.cat;
 using Adribot.src.entities.fun.dog;
 using Adribot.src.entities.fun.fox;
 using Adribot.src.services.providers;
-using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 
@@ -27,7 +26,7 @@ public class FunCommands(SecretsProvider _secretsProvider) : ApplicationCommandM
         {
             case AnimalType.CAT:
                 List<Cat> catApiObject = await JsonSerializer.DeserializeAsync<List<Cat>>(await _httpClient.GetStreamAsync($"{ConstantStrings.CatBaseUri}?api_key={_secretsProvider.Config.CatToken}"));
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
+                await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor(_secretsProvider.Config.EmbedColour),
                     Title = "You asked, I delivered.",
@@ -36,7 +35,7 @@ public class FunCommands(SecretsProvider _secretsProvider) : ApplicationCommandM
                 break;
             case AnimalType.DOG:
                 List<Dog> dogApiObject = await JsonSerializer.DeserializeAsync<List<Dog>>(await _httpClient.GetStreamAsync($"{ConstantStrings.DogBaseUri}?api_key={_secretsProvider.Config.CatToken}"));
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
+                await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor(_secretsProvider.Config.EmbedColour),
                     Title = "You asked, I delivered.",
@@ -45,7 +44,7 @@ public class FunCommands(SecretsProvider _secretsProvider) : ApplicationCommandM
                 break;
             case AnimalType.FOX:
                 Fox foxApiObject = await JsonSerializer.DeserializeAsync<Fox>(await _httpClient.GetStreamAsync(ConstantStrings.FoxUri));
-                await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
+                await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
                 {
                     Color = new DiscordColor(_secretsProvider.Config.EmbedColour),
                     Title = "You asked, I delivered.",
@@ -69,6 +68,6 @@ public class FunCommands(SecretsProvider _secretsProvider) : ApplicationCommandM
         if (unit == DistanceUnit.INCH)
             ppSize = (short)(ppSize / 2.5);
 
-        await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent("<@" + (user?.Id.ToString() ?? ctx.Member.Id.ToString()) + "> Your pp size is " + Convert.ToString(ppSize) + (unit == DistanceUnit.INCH ? " inch" : " cm"))));
+        await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent("<@" + (user?.Id.ToString() ?? ctx.Member.Id.ToString()) + "> Your pp size is " + Convert.ToString(ppSize) + (unit == DistanceUnit.INCH ? " inch" : " cm"))));
     }
 }

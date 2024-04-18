@@ -30,7 +30,7 @@ public sealed class InfractionService : BaseTimerService
     private async Task CheckHoistAsync(DiscordUser user)
     {
         var member = user as DiscordMember;
-        if (member is not null && !member.IsBot && !member.Permissions.HasPermission(Permissions.Administrator) && member.DisplayName[0] < 48)
+        if (member is not null && !member.IsBot && !member.Permissions.HasPermission(DiscordPermissions.Administrator) && member.DisplayName[0] < 48)
         {
             if (!_infractions.Any(i => i.DMember.MemberId == member.Id && i.Type == InfractionType.HOIST && !i.IsExpired))
             {

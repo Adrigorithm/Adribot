@@ -6,7 +6,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Adribot.src.constants.strings;
 using Adribot.src.entities.minecraft;
-using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 
@@ -48,7 +47,7 @@ public class MinecraftCommands : ApplicationCommandModule
             var fileName = $"{ctx.User.Username}-" + category + "-emojiful-datapack.zip";
             ZipFile.CreateFromDirectory(DatapackPath + "datapack/", DatapackPath + fileName);
 
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddFile(fileName, File.OpenRead(DatapackPath + fileName)).AsEphemeral());
+            await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddFile(fileName, File.OpenRead(DatapackPath + fileName)).AsEphemeral());
         }
     }
 }

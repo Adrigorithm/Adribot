@@ -13,7 +13,7 @@ namespace Adribot.src.commands.utilities;
 public class UtilityCommands(RemindMeSerivce _remindMeService) : ApplicationCommandModule
 {
     [SlashCommand("remindme", "Set an alert for something ahead of time")]
-    [RequirePermissions(Permissions.SendMessages)]
+    [RequirePermissions(DiscordPermissions.SendMessages)]
     public async Task ExecuteRemindTaskAsync(InteractionContext ctx, [Option("task", "What you should be reminded of")] string taskTodo, [Option("unit", "Time unit to be muliplied by the next factor parameter")] TimeSpanType timeUnit, [Option("factor", "Amount of instances of the specified time unit")] long factor, [Option("channel", "Fallback for if you don't want the bot to dm you")] DiscordChannel altChannel = null)
     {
         DateTimeOffset now = DateTimeOffset.UtcNow;
@@ -21,14 +21,14 @@ public class UtilityCommands(RemindMeSerivce _remindMeService) : ApplicationComm
 
         if (endDate - now < TimeSpan.FromMinutes(1))
         {
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
+            await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                 new DiscordMessageBuilder().WithContent($"Remind me's should be set at least 1 minute ahead in time.")).AsEphemeral());
         }
         else
         {
             _remindMeService.AddRemindMe(ctx.Guild.Id, ctx.Member.Id, altChannel?.Id, taskTodo, endDate);
 
-            await ctx.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
+            await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
                 new DiscordMessageBuilder().WithContent($"I will remind you { Formatter.Timestamp(endDate, TimestampFormat.RelativeTime) }")).AsEphemeral());
         }
     }

@@ -79,14 +79,14 @@ public class Bot
 
         while (counter < args.MentionedUsers.Count && !pingedAdmin)
         {
-            pingedAdmin = (await args.Guild.GetMemberAsync(args.MentionedUsers[counter].Id))?.Permissions.HasPermission(Permissions.Administrator) ?? false;
+            pingedAdmin = (await args.Guild.GetMemberAsync(args.MentionedUsers[counter].Id))?.Permissions.HasPermission(DiscordPermissions.Administrator) ?? false;
             counter++;
         }
 
         if (member is not null &&
             !args.Channel.IsPrivate &&
             !member.IsBot &&
-            !member.Permissions.HasPermission(Permissions.Administrator) &&
+            !member.Permissions.HasPermission(DiscordPermissions.Administrator) &&
             pingedAdmin)
         {
             await args.Message.CreateReactionAsync(DiscordEmoji.FromUnicode("💢"));

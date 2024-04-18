@@ -8,7 +8,6 @@ using Adribot.src.data.repositories;
 using Adribot.src.entities.utilities;
 using Adribot.src.extensions;
 using Adribot.src.services.providers;
-using DSharpPlus;
 using DSharpPlus.Entities;
 using Ical.Net;
 
@@ -101,7 +100,7 @@ public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository
 
     public bool TryDeleteCalendar(DiscordMember member, IcsCalendar calendar)
     {
-        if (!member.Permissions.HasPermission(Permissions.ManageMessages) || member.Id != calendar.DMember.MemberId)
+        if (!member.Permissions.HasPermission(DiscordPermissions.ManageMessages) || member.Id != calendar.DMember.MemberId)
             return false;
 
         _calendars.Remove(calendar);
