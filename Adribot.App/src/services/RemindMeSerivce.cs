@@ -54,7 +54,7 @@ public sealed class RemindMeSerivce : BaseTimerService
     {
         Reminder reminder = _remindMeRespository.AddRemindMe(guildId, memberId, channelId, content, endDate);
 
-        var indexOlderReminder = _reminders.Count > 0 
+        var indexOlderReminder = _reminders.Count > 0
             ? _reminders.FindIndex(r => r.EndDate.CompareTo(reminder.EndDate) > 0)
             : -1;
 

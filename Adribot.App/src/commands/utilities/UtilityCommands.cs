@@ -29,7 +29,7 @@ public class UtilityCommands(RemindMeSerivce _remindMeService) : ApplicationComm
             _remindMeService.AddRemindMe(ctx.Guild.Id, ctx.Member.Id, altChannel?.Id, taskTodo, endDate);
 
             await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
-                new DiscordMessageBuilder().WithContent($"I will remind you { Formatter.Timestamp(endDate, TimestampFormat.RelativeTime) }")).AsEphemeral());
+                new DiscordMessageBuilder().WithContent($"I will remind you {Formatter.Timestamp(endDate, TimestampFormat.RelativeTime)}")).AsEphemeral());
         }
     }
 }

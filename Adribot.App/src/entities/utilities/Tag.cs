@@ -39,6 +39,6 @@ public class Tag : IDataStructure
     public override bool Equals(object other) =>
         other is Tag tag && Name == tag.Name && DMember.DGuildId == tag.DMember.DGuildId;
 
-    public override int GetHashCode() => 
+    public override int GetHashCode() =>
         base.GetHashCode();
 }

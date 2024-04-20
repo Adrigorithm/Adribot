@@ -29,12 +29,12 @@ public abstract class BaseTimerService : ITimerService
     private async void CallbackAsync(object? state) =>
         await Work();
 
-    public void Start(int timerInterval) => 
+    public void Start(int timerInterval) =>
         _timer = new Timer(CallbackAsync, null, 0, timerInterval * 1000);
 
     public async Task Stop() =>
         await _timer.DisposeAsync();
 
-    public virtual async Task Work() => 
+    public virtual async Task Work() =>
         await Task.CompletedTask;
 }

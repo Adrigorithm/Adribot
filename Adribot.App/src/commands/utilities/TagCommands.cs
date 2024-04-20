@@ -51,7 +51,7 @@ public class TagCommands(TagService _tagService) : ApplicationCommandModule
                     _tagService.SetTag(ctx.Guild.Id, ctx.Member.Id, tempTag.Item1);
 
                     await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(
-                        new DiscordMessageBuilder().WithContent($"Tag `{ tagName }` { (operation == CrudOperation.SET ? "updated" : "created") }.{Environment.NewLine}Check it out using `/tag {tagName} [GET|INFO]`")).AsEphemeral());
+                        new DiscordMessageBuilder().WithContent($"Tag `{tagName}` {(operation == CrudOperation.SET ? "updated" : "created")}.{Environment.NewLine}Check it out using `/tag {tagName} [GET|INFO]`")).AsEphemeral());
                 }
 
                 break;
