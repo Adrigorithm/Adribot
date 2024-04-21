@@ -40,6 +40,7 @@ public class Bot
             .AddSingleton(secrets)
             .AddDbContext<AdribotContext>()
             .AddSingleton(new DiscordClientProvider(_client))
+            .AddSingleton<RemoteAccessService>()
             .AddSingleton<DGuildRepository>()
             .AddSingleton<InfractionRepository>()
             .AddSingleton<RemindMeRepository>()
@@ -65,6 +66,7 @@ public class Bot
 
         slashies.RegisterCommands<AdminCommands>(1153306877288001629);
         slashies.RegisterCommands<MinecraftCommands>();
+        slashies.RegisterCommands<RemoteAccessCommands>();
         slashies.RegisterCommands<FunCommands>(1153306877288001629);
         slashies.RegisterCommands<UtilityCommands>(1153306877288001629);
         slashies.RegisterCommands<TagCommands>(1153306877288001629);
@@ -109,8 +111,6 @@ public class Bot
 
     private async Task GuildDownloadCompletedAsync(DiscordClient sender, GuildDownloadCompletedEventArgs e)
     {
-        await sender.DeleteGuildApplicationCommandAsync(574341132826312736, 1076229061862498395);
-
         IEnumerable<DiscordGuild> guilds = sender.Guilds.Values;
         FrozenDictionary<ulong, ulong[]> guildMembers = _dGuildRepository.GetGuildsWithMembers();
 
