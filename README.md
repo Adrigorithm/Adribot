@@ -76,7 +76,7 @@ Yes.
 - [ ] Add bussy api commands
 - [ ] Add interactive ownly-only sessions to guilds
 - [ ] Port to Discord.Net
-- [ ] Find a way to ensure duplicate commands cannot be created
+- [x] Find a way to ensure duplicate commands cannot be created
 
 ## Support
 
