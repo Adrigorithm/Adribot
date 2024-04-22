@@ -5,7 +5,7 @@ namespace Adribot.src.constants.enums;
 public enum DistanceUnit
 {
     [ChoiceName("inch")]
-    INCH,
+    Inch,
     [ChoiceName("cm")]
     CM
 }

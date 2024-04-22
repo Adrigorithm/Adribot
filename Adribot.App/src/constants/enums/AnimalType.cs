@@ -5,9 +5,9 @@ namespace Adribot.src.constants.enums;
 public enum AnimalType
 {
     [ChoiceName("Cat")]
-    CAT,
+    Cat,
     [ChoiceName("Dog")]
-    DOG,
+    Dog,
     [ChoiceName("Fox")]
-    FOX
+    Fox
 }

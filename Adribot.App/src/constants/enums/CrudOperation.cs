@@ -5,15 +5,15 @@ namespace Adribot.src.constants.enums;
 public enum CrudOperation
 {
     [ChoiceName("get")]
-    GET,
+    Get,
     [ChoiceName("set")]
-    SET,
+    Set,
     [ChoiceName("new")]
-    NEW,
+    New,
     [ChoiceName("delete")]
-    DELETE,
+    Delete,
     [ChoiceName("info")]
-    INFO,
+    Info,
     [ChoiceName("list")]
-    LIST
+    List
 }

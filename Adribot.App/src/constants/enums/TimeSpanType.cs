@@ -5,17 +5,17 @@ namespace Adribot.src.constants.enums;
 public enum TimeSpanType
 {
     [ChoiceName("seconds")]
-    SECONDS,
+    Seconds,
     [ChoiceName("minutes")]
-    MINUTES,
+    Minutes,
     [ChoiceName("hours")]
-    HOURS,
+    Hours,
     [ChoiceName("days")]
-    DAYS,
+    Days,
     [ChoiceName("weeks")]
-    WEEKS,
+    Weeks,
     [ChoiceName("months")]
-    MONTHS,
+    Months,
     [ChoiceName("years")]
-    YEARS
+    Years
 }

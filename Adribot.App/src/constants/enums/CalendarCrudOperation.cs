@@ -5,13 +5,13 @@ namespace Adribot.src.constants.enums;
 public enum CalendarCrudOperation
 {
     [ChoiceName("new")]
-    NEW,
+    New,
     [ChoiceName("delete")]
-    DELETE,
+    Delete,
     [ChoiceName("info")]
-    INFO,
+    Info,
     [ChoiceName("list")]
-    LIST,
+    List,
     [ChoiceName("next event")]
-    NEXT
+    Next
 }
