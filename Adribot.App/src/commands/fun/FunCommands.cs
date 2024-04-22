@@ -20,11 +20,11 @@ public class FunCommands(SecretsProvider _secretsProvider) : ApplicationCommandM
     private readonly HttpClient _httpClient = new();
 
     [SlashCommand("get", "Gets a random animal")]
-    public async Task GetAnimalAsync(InteractionContext ctx, [Option("animal", "pick your favourite floof")] AnimalType animal = AnimalType.CAT)
+    public async Task GetAnimalAsync(InteractionContext ctx, [Option("animal", "pick your favourite floof")] AnimalType animal = AnimalType.Cat)
     {
         switch (animal)
         {
-            case AnimalType.CAT:
+            case AnimalType.Cat:
                 List<Cat> catApiObject = await JsonSerializer.DeserializeAsync<List<Cat>>(await _httpClient.GetStreamAsync($"{ConstantStrings.CatBaseUri}?api_key={_secretsProvider.Config.CatToken}"));
                 await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
                 {
@@ -33,7 +33,7 @@ public class FunCommands(SecretsProvider _secretsProvider) : ApplicationCommandM
                     ImageUrl = catApiObject[0].Url
                 }));
                 break;
-            case AnimalType.DOG:
+            case AnimalType.Dog:
                 List<Dog> dogApiObject = await JsonSerializer.DeserializeAsync<List<Dog>>(await _httpClient.GetStreamAsync($"{ConstantStrings.DogBaseUri}?api_key={_secretsProvider.Config.CatToken}"));
                 await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
                 {
@@ -42,7 +42,7 @@ public class FunCommands(SecretsProvider _secretsProvider) : ApplicationCommandM
                     ImageUrl = dogApiObject[0].Url
                 }));
                 break;
-            case AnimalType.FOX:
+            case AnimalType.Fox:
                 Fox foxApiObject = await JsonSerializer.DeserializeAsync<Fox>(await _httpClient.GetStreamAsync(ConstantStrings.FoxUri));
                 await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder().AddEmbed(new DiscordEmbedBuilder
                 {
@@ -57,7 +57,7 @@ public class FunCommands(SecretsProvider _secretsProvider) : ApplicationCommandM
     }
 
     [SlashCommand("pp", "Calculates your pp size")]
-    public async Task GetPpSizeAsync(InteractionContext ctx, [Option("user", "user to calculate the pp size for")] DiscordUser user = null, [Option("unit", "unit to display the pp size in")] DistanceUnit unit = DistanceUnit.INCH)
+    public async Task GetPpSizeAsync(InteractionContext ctx, [Option("user", "user to calculate the pp size for")] DiscordUser user = null, [Option("unit", "unit to display the pp size in")] DistanceUnit unit = DistanceUnit.Inch)
     {
         var memberId = user is null ? ctx.Member.Id : user.Id;
         short sum = 0;
@@ -65,9 +65,9 @@ public class FunCommands(SecretsProvider _secretsProvider) : ApplicationCommandM
         memberId.ToString().ToList().ForEach(c => sum += (short)char.GetNumericValue(c));
 
         var ppSize = (short)(Math.Pow(memberId, 1.0 / sum) * 10 / char.GetNumericValue(memberId.ToString()[0]));
-        if (unit == DistanceUnit.INCH)
+        if (unit == DistanceUnit.Inch)
             ppSize = (short)(ppSize / 2.5);
 
-        await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent("<@" + (user?.Id.ToString() ?? ctx.Member.Id.ToString()) + "> Your pp size is " + Convert.ToString(ppSize) + (unit == DistanceUnit.INCH ? " inch" : " cm"))));
+        await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent("<@" + (user?.Id.ToString() ?? ctx.Member.Id.ToString()) + "> Your pp size is " + Convert.ToString(ppSize) + (unit == DistanceUnit.Inch ? " inch" : " cm"))));
     }
 }

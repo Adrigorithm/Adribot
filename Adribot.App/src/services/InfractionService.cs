@@ -32,9 +32,9 @@ public sealed class InfractionService : BaseTimerService
         var member = user as DiscordMember;
         if (member is not null && !member.IsBot && !member.Permissions.HasPermission(DiscordPermissions.Administrator) && member.DisplayName[0] < 48)
         {
-            if (!_infractions.Any(i => i.DMember.MemberId == member.Id && i.Type == InfractionType.HOIST && !i.IsExpired))
+            if (!_infractions.Any(i => i.DMember.MemberId == member.Id && i.Type == InfractionType.Hoist && !i.IsExpired))
             {
-                Infraction infraction = _infractionRepository.AddInfraction(member.Guild.Id, member.Id, DateTimeOffset.UtcNow.AddHours(24), InfractionType.HOIST, "Hoisting is poop");
+                Infraction infraction = _infractionRepository.AddInfraction(member.Guild.Id, member.Id, DateTimeOffset.UtcNow.AddHours(24), InfractionType.Hoist, "Hoisting is poop");
                 AddInfraction(infraction);
             }
 
@@ -57,10 +57,10 @@ public sealed class InfractionService : BaseTimerService
             {
                 switch (infraction.Type)
                 {
-                    case InfractionType.HOIST:
+                    case InfractionType.Hoist:
                         await (await (await Client.GetGuildAsync(infraction.DMember.DGuild.GuildId)).GetMemberAsync(infraction.DMember.MemberId)).ModifyAsync(m => m.Nickname = "");
                         break;
-                    case InfractionType.BAN:
+                    case InfractionType.Ban:
                         DiscordGuild guild = await Client.GetGuildAsync(infraction.DMember.DGuild.GuildId);
                         await guild.UnbanMemberAsync(infraction.DMember.MemberId, infraction.Reason);
                         await ((DiscordMember)await Client.GetUserAsync(infraction.DMember.MemberId)).SendMessageAsync($"You have been unbanned from {guild.Name}!\nDo not let it happen again.");

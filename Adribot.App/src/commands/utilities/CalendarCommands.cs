@@ -14,13 +14,13 @@ public class CalendarCommands(IcsCalendarService _icsCalendarService) : Applicat
 {
     [SlashCommand("calendar", "Perform various calendar tasks")]
     [SlashCommandPermissions(DiscordPermissions.SendMessages)]
-    public async Task GetNextCalendarEventAsync(InteractionContext ctx, [Option("mode", "the task to perform on the calendars")] CalendarCrudOperation option = CalendarCrudOperation.LIST, [Option("calendar", "the calendar name to perform the action on")] string? calendarName = null, [Option("calendarUri", "link to an external ical/ics file")] string? uri = null, [Option("channel", "channel this calendar will post events to")] long channelId = -1)
+    public async Task GetNextCalendarEventAsync(InteractionContext ctx, [Option("mode", "the task to perform on the calendars")] CalendarCrudOperation option = CalendarCrudOperation.List, [Option("calendar", "the calendar name to perform the action on")] string? calendarName = null, [Option("calendarUri", "link to an external ical/ics file")] string? uri = null, [Option("channel", "channel this calendar will post events to")] long channelId = -1)
     {
-        IcsCalendar? calendar = option == CalendarCrudOperation.LIST || string.IsNullOrEmpty(calendarName) ? null : _icsCalendarService.GetCalendarByName(ctx.Guild.Id, calendarName);
+        IcsCalendar? calendar = option == CalendarCrudOperation.List || string.IsNullOrEmpty(calendarName) ? null : _icsCalendarService.GetCalendarByName(ctx.Guild.Id, calendarName);
 
         switch (option)
         {
-            case CalendarCrudOperation.NEW:
+            case CalendarCrudOperation.New:
                 if (calendar is not null || string.IsNullOrEmpty(calendarName))
                 {
                     await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent($"Calendar `{calendarName}` for guild [{ctx.Guild.Id}] already exists or is invalid. Try another name or remove it first.")).AsEphemeral());
@@ -32,7 +32,7 @@ public class CalendarCommands(IcsCalendarService _icsCalendarService) : Applicat
                 }
 
                 break;
-            case CalendarCrudOperation.DELETE:
+            case CalendarCrudOperation.Delete:
                 if (calendar is null)
                 {
                     await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent($"Calendar `{calendarName}` for guild [{ctx.Guild.Id}] cannot be deleted because it does not exist.")).AsEphemeral());
@@ -44,7 +44,7 @@ public class CalendarCommands(IcsCalendarService _icsCalendarService) : Applicat
                 }
 
                 break;
-            case CalendarCrudOperation.INFO:
+            case CalendarCrudOperation.Info:
                 if (calendar is null)
                 {
                     await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent($"Calendar `{calendarName}` for guild [{ctx.Guild.Id}] does not exist.")).AsEphemeral());
@@ -55,7 +55,7 @@ public class CalendarCommands(IcsCalendarService _icsCalendarService) : Applicat
                 }
 
                 break;
-            case CalendarCrudOperation.NEXT:
+            case CalendarCrudOperation.Next:
                 if (calendar is null)
                 {
                     await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent($"Calendar `{calendarName}` for guild [{ctx.Guild.Id}] does not exist.")).AsEphemeral());
@@ -70,7 +70,7 @@ public class CalendarCommands(IcsCalendarService _icsCalendarService) : Applicat
                 }
 
                 break;
-            case CalendarCrudOperation.LIST:
+            case CalendarCrudOperation.List:
                 var calendarNames = _icsCalendarService.GetCalendarNames(ctx.Guild.Id);
                 await ctx.CreateResponseAsync(DiscordInteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(new DiscordMessageBuilder().WithContent(FakeExtensions.GetMarkdownCSV(calendarNames))).AsEphemeral());
 

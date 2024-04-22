@@ -31,7 +31,7 @@ public class AdminCommands(InfractionService _infractionService) : ApplicationCo
 
     [SlashCommand("Mute", "Mutes member using a Timeout")]
     [SlashRequirePermissions(DiscordPermissions.MuteMembers)]
-    public async Task MuteMemberAsync(InteractionContext ctx, [Option("Member", "Member to mute")] DiscordUser member, [Option("Unit", "The duration multiplied by the factor parameter")] TimeSpanType type = TimeSpanType.MINUTES, [Option("Factor", "The amound of specified time units."), Minimum(1)] long factor = 3, [Option("Reason", "The reason for this infraction")] string reason = "")
+    public async Task MuteMemberAsync(InteractionContext ctx, [Option("Member", "Member to mute")] DiscordUser member, [Option("Unit", "The duration multiplied by the factor parameter")] TimeSpanType type = TimeSpanType.Minutes, [Option("Factor", "The amound of specified time units."), Minimum(1)] long factor = 3, [Option("Reason", "The reason for this infraction")] string reason = "")
     {
         DateTimeOffset now = DateTimeOffset.UtcNow;
         DateTimeOffset endDate = type.ToEndDate((int)factor, now);
@@ -41,12 +41,12 @@ public class AdminCommands(InfractionService _infractionService) : ApplicationCo
 
     [SlashCommand("Ban", "Bans members")]
     [SlashRequirePermissions(DiscordPermissions.BanMembers)]
-    public async Task BanMemberAsync(InteractionContext ctx, [Option("Member", "Member to ban")] DiscordUser member, [Option("Unit", "The duration multiplied by the factor parameter")] TimeSpanType type = TimeSpanType.MONTHS, [Option("Factor", "The amound of specified time units."), Minimum(1)] long factor = 1, [Option("Messages", "Anount of messages by this user to delete")] long deleteMessages = 0, [Option("Reason", "The reason for this infraction")] string reason = "")
+    public async Task BanMemberAsync(InteractionContext ctx, [Option("Member", "Member to ban")] DiscordUser member, [Option("Unit", "The duration multiplied by the factor parameter")] TimeSpanType type = TimeSpanType.Months, [Option("Factor", "The amound of specified time units."), Minimum(1)] long factor = 1, [Option("Messages", "Anount of messages by this user to delete")] long deleteMessages = 0, [Option("Reason", "The reason for this infraction")] string reason = "")
     {
         DateTimeOffset now = DateTimeOffset.UtcNow;
         DateTimeOffset endDate = type.ToEndDate((int)factor, now);
 
-        _infractionService.AddInfraction(ctx.Guild.Id, ctx.Member.Id, endDate, InfractionType.BAN, reason);
+        _infractionService.AddInfraction(ctx.Guild.Id, ctx.Member.Id, endDate, InfractionType.Ban, reason);
 
         await ((DiscordMember)member).BanAsync(Convert.ToInt16(deleteMessages), reason);
     }

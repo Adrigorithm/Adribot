@@ -7,5 +7,5 @@ public enum DistanceUnit
     [ChoiceName("inch")]
     Inch,
     [ChoiceName("cm")]
-    CM
+    Cm
 }

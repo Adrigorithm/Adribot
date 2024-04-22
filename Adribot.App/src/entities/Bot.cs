@@ -60,13 +60,13 @@ public class Bot
 
         _dGuildRepository = services.GetService<DGuildRepository>();
 
-        _client.MessageCreated += MessageCreatedAsync;
+        //_client.MessageCreated += MessageCreatedAsync;
         slashies.SlashCommandErrored += SlashCommandErroredAsync;
         _client.GuildDownloadCompleted += GuildDownloadCompletedAsync;
 
         slashies.RegisterCommands<AdminCommands>(1153306877288001629);
         slashies.RegisterCommands<MinecraftCommands>();
-        slashies.RegisterCommands<RemoteAccessCommands>();
+        slashies.RegisterCommands<RemoteAccessCommands>(574341132826312736);
         slashies.RegisterCommands<FunCommands>(1153306877288001629);
         slashies.RegisterCommands<UtilityCommands>(1153306877288001629);
         slashies.RegisterCommands<TagCommands>(1153306877288001629);
@@ -111,6 +111,9 @@ public class Bot
 
     private async Task GuildDownloadCompletedAsync(DiscordClient sender, GuildDownloadCompletedEventArgs e)
     {
+        await _client.DeleteGlobalApplicationCommandAsync(1231741399779639327);
+        await _client.DeleteGlobalApplicationCommandAsync(1231741399779639328);
+
         IEnumerable<DiscordGuild> guilds = sender.Guilds.Values;
         FrozenDictionary<ulong, ulong[]> guildMembers = _dGuildRepository.GetGuildsWithMembers();
 
