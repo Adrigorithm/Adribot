@@ -22,16 +22,17 @@ public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
         switch (action)
         {
             case ActionType.Connect:
+                if (guildId is null)
+                    return (false, "Can't connect to a guild without an id.");
+
                 if (!clientProvider.Client.Guilds.ContainsKey((ulong)guildId))
                     return (false, "I am not in this guild!");
                 
-                if (guildId is null)
-                    return (false, "Can't connect to a guild without an id.");
-                
+                var guildReplaced = _isAttached;
                 _isAttached = true;
                 _guildId = guildId;
                 
-                return (true, $"Connected to guild `{guildId}`!");
+                return (true, $"{(guildReplaced ? "Replacing last guild...\n" : "")}Connected to guild `{guildId}`!");
             case ActionType.Channels:
                 DiscordGuild guild = await clientProvider.Client.GetGuildAsync((ulong)guildId);
                 Console.WriteLine(CLIDiscordBuilder.DiscordChannels((ulong)guildId, guild.Channels.Values));
@@ -52,9 +53,17 @@ public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
                 if (string.IsNullOrEmpty(message))
                     return (false, $"Please provide a valid message string.");
 
-                await channel.SendMessageAsync(message);
+                try
+                {
+                    await channel.SendMessageAsync(message);
 
-                return (true, null);
+                    return (true, null);
+                }
+                catch
+                {
+                    return (false, $"Couldn't send a message to channel `{channelId}`!");
+                }
+                
             default:
                 return (false, $"Action {action} not implemented.");
         }

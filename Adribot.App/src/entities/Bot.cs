@@ -111,8 +111,7 @@ public class Bot
 
     private async Task GuildDownloadCompletedAsync(DiscordClient sender, GuildDownloadCompletedEventArgs e)
     {
-        await _client.DeleteGlobalApplicationCommandAsync(1231741399779639327);
-        await _client.DeleteGlobalApplicationCommandAsync(1231741399779639328);
+        //await _client.DeleteGlobalApplicationCommandAsync(1231741399779639327);
 
         IEnumerable<DiscordGuild> guilds = sender.Guilds.Values;
         FrozenDictionary<ulong, ulong[]> guildMembers = _dGuildRepository.GetGuildsWithMembers();
