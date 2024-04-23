@@ -41,16 +41,21 @@ public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
                 Console.WriteLine(CLIDiscordBuilder.DiscordChannels((ulong)_guildId, guild.Channels.Values));
 
                 return (true, null);
+            case ActionType.Members:
+                DiscordGuild guild0 = await clientProvider.Client.GetGuildAsync((ulong)_guildId);
+                Console.WriteLine(CLIDiscordBuilder.DiscordMembers((ulong)_guildId, guild0.Members.Values));
+
+                return (true, null);
             case ActionType.Disconnect:
                 clientProvider.Client.MessageCreated -= MessageCreated;
                 _isAttached = false;
 
                 return (true, $"Disconnected from guild **{_guildId}**!");
             case ActionType.Message:
-                DiscordGuild iGuild = await clientProvider.Client.GetGuildAsync((ulong)_guildId);
+                DiscordGuild guild1 = await clientProvider.Client.GetGuildAsync((ulong)_guildId);
                 DiscordChannel? channel = null;
                 
-                if (!iGuild.Channels.TryGetValue((ulong)channelId, out channel))
+                if (!guild1.Channels.TryGetValue((ulong)channelId, out channel))
                     return (false, $"Can't find channel **{channelId}** in this guild.");
                 
                 if (string.IsNullOrEmpty(message))

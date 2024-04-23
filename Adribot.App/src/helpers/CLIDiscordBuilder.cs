@@ -18,4 +18,13 @@ public static class CLIDiscordBuilder
 
         return sb.ToString();
     }
+
+    public static string DiscordMembers(ulong guildId, IEnumerable<DiscordMember> members)
+    {
+        var sb = new StringBuilder($"Members in guild `{guildId}`:");
+
+        members.ToList().ForEach(m => sb.AppendLine($"{m.GlobalName} ({m.Mention}): {m.Id}"));
+
+        return sb.ToString();
+    }
 }

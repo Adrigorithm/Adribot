@@ -74,7 +74,7 @@ Yes.
 - [ ] Unit testing
 - [x] Manually fully test all services
 - [ ] Add bussy api commands
-- [ ] Add interactive ownly-only sessions to guilds
+- [x] Add interactive ownly-only sessions to guilds
 - [ ] Port to Discord.Net
 - [x] Find a way to ensure duplicate commands cannot be created
 

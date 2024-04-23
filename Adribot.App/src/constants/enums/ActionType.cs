@@ -10,6 +10,8 @@ public enum ActionType
     Disconnect,
     [ChoiceName("channels")]
     Channels,
+    [ChoiceName("members")]
+    Members,
     [ChoiceName("message")]
     Message,
     [ChoiceName("command")]
