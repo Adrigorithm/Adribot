@@ -17,38 +17,41 @@ public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
     public async Task<(bool, string?)> ExecAsync(ActionType action, ulong? guildId, ulong? channelId, string? message)
     {
         if (action != ActionType.Connect && !_isAttached)
-            return (false, "Not connected to a guild yet, use `Connect` first.");
+            return (false, "Not connected to a guild yet, use **Connect** first.");
 
         switch (action)
         {
             case ActionType.Connect:
                 if (guildId is null)
                     return (false, "Can't connect to a guild without an id.");
+                
+                if (_isAttached)
+                    return (false, $"Already connected to guild **{_guildId}**, please disconnect first!");
 
                 if (!clientProvider.Client.Guilds.ContainsKey((ulong)guildId))
                     return (false, "I am not in this guild!");
-                
-                var guildReplaced = _isAttached;
+
                 _isAttached = true;
                 _guildId = guildId;
-                
-                return (true, $"{(guildReplaced ? "Replacing last guild...\n" : "")}Connected to guild `{guildId}`!");
+                clientProvider.Client.MessageCreated += MessageCreated;
+
+                return (true, $"Connected to guild **{guildId}**!");
             case ActionType.Channels:
-                DiscordGuild guild = await clientProvider.Client.GetGuildAsync((ulong)guildId);
-                Console.WriteLine(CLIDiscordBuilder.DiscordChannels((ulong)guildId, guild.Channels.Values));
+                DiscordGuild guild = await clientProvider.Client.GetGuildAsync((ulong)_guildId);
+                Console.WriteLine(CLIDiscordBuilder.DiscordChannels((ulong)_guildId, guild.Channels.Values));
 
                 return (true, null);
             case ActionType.Disconnect:
                 clientProvider.Client.MessageCreated -= MessageCreated;
                 _isAttached = false;
 
-                return (true, $"Disconnected from guild `{_guildId}`!");
+                return (true, $"Disconnected from guild **{_guildId}**!");
             case ActionType.Message:
-                DiscordGuild iGuild = await clientProvider.Client.GetGuildAsync((ulong)guildId);
+                DiscordGuild iGuild = await clientProvider.Client.GetGuildAsync((ulong)_guildId);
                 DiscordChannel? channel = null;
                 
                 if (!iGuild.Channels.TryGetValue((ulong)channelId, out channel))
-                    return (false, $"Can't find channel `{channelId}` in this guild.");
+                    return (false, $"Can't find channel **{channelId}** in this guild.");
                 
                 if (string.IsNullOrEmpty(message))
                     return (false, $"Please provide a valid message string.");
@@ -61,11 +64,10 @@ public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
                 }
                 catch
                 {
-                    return (false, $"Couldn't send a message to channel `{channelId}`!");
-                }
-                
+                    return (false, $"Couldn't send a message to channel **{channelId}**!");
+                }  
             default:
-                return (false, $"Action {action} not implemented.");
+                return (false, $"Action **{action}** not implemented.");
         }
     }
 
