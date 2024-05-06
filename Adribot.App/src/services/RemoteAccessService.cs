@@ -24,7 +24,7 @@ public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
             case ActionType.Connect:
                 if (guildId is null)
                     return (false, "Can't connect to a guild without an id.");
-                
+
                 if (_isAttached)
                     return (false, $"Already connected to guild **{_guildId}**, please disconnect first!");
 
@@ -54,10 +54,10 @@ public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
             case ActionType.Message:
                 DiscordGuild guild1 = await clientProvider.Client.GetGuildAsync((ulong)_guildId);
                 DiscordChannel? channel = null;
-                
+
                 if (!guild1.Channels.TryGetValue((ulong)channelId, out channel))
                     return (false, $"Can't find channel **{channelId}** in this guild.");
-                
+
                 if (string.IsNullOrEmpty(message))
                     return (false, $"Please provide a valid message string.");
 
@@ -70,7 +70,7 @@ public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
                 catch
                 {
                     return (false, $"Couldn't send a message to channel **{channelId}**!");
-                }  
+                }
             default:
                 return (false, $"Action **{action}** not implemented.");
         }
@@ -80,7 +80,7 @@ public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
     {
         if (args.Guild.Id == _guildId)
             Console.WriteLine(CLIDiscordBuilder.DiscordMessage(args.Channel.Name, args.Author.GlobalName, args.Message.Content));
-        
+
         return Task.CompletedTask;
     }
 }
