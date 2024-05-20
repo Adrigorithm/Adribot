@@ -1,19 +1,15 @@
-# Use the .NET SDK image as the build environment
-FROM mcr.microsoft.com/dotnet/core/sdk AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
 WORKDIR /Adribot.App
 
-# Copy the .csproj file and restore dependencies
 COPY *.csproj ./
 RUN dotnet restore
 
-# Copy the rest of the application and build
 COPY . ./
 RUN dotnet publish -c Release -o out
 
-# Build the runtime image
-FROM mcr.microsoft.com/dotnet/core/runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /Adribot.App
-COPY --from=build-env /app/out ./
+COPY --from=build-env /Adribot.App/out .
 
-# Set the entry point for the container
-ENTRYPOINT ["dotnet", "DotNet.Docker.dll"]
+# Start the app
+ENTRYPOINT ["dotnet", "Adribot.dll"]
