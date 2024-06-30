@@ -2,11 +2,7 @@ using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Adribot.src.commands.fun;
-using Adribot.src.commands.moderation;
-using Adribot.src.commands.utilities;
 using Adribot.src.data;
 using Adribot.src.data.repositories;
 using Adribot.src.extensions;
@@ -15,8 +11,6 @@ using Adribot.src.services.providers;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
-using DSharpPlus.SlashCommands;
-using DSharpPlus.SlashCommands.EventArgs;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Adribot.src.entities;
@@ -30,16 +24,9 @@ public class Bot
     {
         var secrets = new SecretsProvider();
 
-        _client = new(new DiscordConfiguration
-        {
-            Token = secrets.Config.BotToken,
-            Intents = DiscordIntents.All | DiscordIntents.MessageContents
-        });
-
-        ServiceProvider services = new ServiceCollection()
+        IServiceCollection services = new ServiceCollection()
             .AddSingleton(secrets)
             .AddDbContext<AdribotContext>()
-            .AddSingleton(new DiscordClientProvider(_client))
             .AddSingleton<RemoteAccessService>()
             .AddSingleton<DGuildRepository>()
             .AddSingleton<InfractionRepository>()
@@ -50,30 +37,23 @@ public class Bot
             .AddSingleton<RemindMeSerivce>()
             .AddSingleton<IcsCalendarService>()
             .AddSingleton<StarboardService>()
-            .AddSingleton<TagService>()
-            .BuildServiceProvider();
+            .AddSingleton<TagService>();
 
-        SlashCommandsExtension slashies = _client.UseSlashCommands(new SlashCommandsConfiguration()
-        {
-            Services = services
-        });
+        var clientBuilder = DiscordClientBuilder.CreateDefault(secrets.Config.BotToken, DiscordIntents.All | DiscordIntents.MessageContents, services);
+        clientBuilder.ConfigureEventHandlers(
+            ehb => {
+                ehb.HandleGuildDownloadCompleted(GuildDownloadCompletedAsync);
+                ehb.HandleMessageCreated(MessageCreatedAsync);
+            }
+        );
 
-        _dGuildRepository = services.GetService<DGuildRepository>();
+        _client = clientBuilder.Build();
 
-        //_client.MessageCreated += MessageCreatedAsync;
-        slashies.SlashCommandErrored += SlashCommandErroredAsync;
-        _client.GuildDownloadCompleted += GuildDownloadCompletedAsync;
+        _dGuildRepository = _client.ServiceProvider.GetService<DGuildRepository>();
 
-        slashies.RegisterCommands<AdminCommands>(1153306877288001629);
-        slashies.RegisterCommands<MinecraftCommands>();
-        slashies.RegisterCommands<RemoteAccessCommands>(574341132826312736);
-        slashies.RegisterCommands<FunCommands>(1153306877288001629);
-        slashies.RegisterCommands<UtilityCommands>(1153306877288001629);
-        slashies.RegisterCommands<TagCommands>(1153306877288001629);
-        slashies.RegisterCommands<CalendarCommands>(1153306877288001629);
     }
 
-    private async Task MessageCreatedAsync(DiscordClient sender, MessageCreateEventArgs args)
+    private async Task MessageCreatedAsync(DiscordClient sender, MessageCreatedEventArgs args)
     {
         var member = args.Author as DiscordMember;
         var pingedAdmin = false;
@@ -95,24 +75,8 @@ public class Bot
         }
     }
 
-    private Task SlashCommandErroredAsync(SlashCommandsExtension sender, SlashCommandErrorEventArgs args)
-    {
-        var sb = new StringBuilder("Command `");
-        sb.Append(args.Context.CommandName);
-        sb.Append("` failed: ");
-        sb.Append(args.Exception.Message);
-
-        var devider = new string('=', sb.Length);
-
-        Console.WriteLine($"\n{devider}\n\n{sb}\n\n{devider}\n");
-
-        return Task.CompletedTask;
-    }
-
     private async Task GuildDownloadCompletedAsync(DiscordClient sender, GuildDownloadCompletedEventArgs e)
     {
-        //await _client.DeleteGlobalApplicationCommandAsync(1231741399779639327);
-
         IEnumerable<DiscordGuild> guilds = sender.Guilds.Values;
         FrozenDictionary<ulong, ulong[]> guildMembers = _dGuildRepository.GetGuildsWithMembers();
 
