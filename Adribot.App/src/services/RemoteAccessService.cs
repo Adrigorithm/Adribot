@@ -2,14 +2,12 @@ using System;
 using System.Threading.Tasks;
 using Adribot.src.constants.enums;
 using Adribot.src.helpers;
-using Adribot.src.services.providers;
 using DSharpPlus;
 using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
 
 namespace Adribot.src.services;
 
-public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
+public sealed class RemoteAccessService(DiscordClient clientProvider)
 {
     private ulong? _guildId;
     private bool _isAttached;
@@ -28,31 +26,31 @@ public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
                 if (_isAttached)
                     return (false, $"Already connected to guild **{_guildId}**, please disconnect first!");
 
-                if (!clientProvider.Client.Guilds.ContainsKey((ulong)guildId))
+                if (!clientProvider.Guilds.ContainsKey((ulong)guildId))
                     return (false, "I am not in this guild!");
 
                 _isAttached = true;
                 _guildId = guildId;
-                clientProvider.Client.MessageCreated += MessageCreated;
+                clientProvider.MessageCreated += MessageCreated;
 
                 return (true, $"Connected to guild **{guildId}**!");
             case ActionType.Channels:
-                DiscordGuild guild = await clientProvider.Client.GetGuildAsync((ulong)_guildId);
+                DiscordGuild guild = await clientProvider.GetGuildAsync((ulong)_guildId);
                 Console.WriteLine(CLIDiscordBuilder.DiscordChannels((ulong)_guildId, guild.Channels.Values));
 
                 return (true, null);
             case ActionType.Members:
-                DiscordGuild guild0 = await clientProvider.Client.GetGuildAsync((ulong)_guildId);
+                DiscordGuild guild0 = await clientProvider.GetGuildAsync((ulong)_guildId);
                 Console.WriteLine(CLIDiscordBuilder.DiscordMembers((ulong)_guildId, guild0.Members.Values));
 
                 return (true, null);
             case ActionType.Disconnect:
-                clientProvider.Client.MessageCreated -= MessageCreated;
+                clientProvider.MessageCreated -= MessageCreated;
                 _isAttached = false;
 
                 return (true, $"Disconnected from guild **{_guildId}**!");
             case ActionType.Message:
-                DiscordGuild guild1 = await clientProvider.Client.GetGuildAsync((ulong)_guildId);
+                DiscordGuild guild1 = await clientProvider.GetGuildAsync((ulong)_guildId);
                 DiscordChannel? channel = null;
 
                 if (!guild1.Channels.TryGetValue((ulong)channelId, out channel))
@@ -76,7 +74,7 @@ public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
         }
     }
 
-    private Task MessageCreated(DiscordClient sender, MessageCreateEventArgs args)
+    private Task MessageCreated(DiscordClient sender, MessageCreatedEventArgs args)
     {
         if (args.Guild.Id == _guildId)
             Console.WriteLine(CLIDiscordBuilder.DiscordMessage(args.Channel.Name, args.Author.GlobalName, args.Message.Content));

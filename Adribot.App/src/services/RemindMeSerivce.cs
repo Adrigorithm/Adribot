@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Adribot.src.data.repositories;
 using Adribot.src.entities.utilities;
 using Adribot.src.services.providers;
+using DSharpPlus;
 using DSharpPlus.Entities;
 
 namespace Adribot.src.services;
@@ -14,7 +15,7 @@ public sealed class RemindMeSerivce : BaseTimerService
     private readonly RemindMeRepository _remindMeRespository;
     private readonly List<Reminder> _reminders = [];
 
-    public RemindMeSerivce(RemindMeRepository remindMeRepository, DiscordClientProvider client, SecretsProvider secretsProvider, int timerInterval = 10) : base(client, secretsProvider, timerInterval)
+    public RemindMeSerivce(RemindMeRepository remindMeRepository, DiscordClient client, SecretsProvider secretsProvider, int timerInterval = 10) : base(client, secretsProvider, timerInterval)
     {
         _remindMeRespository = remindMeRepository;
         _reminders = _remindMeRespository.GetRemindersToOld().ToList();

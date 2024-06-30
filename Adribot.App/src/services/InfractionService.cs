@@ -16,8 +16,9 @@ public sealed class InfractionService : BaseTimerService
     private readonly InfractionRepository _infractionRepository;
     private readonly List<Infraction> _infractions = [];
 
-    public InfractionService(InfractionRepository infractionRepository, DiscordClientProvider clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
+    public InfractionService(InfractionRepository infractionRepository, DiscordClient clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
     {
+        // TODO: Figure out how to add events later
         Client.UserUpdated += ClientUserupdatedAsync;
 
         _infractionRepository = infractionRepository;

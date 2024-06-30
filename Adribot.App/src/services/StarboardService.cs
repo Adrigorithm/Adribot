@@ -16,9 +16,9 @@ public sealed class StarboardService : BaseTimerService
     /// </summary>
     private readonly Dictionary<ulong, (ulong channelId, string? starEmoji, int? threshold)> _outputChannels = [];
 
-    public StarboardService(DGuildRepository starboardRepository, DiscordClientProvider clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
+    public StarboardService(DGuildRepository starboardRepository, DiscordClient clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
     {
-        clientProvider.Client.MessageReactionAdded += MessageReactionAddedAsync;
+        clientProvider.MessageReactionAdded += MessageReactionAddedAsync;
 
         _starboardRepository = starboardRepository;
         _outputChannels = _starboardRepository.GetStarboards();

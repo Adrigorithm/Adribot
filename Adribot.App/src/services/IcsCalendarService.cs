@@ -8,12 +8,13 @@ using Adribot.src.data.repositories;
 using Adribot.src.entities.utilities;
 using Adribot.src.extensions;
 using Adribot.src.services.providers;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using Ical.Net;
 
 namespace Adribot.src.services;
 
-public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository, SecretsProvider secretsProvider, DiscordClientProvider clientProvider, int timerInterval = 60) : BaseTimerService(clientProvider, secretsProvider, timerInterval)
+public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository, SecretsProvider secretsProvider, DiscordClient clientProvider, int timerInterval = 60) : BaseTimerService(clientProvider, secretsProvider, timerInterval)
 {
     private List<IcsCalendar> _calendars;
 
@@ -47,7 +48,7 @@ public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository
 
         eventsContainer.ForEach(async eC =>
         {
-            currentChannel = (await Client.GetGuildAsync(eC.guildId)).GetChannel(eC.channelId);
+            currentChannel = (await Client.GetGuildAsync(eC.guildId)).Channels[eC.channelId];
             eC.events.ToList().ForEach(async e =>
             {
                 try

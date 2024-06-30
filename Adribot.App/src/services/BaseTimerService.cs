@@ -18,9 +18,9 @@ public abstract class BaseTimerService : ITimerService
     /// </summary>
     /// <param name="client">The client on which the service should operate</param>
     /// <param name="timerInterval">Time in seconds between each timer tick.</param>
-    protected BaseTimerService(DiscordClientProvider clientProvider, SecretsProvider? secretsProvider = null, int timerInterval = 10)
+    protected BaseTimerService(DiscordClient clientProvider, SecretsProvider? secretsProvider = null, int timerInterval = 10)
     {
-        Client = clientProvider.Client;
+        Client = clientProvider;
         Config = secretsProvider?.Config;
 
         Start(timerInterval);

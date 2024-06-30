@@ -11,6 +11,7 @@ using Adribot.src.services.providers;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using DSharpPlus.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Adribot.src.entities;
@@ -39,13 +40,18 @@ public class Bot
             .AddSingleton<StarboardService>()
             .AddSingleton<TagService>();
 
-        var clientBuilder = DiscordClientBuilder.CreateDefault(secrets.Config.BotToken, DiscordIntents.All | DiscordIntents.MessageContents, services);
+        DiscordIntents intents = DiscordIntents.All | DiscordIntents.MessageContents;
+
+        var clientBuilder = DiscordClientBuilder.CreateDefault(secrets.Config.BotToken, intents, services);
         clientBuilder.ConfigureEventHandlers(
             ehb => {
                 ehb.HandleGuildDownloadCompleted(GuildDownloadCompletedAsync);
                 ehb.HandleMessageCreated(MessageCreatedAsync);
             }
         );
+        clientBuilder.ConfigureServices(s => s.AddDiscordClient(secrets.Config.BotToken, intents));
+
+        // TODO: Add command error handling if necessary
 
         _client = clientBuilder.Build();
 
