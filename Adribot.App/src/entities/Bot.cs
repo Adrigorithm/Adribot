@@ -25,24 +25,9 @@ public class Bot
     {
         var secrets = new SecretsProvider();
 
-        IServiceCollection services = new ServiceCollection()
-            .AddSingleton(secrets)
-            .AddDbContext<AdribotContext>()
-            .AddSingleton<RemoteAccessService>()
-            .AddSingleton<DGuildRepository>()
-            .AddSingleton<InfractionRepository>()
-            .AddSingleton<RemindMeRepository>()
-            .AddSingleton<IcsCalendarRepository>()
-            .AddSingleton<TagRepository>()
-            .AddSingleton<InfractionService>()
-            .AddSingleton<RemindMeSerivce>()
-            .AddSingleton<IcsCalendarService>()
-            .AddSingleton<StarboardService>()
-            .AddSingleton<TagService>();
-
         DiscordIntents intents = DiscordIntents.All | DiscordIntents.MessageContents;
 
-        var clientBuilder = DiscordClientBuilder.CreateDefault(secrets.Config.BotToken, intents, services);
+        var clientBuilder = DiscordClientBuilder.CreateDefault(secrets.Config.BotToken, intents);
         clientBuilder.ConfigureEventHandlers(
             ehb => {
                 ehb.HandleGuildDownloadCompleted(GuildDownloadCompletedAsync);
@@ -50,6 +35,20 @@ public class Bot
             }
         );
         clientBuilder.ConfigureServices(s => s.AddDiscordClient(secrets.Config.BotToken, intents));
+        clientBuilder.ConfigureServices(s => s.AddSingleton(secrets));
+        clientBuilder.ConfigureServices(s => s.AddDbContext<AdribotContext>());
+        clientBuilder.ConfigureServices(s => s.AddSingleton<RemoteAccessService>());
+        clientBuilder.ConfigureServices(s => s.AddSingleton<DGuildRepository>());
+        clientBuilder.ConfigureServices(s => s.AddSingleton<InfractionRepository>());
+        clientBuilder.ConfigureServices(s => s.AddSingleton<RemindMeRepository>());
+        clientBuilder.ConfigureServices(s => s.AddSingleton<IcsCalendarRepository>());
+        clientBuilder.ConfigureServices(s => s.AddSingleton<TagRepository>());
+        clientBuilder.ConfigureServices(s => s.AddSingleton<InfractionService>());
+        clientBuilder.ConfigureServices(s => s.AddSingleton<RemindMeSerivce>());
+        clientBuilder.ConfigureServices(s => s.AddSingleton<IcsCalendarService>());
+        clientBuilder.ConfigureServices(s => s.AddSingleton<StarboardService>());
+        clientBuilder.ConfigureServices(s => s.AddSingleton<TagService>());
+
 
         // TODO: Add command error handling if necessary
 
