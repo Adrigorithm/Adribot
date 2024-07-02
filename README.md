@@ -68,13 +68,9 @@ Yes.
 
 ## Todo
 
-- [x] Check for chached guilds on Tag operations
 - [ ] Add automatic online ical sync
 - [ ] Provide clearer error messages / feedback for end user (in progress)
-- [x] Manually fully test all services
-- [ ] Add bussy api commands (in progress)
-- [x] Add interactive ownly-only sessions to guilds
-- [x] Find a way to ensure duplicate commands cannot be created
+- [ ] Conver to Discord.NET
 
 ## Support
 
