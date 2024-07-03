@@ -8,6 +8,7 @@ using Adribot.src.data.repositories;
 using Adribot.src.extensions;
 using Adribot.src.services;
 using Adribot.src.services.providers;
+using Discord.WebSocket;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -18,44 +19,49 @@ namespace Adribot.src.entities;
 
 public class Bot
 {
-    private readonly DiscordClient _client;
+    private readonly DiscordSocketClient _client;
     private readonly DGuildRepository _dGuildRepository;
 
     public Bot()
     {
+        _client = new DiscordSocketClient();
         var secrets = new SecretsProvider();
 
-        DiscordIntents intents = DiscordIntents.All | DiscordIntents.MessageContents;
+        await _client.LoginAsync(Discord.TokenType.Bot, secrets.Config.BotToken);
 
-        var clientBuilder = DiscordClientBuilder.CreateDefault(secrets.Config.BotToken, intents);
-        clientBuilder.ConfigureEventHandlers(
-            ehb => {
-                ehb.HandleGuildDownloadCompleted(GuildDownloadCompletedAsync);
-                ehb.HandleMessageCreated(MessageCreatedAsync);
-            }
-        );
-        clientBuilder.ConfigureServices(s => s.AddDiscordClient(secrets.Config.BotToken, intents));
-        clientBuilder.ConfigureServices(s => s.AddSingleton(secrets));
-        clientBuilder.ConfigureServices(s => s.AddDbContext<AdribotContext>());
-        clientBuilder.ConfigureServices(s => s.AddSingleton<RemoteAccessService>());
-        clientBuilder.ConfigureServices(s => s.AddSingleton<DGuildRepository>());
-        clientBuilder.ConfigureServices(s => s.AddSingleton<InfractionRepository>());
-        clientBuilder.ConfigureServices(s => s.AddSingleton<RemindMeRepository>());
-        clientBuilder.ConfigureServices(s => s.AddSingleton<IcsCalendarRepository>());
-        clientBuilder.ConfigureServices(s => s.AddSingleton<TagRepository>());
-        clientBuilder.ConfigureServices(s => s.AddSingleton<InfractionService>());
-        clientBuilder.ConfigureServices(s => s.AddSingleton<RemindMeSerivce>());
-        clientBuilder.ConfigureServices(s => s.AddSingleton<IcsCalendarService>());
-        clientBuilder.ConfigureServices(s => s.AddSingleton<StarboardService>());
-        clientBuilder.ConfigureServices(s => s.AddSingleton<TagService>());
+        // DiscordIntents intents = DiscordIntents.All | DiscordIntents.MessageContents;
 
+        // var clientBuilder = DiscordClientBuilder.CreateDefault(secrets.Config.BotToken, intents);
+        // clientBuilder.ConfigureEventHandlers(
+        //     ehb => {
+        //         ehb.HandleGuildDownloadCompleted(GuildDownloadCompletedAsync);
+        //         ehb.HandleMessageCreated(MessageCreatedAsync);
+        //     }
+        // );
+        // clientBuilder.ConfigureServices(s => s.AddDiscordClient(secrets.Config.BotToken, intents));
+        // clientBuilder.ConfigureServices(s => s.AddSingleton(secrets));
+        // clientBuilder.ConfigureServices(s => s.AddDbContext<AdribotContext>());
+        // clientBuilder.ConfigureServices(s => s.AddSingleton<RemoteAccessService>());
+        // clientBuilder.ConfigureServices(s => s.AddSingleton<DGuildRepository>());
+        // clientBuilder.ConfigureServices(s => s.AddSingleton<InfractionRepository>());
+        // clientBuilder.ConfigureServices(s => s.AddSingleton<RemindMeRepository>());
+        // clientBuilder.ConfigureServices(s => s.AddSingleton<IcsCalendarRepository>());
+        // clientBuilder.ConfigureServices(s => s.AddSingleton<TagRepository>());
+        // clientBuilder.ConfigureServices(s => s.AddSingleton<InfractionService>());
+        // clientBuilder.ConfigureServices(s => s.AddSingleton<RemindMeSerivce>());
+        // clientBuilder.ConfigureServices(s => s.AddSingleton<IcsCalendarService>());
+        // clientBuilder.ConfigureServices(s => s.AddSingleton<StarboardService>());
+        // clientBuilder.ConfigureServices(s => s.AddSingleton<TagService>());
 
-        // TODO: Add command error handling if necessary
+        // _client = clientBuilder.Build();
 
-        _client = clientBuilder.Build();
+        // _dGuildRepository = _client.ServiceProvider.GetService<DGuildRepository>();
 
-        _dGuildRepository = _client.ServiceProvider.GetService<DGuildRepository>();
+    }
 
+    public async Task StartAsync()
+    {
+        await _client.LoginAsync()
     }
 
     private async Task MessageCreatedAsync(DiscordClient sender, MessageCreatedEventArgs args)
