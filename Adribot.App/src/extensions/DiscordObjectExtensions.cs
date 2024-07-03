@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Adribot.src.entities.discord;
-using DSharpPlus.Entities;
+using Discord.WebSocket;
 
 namespace Adribot.src.extensions;
 
@@ -11,7 +11,7 @@ public static class DiscordObjectExtensions
     /// Calling this method method individually will NOT reference to a DMembers in any way.
     /// </summary>
     /// <returns>The simplified DTO (DGuild) representation of a DiscordGuild</returns>
-    public static DGuild ToDGuild(this DiscordGuild guild) =>
+    public static DGuild ToDGuild(this SocketGuild guild) =>
         new DGuild
         {
             GuildId = guild.Id,
