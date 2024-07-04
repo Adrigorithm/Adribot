@@ -1,3 +1,6 @@
+# Halted
+
+This project is paused until either D#+ fixes their stuff or I port the whole thing to Discord.Net
 
 # Adribot
 
