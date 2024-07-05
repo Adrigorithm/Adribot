@@ -1,14 +1,27 @@
 services:
-  bot:
-    build:
-      context: ./Adribot.App
-      dockerfile: Dockerfile
-  sql-server:
-    image: mcr.microsoft.com/mssql/server
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql_db
     environment:
-      MSSQL_SA_PASSWORD: 
-    secrets:
-      - db_password
-secrets:
-  db_password:
-    file: ./Secrets/db_password
+      SA_PASSWORD: "YourStrong@Passw0rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+
+  webapp:
+    image: adribot_backend
+    container_name: adribot_backend
+    depends_on:
+      - db
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=db;Database=YourDatabaseName;User Id=sa;Password=YourStrong@Passw0rd;"
+    volumes:
+      - ./app:/app
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+volumes:
+  mssql_data:
