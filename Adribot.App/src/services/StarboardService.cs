@@ -27,34 +27,30 @@ public sealed class StarboardService : BaseTimerService
 
     private async Task ReactionAddedAsync(Cacheable<IUserMessage, ulong> cacheable1, Cacheable<IMessageChannel, ulong> cacheable2, SocketReaction reaction)
     {
-        if (_outputChannels.ContainsKey(args.Guild.Id))
+        IMessageChannel channel = await cacheable2.GetOrDownloadAsync();
+        IUserMessage message = await cacheable1.GetOrDownloadAsync();
+
+        if (channel is ITextChannel textChannel && _outputChannels.ContainsKey(textChannel.GuildId))
         {
 #pragma warning disable IDE0007 // Use implicit type
-            (var channelId, string? starEmoji, var threshold) = _outputChannels[args.Guild.Id];
+            (var channelId, string? starEmoji, var threshold) = _outputChannels[textChannel.GuildId];
 #pragma warning restore IDE0007 // Use implicit type
 
-            var starEmojiCount = args.Message.Reactions.Count(r => r.Emoji == starEmoji);
+            KeyValuePair<IEmote, ReactionMetadata> starEmojiKvp = message.Reactions.FirstOrDefault(r => r.Key.Name == starEmoji);
+            var starEmojiCount = starEmojiKvp.Key is null
+                ? 0 
+                : starEmojiKvp.Value.ReactionCount;
 
             if (starEmojiCount >= threshold)
             {
                 var embed = new EmbedBuilder
                 {
-                    Author = ""
+                    Author = new EmbedAuthorBuilder().WithName(message.Author.Mention),
                     Color = new Color(Convert.ToUInt16(Config.EmbedColour)),
-                    Description = reminder.Content,
-                    Timestamp = reminder.Date,
-                    Title = "You wanted to be reminded of the following:"
-                };
-
-
-                await args.Guild.GetChannel(channelId).SendMessageAsync(new DiscordMessageBuilder().AddEmbed(new DiscordEmbedBuilder
-                {
-                    Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = $"{args.User.Mention}" },
-                    Color = new DiscordColor(Config.EmbedColour),
-                    Description = args.Message.Content,
+                    Description = message.Content,
                     Title = $":{starEmoji ?? "star"}: reacted {starEmojiCount} times!",
-                    Footer = new DiscordEmbedBuilder.EmbedFooter() { Text = args.Message.JumpLink.OriginalString }
-                }));
+                    Footer = new EmbedFooterBuilder().WithText(message.GetJumpUrl())
+                };
             }
         }
     }
