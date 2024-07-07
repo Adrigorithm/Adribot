@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Adribot.src.data.repositories;
 using Adribot.src.entities.utilities;
 using Adribot.src.services.providers;
-using DSharpPlus;
-using DSharpPlus.Entities;
+using Discord;
+using Discord.WebSocket;
 
 namespace Adribot.src.services;
 
@@ -15,7 +15,7 @@ public sealed class RemindMeSerivce : BaseTimerService
     private readonly RemindMeRepository _remindMeRespository;
     private readonly List<Reminder> _reminders = [];
 
-    public RemindMeSerivce(RemindMeRepository remindMeRepository, DiscordClient client, SecretsProvider secretsProvider, int timerInterval = 10) : base(client, secretsProvider, timerInterval)
+    public RemindMeSerivce(RemindMeRepository remindMeRepository, DiscordClientProvider client, SecretsProvider secretsProvider, int timerInterval = 10) : base(client, secretsProvider, timerInterval)
     {
         _remindMeRespository = remindMeRepository;
         _reminders = _remindMeRespository.GetRemindersToOld().ToList();
@@ -29,21 +29,18 @@ public sealed class RemindMeSerivce : BaseTimerService
 
             if (reminder is not null)
             {
-                DiscordMessageBuilder remindMessage = new DiscordMessageBuilder()
-                    .WithContent($"{reminder.DMember.Mention}")
-                    .AddEmbed(new DiscordEmbedBuilder()
-                    {
-                        Color = new DiscordColor(Config.EmbedColour),
-                        Description = reminder.Content,
-                        Timestamp = reminder.Date,
-                        Title = "You wanted to be reminded of the following:"
-                    });
-                remindMessage.WithAllowedMention(new UserMention(reminder.DMember.MemberId));
+                var embed = new EmbedBuilder
+                {
+                    Color = new Color(Convert.ToUInt16(Config.EmbedColour)),
+                    Description = reminder.Content,
+                    Timestamp = reminder.Date,
+                    Title = "You wanted to be reminded of the following:"
+                };
 
-                DiscordGuild guild = await Client.GetGuildAsync(reminder.DMember.DGuild.GuildId);
+                SocketGuild guild = Client.Guilds.First(g => g.Id == reminder.DMember.DGuild.GuildId);
                 _ = reminder.Channel is null
-                    ? await (await guild.GetMemberAsync(reminder.DMember.MemberId)).SendMessageAsync(remindMessage)
-                    : await guild.Channels[(ulong)reminder.Channel].SendMessageAsync(remindMessage);
+                    ? await guild.GetUser(reminder.DMember.MemberId).SendMessageAsync(embed: embed.Build())
+                    : await ((ITextChannel)guild.Channels.First(c => c.Id == (ulong)reminder.Channel)).SendMessageAsync(reminder.DMember.Mention, embed: embed.Build(), allowedMentions: AllowedMentions.All);
 
                 _reminders.Remove(reminder);
                 _remindMeRespository.RemoveReminder(reminder);

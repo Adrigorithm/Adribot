@@ -1,10 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Adribot.src.data.repositories;
 using Adribot.src.services.providers;
-using DSharpPlus;
-using DSharpPlus.Entities;
+using Discord;
+using Discord.WebSocket;
 
 namespace Adribot.src.services;
 
@@ -16,17 +17,16 @@ public sealed class StarboardService : BaseTimerService
     /// </summary>
     private readonly Dictionary<ulong, (ulong channelId, string? starEmoji, int? threshold)> _outputChannels = [];
 
-    public StarboardService(DGuildRepository starboardRepository, DiscordClient clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
+    public StarboardService(DGuildRepository starboardRepository, DiscordClientProvider clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
     {
-        clientProvider.MessageReactionAdded += MessageReactionAddedAsync;
+        clientProvider.Client.ReactionAdded += ReactionAddedAsync;
 
         _starboardRepository = starboardRepository;
         _outputChannels = _starboardRepository.GetStarboards();
     }
 
-    private async Task MessageReactionAddedAsync(DiscordClient sender, DSharpPlus.EventArgs.MessageReactionAddEventArgs args)
+    private async Task ReactionAddedAsync(Cacheable<IUserMessage, ulong> cacheable1, Cacheable<IMessageChannel, ulong> cacheable2, SocketReaction reaction)
     {
-
         if (_outputChannels.ContainsKey(args.Guild.Id))
         {
 #pragma warning disable IDE0007 // Use implicit type
@@ -37,6 +37,16 @@ public sealed class StarboardService : BaseTimerService
 
             if (starEmojiCount >= threshold)
             {
+                var embed = new EmbedBuilder
+                {
+                    Author = ""
+                    Color = new Color(Convert.ToUInt16(Config.EmbedColour)),
+                    Description = reminder.Content,
+                    Timestamp = reminder.Date,
+                    Title = "You wanted to be reminded of the following:"
+                };
+
+
                 await args.Guild.GetChannel(channelId).SendMessageAsync(new DiscordMessageBuilder().AddEmbed(new DiscordEmbedBuilder
                 {
                     Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = $"{args.User.Mention}" },

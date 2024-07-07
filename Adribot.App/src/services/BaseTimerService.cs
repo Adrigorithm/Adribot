@@ -2,13 +2,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Adribot.src.config;
 using Adribot.src.services.providers;
-using DSharpPlus;
+using Discord.WebSocket;
 
 namespace Adribot.src.services;
 
 public abstract class BaseTimerService : ITimerService
 {
-    protected DiscordClient Client { get; init; }
+    protected DiscordSocketClient Client { get; init; }
     protected ConfigValueType? Config { get; init; }
 
     private Timer _timer;
@@ -18,9 +18,9 @@ public abstract class BaseTimerService : ITimerService
     /// </summary>
     /// <param name="client">The client on which the service should operate</param>
     /// <param name="timerInterval">Time in seconds between each timer tick.</param>
-    protected BaseTimerService(DiscordClient clientProvider, SecretsProvider? secretsProvider = null, int timerInterval = 10)
+    protected BaseTimerService(DiscordClientProvider clientProvider, SecretsProvider? secretsProvider = null, int timerInterval = 10)
     {
-        Client = clientProvider;
+        Client = clientProvider.Client;
         Config = secretsProvider?.Config;
 
         Start(timerInterval);

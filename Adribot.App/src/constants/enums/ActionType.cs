@@ -2,7 +2,7 @@ using DSharpPlus.SlashCommands;
 
 namespace Adribot.src.constants.enums;
 
-public enum ActionType
+public enum RAActionType
 {
     [ChoiceName("connect")]
     Connect,

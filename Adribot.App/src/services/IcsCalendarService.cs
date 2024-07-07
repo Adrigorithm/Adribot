@@ -8,13 +8,13 @@ using Adribot.src.data.repositories;
 using Adribot.src.entities.utilities;
 using Adribot.src.extensions;
 using Adribot.src.services.providers;
-using DSharpPlus;
-using DSharpPlus.Entities;
+using Discord;
+using Discord.WebSocket;
 using Ical.Net;
 
 namespace Adribot.src.services;
 
-public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository, SecretsProvider secretsProvider, DiscordClient clientProvider, int timerInterval = 60) : BaseTimerService(clientProvider, secretsProvider, timerInterval)
+public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository, SecretsProvider secretsProvider, DiscordClientProvider clientProvider, int timerInterval = 60) : BaseTimerService(clientProvider, secretsProvider, timerInterval)
 {
     private List<IcsCalendar> _calendars;
 
@@ -44,11 +44,11 @@ public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository
     public void PostEvents(List<(int calendarId, ulong guildId, ulong channelId, Event[] events)> eventsContainer)
     {
         Dictionary<int, List<(int eventId, bool IsPosted)>> eventsPosted = [];
-        DiscordChannel currentChannel;
+        ITextChannel currentChannel;
 
-        eventsContainer.ForEach(async eC =>
+        eventsContainer.ForEach(eC =>
         {
-            currentChannel = (await Client.GetGuildAsync(eC.guildId)).Channels[eC.channelId];
+            currentChannel = (ITextChannel)Client.Guilds.First(g => g.Id == eC.guildId).Channels.First(c => c.Id == eC.channelId);
             eC.events.ToList().ForEach(async e =>
             {
                 try
@@ -99,9 +99,9 @@ public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository
         }
     }
 
-    public bool TryDeleteCalendar(DiscordMember member, IcsCalendar calendar)
+    public bool TryDeleteCalendar(SocketGuildUser member, IcsCalendar calendar)
     {
-        if (!member.Permissions.HasPermission(DiscordPermissions.ManageMessages) || member.Id != calendar.DMember.MemberId)
+        if (!member.GuildPermissions.ManageMessages || member.Id != calendar.DMember.MemberId)
             return false;
 
         _calendars.Remove(calendar);

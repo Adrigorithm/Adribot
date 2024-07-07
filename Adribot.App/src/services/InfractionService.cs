@@ -6,8 +6,8 @@ using Adribot.src.constants.enums;
 using Adribot.src.data.repositories;
 using Adribot.src.entities.discord;
 using Adribot.src.services.providers;
-using DSharpPlus;
-using DSharpPlus.Entities;
+using Discord;
+using Discord.WebSocket;
 
 namespace Adribot.src.services;
 
@@ -16,7 +16,7 @@ public sealed class InfractionService : BaseTimerService
     private readonly InfractionRepository _infractionRepository;
     private readonly List<Infraction> _infractions = [];
 
-    public InfractionService(InfractionRepository infractionRepository, DiscordClient clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
+    public InfractionService(InfractionRepository infractionRepository, DiscordClientProvider clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
     {
         // TODO: Figure out how to add events later
         Client.UserUpdated += ClientUserupdatedAsync;
@@ -25,24 +25,26 @@ public sealed class InfractionService : BaseTimerService
         _infractions = _infractionRepository.GetInfractionsToOldNotExpired().ToList();
     }
 
-    private async Task ClientUserupdatedAsync(DiscordClient sender, DSharpPlus.EventArgs.UserUpdateEventArgs args) =>
-        await CheckHoistAsync(args.UserAfter);
-
-    private async Task CheckHoistAsync(DiscordUser user)
+    private async Task ClientUserupdatedAsync(SocketUser user1, SocketUser user2)
     {
-        var member = user as DiscordMember;
-        if (member is not null && !member.IsBot && !member.Permissions.HasPermission(DiscordPermissions.Administrator) && member.DisplayName[0] < 48)
+        if (user2 is SocketGuildUser user)
+            await CheckHoistAsync(user);
+    }
+
+    private async Task CheckHoistAsync(SocketGuildUser user)
+    {
+        if (!user.GuildPermissions.Administrator && user.DisplayName[0] < 48)
         {
-            if (!_infractions.Any(i => i.DMember.MemberId == member.Id && i.Type == InfractionType.Hoist && !i.IsExpired))
+            if (!_infractions.Any(i => i.DMember.MemberId == user.Id && i.Type == InfractionType.Hoist && !i.IsExpired))
             {
-                Infraction infraction = _infractionRepository.AddInfraction(member.Guild.Id, member.Id, DateTimeOffset.UtcNow.AddHours(24), InfractionType.Hoist, "Hoisting is poop");
+                Infraction infraction = _infractionRepository.AddInfraction(user.Guild.Id, user.Id, DateTimeOffset.UtcNow.AddHours(24), InfractionType.Hoist, "Hoisting is poop");
                 AddInfraction(infraction);
             }
 
-            if (member.DisplayName != "💩")
+            if (user.DisplayName != "💩")
             {
-                await member.ModifyAsync(m => m.Nickname = "💩");
-                await member.SendMessageAsync("You were trying to hoist, stop trying to hoist.\n" +
+                await user.ModifyAsync(m => m.Nickname = "💩");
+                await user.SendMessageAsync("You were trying to hoist, stop trying to hoist.\n" +
                     "I have therefore changed your name to 💩 for 24 hours.");
             }
         }
@@ -59,12 +61,14 @@ public sealed class InfractionService : BaseTimerService
                 switch (infraction.Type)
                 {
                     case InfractionType.Hoist:
-                        await (await (await Client.GetGuildAsync(infraction.DMember.DGuild.GuildId)).GetMemberAsync(infraction.DMember.MemberId)).ModifyAsync(m => m.Nickname = "");
+                        await Client.Guilds.First(g => g.Id == infraction.DMember.DGuild.GuildId).Users.First(u => u.Id == infraction.DMember.MemberId).ModifyAsync(m => m.Nickname = "");
                         break;
                     case InfractionType.Ban:
-                        DiscordGuild guild = await Client.GetGuildAsync(infraction.DMember.DGuild.GuildId);
-                        await guild.UnbanMemberAsync(infraction.DMember.MemberId, infraction.Reason);
-                        await ((DiscordMember)await Client.GetUserAsync(infraction.DMember.MemberId)).SendMessageAsync($"You have been unbanned from {guild.Name}!\nDo not let it happen again.");
+                        SocketGuild guild = Client.Guilds.First(g => g.Id == infraction.DMember.DGuild.GuildId);
+                        SocketGuildUser user = guild.GetUser(infraction.DMember.MemberId);
+
+                        await guild.RemoveBanAsync(user);
+                        await user.SendMessageAsync($"You have been unbanned from {guild.Name}!\nDo not let it happen again.");
                         break;
                     default:
                         break;

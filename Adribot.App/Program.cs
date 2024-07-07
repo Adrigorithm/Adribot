@@ -22,6 +22,7 @@ internal static class Program
             .AddDbContext<AdribotContext>()
             .AddSingleton<DGuildRepository>()
             .AddSingleton<DiscordClientProvider>()
+            .AddSingleton<Bot>()
             .AddSingleton<RemoteAccessService>()
             .AddSingleton<InfractionRepository>()
             .AddSingleton<RemindMeRepository>()
@@ -39,8 +40,9 @@ internal static class Program
 
     private static async Task RunAsync()
     {
-        Bot bot = new();
-        //await bot.StartAsync();
+        Bot bot = _serviceProvider.GetRequiredService<Bot>();
+        await bot.StartAsync(_serviceProvider.GetRequiredService<SecretsProvider>().Config.BotToken);
+        
         await Task.Delay(-1);
     }
 }
