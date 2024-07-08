@@ -6,7 +6,7 @@ namespace Adribot.src.extensions;
 public static class CallNetConversions
 {
     public static Event ToEvent(this CalendarEvent cEvent) =>
-        new Event()
+        new()
         {
             End = cEvent.End.AsDateTimeOffset,
             IsAllDay = cEvent.IsAllDay,
