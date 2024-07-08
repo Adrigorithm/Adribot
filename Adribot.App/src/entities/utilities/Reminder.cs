@@ -1,7 +1,7 @@
 using System;
 using Adribot.src.data;
 using Adribot.src.entities.discord;
-using DSharpPlus.Entities;
+using Discord;
 
 namespace Adribot.src.entities.utilities;
 
@@ -17,10 +17,10 @@ public class Reminder : IDataStructure
     public int DMemberId { get; set; }
     public DMember DMember { get; set; }
 
-    public DiscordEmbedBuilder GenerateEmbedBuilder() =>
-        new DiscordEmbedBuilder
+    public EmbedBuilder GenerateEmbedBuilder() =>
+        new()
         {
-            Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = $"{DMember.Mention}" },
+            Author = new EmbedAuthorBuilder { Name = $"{DMember.Mention}" },
             Title = "",
             Description = $"A reminder set on `{Date:g}` to trigger on {EndDate:g}\n\nwith content `{Content}`"
         };

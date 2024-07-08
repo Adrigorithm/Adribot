@@ -1,7 +1,7 @@
 using System;
 using Adribot.src.data;
 using Adribot.src.entities.discord;
-using DSharpPlus.Entities;
+using Discord;
 
 namespace Adribot.src.entities.utilities;
 
@@ -16,15 +16,15 @@ public class Tag : IDataStructure
     public int DMemberId { get; set; }
     public DMember DMember { get; set; }
 
-    public DiscordEmbedBuilder GenerateEmbedBuilder()
+    public EmbedBuilder GenerateEmbedBuilder()
     {
         var tagContent = Content;
         if (Content.Length > 100)
             tagContent = string.Concat(Content.AsSpan(0, 100), " ...");
 
-        return new DiscordEmbedBuilder
+        return new EmbedBuilder
         {
-            Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = $"{DMember.Mention}" },
+            Author = new EmbedAuthorBuilder { Name = $"{DMember.Mention}" },
             Title = $"{Name}",
             Description = $"{tagContent}"
         };

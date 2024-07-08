@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Adribot.src.data;
-using DSharpPlus.Entities;
+using Discord;
 
 namespace Adribot.src.entities.discord;
 
@@ -61,10 +61,10 @@ public class DGuild : IComparable, IDataStructure
                                     $"Make sure your instance is of type {GetType().Name}");
     }
 
-    public DiscordEmbedBuilder GenerateEmbedBuilder() =>
-        new DiscordEmbedBuilder
+    public EmbedBuilder GenerateEmbedBuilder() =>
+        new()
         {
-            Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = "<@608275633218519060>" },
+            Author = new EmbedAuthorBuilder { Name = "<@608275633218519060>" },
             Title = GuildId.ToString(),
             Description = $"This guild contains {Members.Count} members.\n" +
                 $"Starred messages ({StarEmoji} >=3) are sent to channel {StarboardChannel}."

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Adribot.src.data;
 using Adribot.src.entities.utilities;
-using DSharpPlus.Entities;
+using Discord;
 
 namespace Adribot.src.entities.discord;
 
@@ -37,10 +37,10 @@ public class DMember : IComparable, IDataStructure
 
     public override bool Equals(object? obj) =>
         obj is DMember member && member.MemberId == MemberId && member.DGuildId == DGuildId;
-    public DiscordEmbedBuilder GenerateEmbedBuilder() =>
-        new DiscordEmbedBuilder
+    public EmbedBuilder GenerateEmbedBuilder() =>
+        new()
         {
-            Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = "<@608275633218519060>" },
+            Author = new EmbedAuthorBuilder { Name = "<@608275633218519060>" },
             Title = MemberId.ToString(),
             Description = $"This member has set {Reminders.Count} reminders and {Tags.Count} tags.\n" +
                 $"They have {Infractions.Count} infractions of which {Infractions.Count(i => !i.IsExpired)} are still pending.\n" +

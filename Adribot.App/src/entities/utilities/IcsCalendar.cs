@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Adribot.src.data;
 using Adribot.src.entities.discord;
-using DSharpPlus.Entities;
+using Discord;
 
 namespace Adribot.src.entities.utilities;
 
@@ -17,10 +17,10 @@ public class IcsCalendar : IDataStructure
     public int DMemberId { get; set; }
     public DMember DMember { get; set; }
 
-    public DiscordEmbedBuilder GenerateEmbedBuilder() =>
-        new DiscordEmbedBuilder
+    public EmbedBuilder GenerateEmbedBuilder() =>
+        new()
         {
-            Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = "Adrigorithm" },
+            Author = new EmbedAuthorBuilder { Name = "Adrigorithm" },
             Title = Name,
             Description = $"A cached calendar `{Name}` containing {Events.Count} events. You probably want to see an individual event instead."
         };

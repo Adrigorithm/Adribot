@@ -1,8 +1,8 @@
-using DSharpPlus.Entities;
+using Discord;
 
 namespace Adribot.src.data;
 
 public interface IDataStructure
 {
-    DiscordEmbedBuilder GenerateEmbedBuilder();
+    EmbedBuilder GenerateEmbedBuilder();
 }

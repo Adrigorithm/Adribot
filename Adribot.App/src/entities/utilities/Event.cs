@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using Adribot.src.data;
-using DSharpPlus.Entities;
+using Discord;
 
 namespace Adribot.src.entities.utilities;
 
@@ -27,22 +27,22 @@ public class Event : IDataStructure
     public int IcsCalendarId { get; set; }
     public IcsCalendar IcsCalendar { get; set; }
 
-    public DiscordEmbedBuilder GenerateEmbedBuilder() =>
-        new DiscordEmbedBuilder
+    public EmbedBuilder GenerateEmbedBuilder() =>
+        new()
         {
-            Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = Organiser },
+            Author = new EmbedAuthorBuilder { Name = Organiser },
             Title = $"{Name}\n[{Start:HH:mm} - {End:HH:mm}]",
             Description = Summary,
-            Footer = new DiscordEmbedBuilder.EmbedFooter() { Text = Location }
+            Footer = new EmbedFooterBuilder { Text = Location }
         };
 
-    public DiscordEmbedBuilder GeneratePXLEmbedBuilder()
+    public EmbedBuilder GeneratePXLEmbedBuilder()
     {
         var descriptionLines = Description.Split('\n');
 
-        return new DiscordEmbedBuilder
+        return new EmbedBuilder
         {
-            Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = descriptionLines[3].Substring(descriptionLines[3].IndexOf(':') + 2) },
+            Author = new EmbedAuthorBuilder { Name = descriptionLines[3].Substring(descriptionLines[3].IndexOf(':') + 2) },
             Title = $"{descriptionLines[5].Substring(descriptionLines[5].IndexOf(':') + 2)}\n{Location} - [{Start:HH:mm} -> {End:HH:mm}]",
             Description = Summary
         };

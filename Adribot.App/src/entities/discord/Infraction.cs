@@ -1,7 +1,7 @@
 using System;
 using Adribot.src.constants.enums;
 using Adribot.src.data;
-using DSharpPlus.Entities;
+using Discord;
 
 namespace Adribot.src.entities.discord;
 
@@ -18,10 +18,10 @@ public class Infraction : IDataStructure
     public int DMemberId { get; set; }
     public DMember DMember { get; set; }
 
-    public DiscordEmbedBuilder GenerateEmbedBuilder() =>
-        new DiscordEmbedBuilder
+    public EmbedBuilder GenerateEmbedBuilder() =>
+        new()
         {
-            Author = new DiscordEmbedBuilder.EmbedAuthor() { Name = "<@608275633218519060>" },
+            Author = new EmbedAuthorBuilder { Name = "<@608275633218519060>" },
             Title = $"{Type}",
             Description = $"This infraction belongs to {DMember.Mention}.\n" +
                 $"It lastst from {Date:g} to {EndDate:g}\n" +
