@@ -10,17 +10,16 @@ using Adribot.src.entities.fun.cat;
 using Adribot.src.entities.fun.dog;
 using Adribot.src.entities.fun.fox;
 using Adribot.src.services.providers;
-using DSharpPlus.Entities;
-using DSharpPlus.SlashCommands;
+using Discord.Interactions;
 
 namespace Adribot.src.commands.fun;
 
-public class FunCommands(SecretsProvider _secretsProvider) : ApplicationCommandModule
+public class FunCommands(SecretsProvider _secretsProvider) : InteractionModuleBase
 {
     private readonly HttpClient _httpClient = new();
 
     [SlashCommand("get", "Gets a random animal")]
-    public async Task GetAnimalAsync(InteractionContext ctx, [Option("animal", "pick your favourite floof")] AnimalType animal = AnimalType.Cat)
+    public async Task GetAnimalAsync(InteractionContext ctx, AnimalType animal = AnimalType.Cat)
     {
         switch (animal)
         {

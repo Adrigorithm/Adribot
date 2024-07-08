@@ -14,14 +14,14 @@ public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
     private ulong? _guildId;
     private bool _isAttached;
 
-    public async Task<(bool, string?)> ExecAsync(RAActionType action, ulong? guildId, ulong? channelId, string? message)
+    public async Task<(bool, string?)> ExecAsync(RemoteAccessActionType action, ulong? guildId, ulong? channelId, string? message)
     {
-        if (action != RAActionType.Connect && !_isAttached)
+        if (action != RemoteAccessActionType.Connect && !_isAttached)
             return (false, "Not connected to a guild yet, use **Connect** first.");
 
         switch (action)
         {
-            case RAActionType.Connect:
+            case RemoteAccessActionType.Connect:
                 if (guildId is null)
                     return (false, "Can't connect to a guild without an id.");
 
@@ -36,22 +36,22 @@ public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
                 clientProvider.Client.MessageReceived += MessageReceived;
 
                 return (true, $"Connected to guild **{guildId}**!");
-            case RAActionType.Channels:
+            case RemoteAccessActionType.Channels:
                 SocketGuild guild = clientProvider.Client.GetGuild((ulong)_guildId);
                 Console.WriteLine(CLIDiscordBuilder.DiscordChannels((ulong)_guildId, guild.Channels));
 
                 return (true, null);
-            case RAActionType.Members:
+            case RemoteAccessActionType.Members:
                 SocketGuild guild0 = clientProvider.Client.GetGuild((ulong)_guildId);
                 Console.WriteLine(CLIDiscordBuilder.DiscordMembers((ulong)_guildId, guild0.Users));
 
                 return (true, null);
-            case RAActionType.Disconnect:
+            case RemoteAccessActionType.Disconnect:
                 clientProvider.Client.MessageReceived -= MessageReceived;
                 _isAttached = false;
 
                 return (true, $"Disconnected from guild **{_guildId}**!");
-            case RAActionType.Message:
+            case RemoteAccessActionType.Message:
                 SocketGuild guild1 = clientProvider.Client.GetGuild((ulong)_guildId);
                 SocketGuildChannel? channel = guild1.Channels.FirstOrDefault(c => c.Id == (ulong)channelId);
 

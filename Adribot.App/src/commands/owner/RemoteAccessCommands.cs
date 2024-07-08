@@ -11,7 +11,7 @@ public class RemoteAccessCommands(RemoteAccessService remoteAccess) : Applicatio
 {
     [SlashCommand("exec", "interact with a target server")]
     [SlashRequireOwner]
-    public async Task ExecAsync(InteractionContext ctx, [Option("mode", "Type of action to execute")] RAActionType action, [Option("guild", "Id of the guild to connect to")] string? guildId = null, [Option("channel", "channel id to connect to within current guild")] string? channelId = null, [Option("message", "text to send as a message")] string? message = null)
+    public async Task ExecAsync(InteractionContext ctx, [Option("mode", "Type of action to execute")] RemoteAccessActionType action, [Option("guild", "Id of the guild to connect to")] string? guildId = null, [Option("channel", "channel id to connect to within current guild")] string? channelId = null, [Option("message", "text to send as a message")] string? message = null)
     {
         (bool, string?) result = await remoteAccess.ExecAsync(action, guildId is null ? null : ulong.Parse(guildId), channelId is null ? null : ulong.Parse(channelId), message);
 
