@@ -46,7 +46,7 @@ public class FunCommands(SecretsProvider _secretsProvider) : InteractionModuleBa
         embed.Color = new Color(Convert.ToUInt32(_secretsProvider.Config.EmbedColour));
         embed.Title = "You asked, I delivered.";
 
-        await RespondAsync(embed: embed.Build());
+        await ReplyAsync(embed: embed.Build());
     }
 
     [SlashCommand("pp", "Calculates your pp size")]
@@ -62,6 +62,6 @@ public class FunCommands(SecretsProvider _secretsProvider) : InteractionModuleBa
        if (unit == DistanceUnit.Inch)
             ppSize = (short)(ppSize / 2.5);
 
-        await RespondAsync($"${user?.Mention ?? ctx.User.Mention}, Your pp size is {Convert.ToString(ppSize)} {(unit == DistanceUnit.Inch ? " inch" : " cm")}");
+        await ReplyAsync($"${user?.Mention ?? ctx.User.Mention}, Your pp size is {Convert.ToString(ppSize)} {(unit == DistanceUnit.Inch ? " inch" : " cm")}");
     }
 }
