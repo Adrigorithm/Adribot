@@ -20,6 +20,7 @@ public class FunCommands(SecretsProvider _secretsProvider) : InteractionModuleBa
     private readonly HttpClient _httpClient = new();
 
     [SlashCommand("get", "Gets a random animal")]
+    [RequireUserPermission(ChannelPermission.SendMessages)]
     public async Task GetAnimalAsync(AnimalType animal = AnimalType.Cat)
     {
         EmbedBuilder embed = new();
@@ -50,6 +51,7 @@ public class FunCommands(SecretsProvider _secretsProvider) : InteractionModuleBa
     }
 
     [SlashCommand("pp", "Calculates your pp size")]
+    [RequireUserPermission(ChannelPermission.SendMessages)]
     public async Task GetPpSizeAsync(InteractionContext ctx, [Summary("user", "user to calculate the pp size for")] IUser user = null, [Summary("unit", "unit to display the pp size in")] DistanceUnit unit = DistanceUnit.Inch)
     {
         var memberId = user?.Id ?? ctx.User.Id;
