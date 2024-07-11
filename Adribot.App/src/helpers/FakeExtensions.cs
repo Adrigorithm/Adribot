@@ -37,4 +37,7 @@ public static class FakeExtensions
 
         return sb.ToString();
     }
+
+    public static bool AreAllNullOrWhiteSpace(params IEnumerable<string> strings) =>
+        strings.All(s => string.IsNullOrWhiteSpace(s));
 }

@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using Adribot.src.data.repositories;
 using Adribot.src.entities.utilities;
+using Adribot.src.helpers;
 
 namespace Adribot.src.services;
 
@@ -27,6 +28,7 @@ public sealed class TagService
 
     }
 
+    // TODO: Please optimise this
     public void SetTag(ulong guildId, ulong memberId, Tag tag)
     {
         if (_tags.TryGetValue(guildId, out Dictionary<string, Tag>? tags))
@@ -64,7 +66,11 @@ public sealed class TagService
 
     public bool TryRemoveTag(string tagname, ulong guildId)
     {
+        if (string.IsNullOrWhiteSpace(tagname))
+            return false;
+
         Tag? tag = TryGetTag(tagname, guildId);
+
         if (tag is not null)
         {
             _tagRepository.Remove(tag);
@@ -72,17 +78,23 @@ public sealed class TagService
 
             return true;
         }
+
         return false;
     }
 
-    public (Tag?, string?) CreateTempTag(ulong guildId, ulong memberId, string tagName, string tagContent, DateTimeOffset createdAt, bool allowOverride) =>
-        string.IsNullOrWhiteSpace(tagContent) || string.IsNullOrWhiteSpace(tagName)
-            ? (null, $"The {nameof(tagName)} and {nameof(tagContent)} cannot be empty.")
-            : !_tags.ContainsKey(guildId) || !_tags[guildId].TryGetValue(tagName, out Tag tag) || (allowOverride && tag.DMember.MemberId == memberId) ? (new Tag
+    public (Tag?, string?) CreateTempTag(ulong guildId, ulong memberId, string tagName, string tagContent, DateTimeOffset createdAt, bool allowOverride)
+    {
+        if (FakeExtensions.AreAllNullOrWhiteSpace(tagName, tagContent))
+            return (null, $"The {nameof(tagName)} and {nameof(tagContent)} cannot be empty.");
+        
+        if (!_tags.ContainsKey(guildId) || !_tags[guildId].TryGetValue(tagName, out Tag tag) || (allowOverride && tag.DMember.MemberId == memberId))
+            return (new Tag
             {
-                Content = tagContent,
-                Date = createdAt,
-                Name = tagName
-            }, null) : (null, "Tag name already taken");
-
+                    Content = tagContent,
+                    Date = createdAt,
+                    Name = tagName
+            }, null);
+        else
+            return (null, "Tag name already taken!");
+    }
 }

@@ -5,6 +5,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <UserSecretsId>809dd9c9-143c-4891-8fb3-9582e4389363</UserSecretsId>
     <Nullable>annotations</Nullable>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
