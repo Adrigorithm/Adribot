@@ -1,7 +1,3 @@
-# Halted
-
-This project is paused until either D#+ fixes their stuff or I port the whole thing to Discord.Net
-
 # Adribot
 
 A feature rich general purpose discord bot written in C# using a discord api wrapper.
@@ -21,7 +17,7 @@ This list showcases a few of the more **visual** features and does in no way cov
 
 ## Acknowledgements
 
- - [D#+ Library](https://github.com/DSharpPlus/DSharpPlus)
+ - [Discord.Net Library](https://github.com/discord-net/Discord.Net)
  - [Discord API](https://discord.com/developers/docs/intro)
 
 ## Deployment
