@@ -53,7 +53,7 @@ public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository
             {
                 try
                 {
-                    await currentChannel.SendMessageAsync(e.GeneratePXLEmbedBuilder().Build());
+                    await currentChannel.SendMessageAsync(embed: e.GeneratePXLEmbedBuilder().Build());
                     eventsPosted[eC.calendarId] ??= [];
                     eventsPosted[eC.calendarId].Add((e.EventId, true));
                 }

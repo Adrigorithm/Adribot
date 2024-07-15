@@ -72,7 +72,6 @@ public class Bot
             };
     }
 
-    // TODO: Revise the inner logic
     private async Task ReadyAsync()
     {
         await _interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), null);
