@@ -1,14 +1,16 @@
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM mcr.microsoft.com/dotnet/nightly/sdk:9.0-preview-noble AS build
 
-WORKDIR /app
+WORKDIR /home/ubuntu/app
 
-COPY src/ temp/ Adribot.csproj Program.cs /app/
+COPY src/ temp/ Adribot.csproj Program.cs /home/ubuntu/app/
 
 RUN dotnet restore
 RUN dotnet publish -c Release -o release
 
-FROM mcr.microsoft.com/dotnet/runtime:9.0
-WORKDIR /app
-COPY --from=build /app/release .
+FROM mcr.microsoft.com/dotnet/nightly/runtime:9.0-preview-noble
 
-ENTRYPOINT ["dotnet", "Adribot.App.dll"]
+WORKDIR /home/ubuntu/app
+
+COPY --from=build /home/ubuntu/app/release .
+
+ENTRYPOINT ["dotnet", "Adribot.dll"]

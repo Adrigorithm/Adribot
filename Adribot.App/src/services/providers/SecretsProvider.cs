@@ -46,11 +46,11 @@ public class SecretsProvider(ConfigValueType config)
 
         return new SecretsProvider(new ConfigValueType
         {
-            BotToken = config["Adribot_botToken"] ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_botToken"),
-            CatToken = config["Adribot_catToken"] ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_catToken"),
-            DevUserId = Convert.ToUInt64(config["Adribot_devUserId"] ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_devUserId")),
-            EmbedColour = config["Adribot_embedColour"] ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_embedColour"),
-            SqlConnectionString = config["Adribot_sqlConnectionString"] ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_sqlConnectionString")
+            BotToken = config["BOT_TOKEN"] ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_botToken"),
+            CatToken = config["CAT_TOKEN"] ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_catToken"),
+            DevUserId = Convert.ToUInt64(config["DEV_ID"] ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_devUserId")),
+            EmbedColour = config["DISCORD_EMBED_COLOUR"] ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_embedColour"),
+            SqlConnectionString = config["DB_CONNECTION"] ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_sqlConnectionString")
         });
     }
 }

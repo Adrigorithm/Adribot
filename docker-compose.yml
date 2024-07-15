@@ -3,7 +3,7 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: adribot_db
     environment:
-      SA_PASSWORD: /run/secrets/db_password
+      MSSQL_SA_PASSWORD_FILE: /run/secrets/db_password
       ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
