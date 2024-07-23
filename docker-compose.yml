@@ -1,5 +1,5 @@
 services:
-  db:
+  adribot_db:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: adribot_db
     environment:
@@ -14,7 +14,7 @@ services:
     image: adribot_backend
     container_name: adribot_backend
     depends_on:
-      - db
+      - adribot_db
     environment:
       DISCORD_EMBED_COLOUR: "0x191970"
       DEV_ID: 135081249017430016
@@ -40,4 +40,3 @@ secrets:
     file: ./Secrets/cat_token.txt
   bot_token:
     file: ./Secrets/bot_token.txt
-

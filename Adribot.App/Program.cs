@@ -5,6 +5,7 @@ using Adribot.src.data.repositories;
 using Adribot.src.entities;
 using Adribot.src.services;
 using Adribot.src.services.providers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Adribot;
@@ -19,7 +20,9 @@ internal static class Program
 
         _serviceProvider = new ServiceCollection()
             .AddSingleton(secrets)
-            .AddDbContext<AdribotContext>()
+            .AddDbContext<AdribotContext>(
+                optionsAction: (options) => options.UseSqlServer(secrets.Config.SqlConnectionString)
+            )
             .AddSingleton<DGuildRepository>()
             .AddSingleton<DiscordClientProvider>()
             .AddSingleton<Bot>()
