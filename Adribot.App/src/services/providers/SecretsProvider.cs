@@ -38,9 +38,9 @@ public class SecretsProvider(ConfigValueType config)
     /// Loads config values from system level environment variables
     /// </summary>
     /// <returns></returns>
-    public static SecretsProvider LoadFromEnv()
+    public static SecretsProvider LoadFromEnv(IConfiguration? config = null)
     {
-        IConfiguration config = new ConfigurationBuilder()
+        config ??= new ConfigurationBuilder()
             .AddEnvironmentVariables()
             .Build();
 
