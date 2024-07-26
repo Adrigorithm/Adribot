@@ -53,4 +53,22 @@ public class SecretsProvider(ConfigValueType config)
             SqlConnectionString = config["DB_CONNECTION"] ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_sqlConnectionString")
         });
     }
+
+    public static SecretsProvider LoadFromValues(string? botToken, string? catToken, ulong? devUserId, string? embedColour, string? sqlConnectionString) =>
+        new(new()
+        {
+            BotToken = string.IsNullOrWhiteSpace(botToken) 
+                ? throw new ArgumentNullException(nameof(botToken), "Enviroment variable not found: Adribot_botToken")
+                : botToken,
+            CatToken = string.IsNullOrWhiteSpace(catToken) 
+                ? throw new ArgumentNullException(nameof(catToken), "Enviroment variable not found: Adribot_catToken")
+                : catToken,
+            DevUserId = devUserId is null || devUserId == 0 
+                ? throw new ArgumentNullException(nameof(devUserId), "Enviroment variable not found: Adribot_devUserId")
+                : (ulong)devUserId,
+            EmbedColour = embedColour ?? throw new ArgumentNullException(nameof(embedColour), "Enviroment variable not found: Adribot_embedColour"),
+            SqlConnectionString = string.IsNullOrWhiteSpace(sqlConnectionString) 
+                ? throw new ArgumentNullException("Enviroment variable not found: Adribot_sqlConnectionString")
+                : sqlConnectionString
+        });
 }
