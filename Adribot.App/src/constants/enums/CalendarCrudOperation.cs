@@ -15,7 +15,7 @@ public enum CalendarCrudOperation
 
     [ChoiceDisplay("list")]
     List,
-    
+
     [ChoiceDisplay("next")]
     Next
 }

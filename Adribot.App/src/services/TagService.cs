@@ -86,15 +86,14 @@ public sealed class TagService
     {
         if (FakeExtensions.AreAllNullOrWhiteSpace(tagName, tagContent))
             return (null, $"The {nameof(tagName)} and {nameof(tagContent)} cannot be empty.");
-        
-        if (!_tags.ContainsKey(guildId) || !_tags[guildId].TryGetValue(tagName, out Tag tag) || (allowOverride && tag.DMember.MemberId == memberId))
-            return (new Tag
+
+        return !_tags.ContainsKey(guildId) || !_tags[guildId].TryGetValue(tagName, out Tag tag) || (allowOverride && tag.DMember.MemberId == memberId)
+            ? (new Tag
             {
-                    Content = tagContent,
-                    Date = createdAt,
-                    Name = tagName
-            }, null);
-        else
-            return (null, "Tag name already taken!");
+                Content = tagContent,
+                Date = createdAt,
+                Name = tagName
+            }, null)
+            : (null, "Tag name already taken!");
     }
 }

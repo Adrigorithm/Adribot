@@ -38,7 +38,7 @@ public sealed class StarboardService : BaseTimerService
 
             KeyValuePair<IEmote, ReactionMetadata> starEmojiKvp = message.Reactions.FirstOrDefault(r => r.Key.Name == starEmoji);
             var starEmojiCount = starEmojiKvp.Key is null
-                ? 0 
+                ? 0
                 : starEmojiKvp.Value.ReactionCount;
 
             if (starEmojiCount >= threshold)

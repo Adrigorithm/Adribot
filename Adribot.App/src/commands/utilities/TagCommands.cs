@@ -28,12 +28,14 @@ public class TagCommands(TagService _tagService) : InteractionModuleBase
                 Tag? tag = _tagService.TryGetTag(tagName, ctx.Guild.Id);
 
                 if (tag is null)
+                {
                     await RespondAsync($"Tag `{tagName}` could not be found", ephemeral: true);
+                }
                 else
                 {
                     if (operation == CrudOperation.Get)
                         await RespondAsync($"**{tag.Name}**\n{tag.Content}");
-                    else 
+                    else
                         await RespondAsync(embed: tag.GenerateEmbedBuilder().Build());
                 }
 
@@ -43,7 +45,9 @@ public class TagCommands(TagService _tagService) : InteractionModuleBase
                 (Tag?, string?) tempTag = _tagService.CreateTempTag(ctx.Guild.Id, ctx.User.Id, tagName, newContent, ctx.Interaction.CreatedAt, operation == CrudOperation.Set);
 
                 if (tempTag.Item1 is null)
+                {
                     await RespondAsync(tempTag.Item2, ephemeral: true);
+                }
                 else
                 {
                     _tagService.SetTag(ctx.Guild.Id, ctx.User.Id, tempTag.Item1);
@@ -54,7 +58,9 @@ public class TagCommands(TagService _tagService) : InteractionModuleBase
                 break;
             case CrudOperation.Delete:
                 if (!_tagService.TryRemoveTag(tagName, ctx.Guild.Id))
+                {
                     await RespondAsync($"A tag with tagname `{tagName}` could not be found.", ephemeral: true);
+                }
                 else
                 {
                     await ReplyAsync($"Tag `{tagName}` disappeared in the void.");
@@ -64,7 +70,9 @@ public class TagCommands(TagService _tagService) : InteractionModuleBase
             case CrudOperation.List:
                 IEnumerable<Tag> tags = _tagService.GetAllTags(ctx.Guild.Id);
                 if (tags.Count() == 0)
+                {
                     await RespondAsync("No tags could be found.", ephemeral: true);
+                }
                 else
                 {
                     var tagStringBuilder = new StringBuilder();

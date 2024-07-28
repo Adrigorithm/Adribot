@@ -7,7 +7,7 @@ public class DiscordClientProvider
 {
     public DiscordSocketClient Client { get; init; }
 
-    public DiscordClientProvider() => 
+    public DiscordClientProvider() =>
         Client = new DiscordSocketClient(new DiscordSocketConfig
         {
             GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.MessageContent

@@ -40,7 +40,7 @@ public class FunCommands(SecretsProvider _secretsProvider) : InteractionModuleBa
             default: // Cat
                 List<Cat> catApiObject = await JsonSerializer.DeserializeAsync<List<Cat>>(await _httpClient.GetStreamAsync($"{ConstantStrings.CatBaseUri}?api_key={_secretsProvider.Config.CatToken}"));
                 embed.ImageUrl = catApiObject[0].Url;
-                
+
                 break;
         }
 
@@ -60,8 +60,8 @@ public class FunCommands(SecretsProvider _secretsProvider) : InteractionModuleBa
         memberId.ToString().ToList().ForEach(c => sum += (short)char.GetNumericValue(c));
 
         var ppSize = (short)(Math.Pow(memberId, 1.0 / sum) * 10 / char.GetNumericValue(memberId.ToString()[0]));
-       
-       if (unit == DistanceUnit.Inch)
+
+        if (unit == DistanceUnit.Inch)
             ppSize = (short)(ppSize / 2.5);
 
         await ReplyAsync($"${user?.Mention ?? ctx.User.Mention}, Your pp size is {Convert.ToString(ppSize)} {(unit == DistanceUnit.Inch ? " inch" : " cm")}");

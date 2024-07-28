@@ -38,14 +38,14 @@ internal static class Program
             .AddSingleton<TagService>()
             .BuildServiceProvider();
 
-        //await RunAsync();
+        await RunAsync();
     }
 
     private static async Task RunAsync()
     {
-        Bot bot = _serviceProvider.GetRequiredService<Bot>();
-        await bot.StartAsync(_serviceProvider.GetRequiredService<SecretsProvider>().Config.BotToken);
-        
+        await _serviceProvider.GetRequiredService<AdribotContext>().Database.MigrateAsync();
+        await _serviceProvider.GetRequiredService<Bot>().StartAsync(_serviceProvider.GetRequiredService<SecretsProvider>().Config.BotToken);
+
         await Task.Delay(-1);
     }
 }

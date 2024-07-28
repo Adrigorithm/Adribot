@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -22,10 +22,7 @@ namespace Adribot.Migrations
                     StarEmoji = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StarThreshold = table.Column<int>(type: "int", nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DGuilds", x => x.DGuildId);
-                });
+                constraints: table => table.PrimaryKey("PK_DGuilds", x => x.DGuildId));
 
             migrationBuilder.CreateTable(
                 name: "DMembers",

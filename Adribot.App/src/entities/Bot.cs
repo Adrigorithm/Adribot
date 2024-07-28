@@ -36,7 +36,7 @@ public class Bot
         await _interactionService.ExecuteCommandAsync(ctx, null);
     }
 
-    public async Task StartAsync(string token, TokenType tokenType = TokenType.Bot) => 
+    public async Task StartAsync(string token, TokenType tokenType = TokenType.Bot) =>
         await _clientProvider.Client.LoginAsync(tokenType, token, false);
 
     public async Task StopAsync() =>
@@ -51,11 +51,11 @@ public class Bot
 
         if (user is null || user.GuildPermissions.Administrator)
             await Task.CompletedTask;
-        
-        if (message.MentionedUsers.Any(u => 
+
+        if (message.MentionedUsers.Any(u =>
         {
             IGuildUser? user = GetGuildUserOrDefault(u);
-            return user is null 
+            return user is null
                 ? false
                 : user.GuildPermissions.Administrator;
         }))
@@ -63,7 +63,7 @@ public class Bot
             await message.AddReactionAsync(Emoji.Parse("💢"));
         }
 
-        IGuildUser? GetGuildUserOrDefault(SocketUser socketUser) => 
+        IGuildUser? GetGuildUserOrDefault(SocketUser socketUser) =>
             socketUser switch
             {
                 IThreadUser threadUser => threadUser.GuildUser,
