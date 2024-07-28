@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Adribot.Migrations
 {
     [DbContext(typeof(AdribotContext))]
-    [Migration("20240723180527_InitialCreate")]
+    [Migration("20240728154943_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace Adribot.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0-preview.5.24306.3")
+                .HasAnnotation("ProductVersion", "9.0.0-preview.6.24327.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);

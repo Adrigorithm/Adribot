@@ -38,7 +38,7 @@ internal static class Program
             .AddSingleton<TagService>()
             .BuildServiceProvider();
 
-        await RunAsync();
+        //await RunAsync();
     }
 
     private static async Task RunAsync()

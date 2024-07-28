@@ -4,13 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.src.data;
 
-public class AdribotContext : DbContext
+public class AdribotContext(DbContextOptions<AdribotContext> options) : DbContext(options)
 {
-    public AdribotContext(DbContextOptions<AdribotContext> options) : base(options)
-    {
-
-    }
-
     public DbSet<DGuild> DGuilds { get; set; }
     public DbSet<DMember> DMembers { get; set; }
     public DbSet<Infraction> Infractions { get; set; }

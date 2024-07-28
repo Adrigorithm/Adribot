@@ -26,6 +26,8 @@ services:
     build:
       context: ./Adribot.App
       dockerfile: Dockerfile
+      args:
+        DB_CONNECTION: /run/secrets/db_connection
     secrets:
       - db_connection
       - cat_token
