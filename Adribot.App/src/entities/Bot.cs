@@ -34,7 +34,7 @@ public class Bot
     private async Task InteractionCreatedAsync(SocketInteraction interaction)
     {
         var ctx = new SocketInteractionContext(_clientProvider.Client, interaction);
-        await _interactionService.ExecuteCommandAsync(ctx, null);
+        await _interactionService.ExecuteCommandAsync(ctx, _serviceProvider);
     }
 
     public async Task StartAsync(string token, IServiceProvider services, TokenType tokenType = TokenType.Bot)

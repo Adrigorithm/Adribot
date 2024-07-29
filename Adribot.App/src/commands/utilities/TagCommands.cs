@@ -16,7 +16,7 @@ public class TagCommands(TagService _tagService) : InteractionModuleBase
     [RequireUserPermission(ChannelPermission.SendMessages)]
     [SlashCommand("tag", "Display (information about) a tag")]
     [RequireContext(ContextType.Guild)]
-    public async Task ExecuteTagTaskAsync(InteractionContext ctx, [Summary("mode", "Tag related operation to perform")] CrudOperation operation = CrudOperation.Get, [Summary("tag", "The tag name to retrieve corresponding tag")] string? tagName = null, [Summary("content", "Update current tag content")] string? newContent = null)
+    public async Task ExecuteTagTaskAsync([Summary("mode", "Tag related operation to perform")] CrudOperation operation = CrudOperation.Get, [Summary("tag", "The tag name to retrieve corresponding tag")] string? tagName = null, [Summary("content", "Update current tag content")] string? newContent = null)
     {
         switch (operation)
         {
@@ -25,7 +25,7 @@ public class TagCommands(TagService _tagService) : InteractionModuleBase
                 if (string.IsNullOrWhiteSpace(tagName))
                     await RespondAsync("A tagName cannot be whitespace", ephemeral: true);
 
-                Tag? tag = _tagService.TryGetTag(tagName, ctx.Guild.Id);
+                Tag? tag = _tagService.TryGetTag(tagName, Context.Guild.Id);
 
                 if (tag is null)
                 {
@@ -42,7 +42,7 @@ public class TagCommands(TagService _tagService) : InteractionModuleBase
                 break;
             case CrudOperation.New:
             case CrudOperation.Set:
-                (Tag?, string?) tempTag = _tagService.CreateTempTag(ctx.Guild.Id, ctx.User.Id, tagName, newContent, ctx.Interaction.CreatedAt, operation == CrudOperation.Set);
+                (Tag?, string?) tempTag = _tagService.CreateTempTag(Context.Guild.Id, Context.User.Id, tagName, newContent, Context.Interaction.CreatedAt, operation == CrudOperation.Set);
 
                 if (tempTag.Item1 is null)
                 {
@@ -50,14 +50,14 @@ public class TagCommands(TagService _tagService) : InteractionModuleBase
                 }
                 else
                 {
-                    _tagService.SetTag(ctx.Guild.Id, ctx.User.Id, tempTag.Item1);
+                    _tagService.SetTag(Context.Guild.Id, Context.User.Id, tempTag.Item1);
 
                     await RespondAsync($"Tag `{tagName}` {(operation == CrudOperation.Set ? "updated" : "created")}.{Environment.NewLine}Check it out using `/tag {tagName} [GET|INFO]`");
                 }
 
                 break;
             case CrudOperation.Delete:
-                if (!_tagService.TryRemoveTag(tagName, ctx.Guild.Id))
+                if (!_tagService.TryRemoveTag(tagName, Context.Guild.Id))
                 {
                     await RespondAsync($"A tag with tagname `{tagName}` could not be found.", ephemeral: true);
                 }
@@ -68,7 +68,7 @@ public class TagCommands(TagService _tagService) : InteractionModuleBase
 
                 break;
             case CrudOperation.List:
-                IEnumerable<Tag> tags = _tagService.GetAllTags(ctx.Guild.Id);
+                IEnumerable<Tag> tags = _tagService.GetAllTags(Context.Guild.Id);
                 if (tags.Count() == 0)
                 {
                     await RespondAsync("No tags could be found.", ephemeral: true);

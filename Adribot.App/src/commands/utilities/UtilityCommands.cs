@@ -12,7 +12,7 @@ public class UtilityCommands(RemindMeSerivce _remindMeService) : InteractionModu
 {
     [SlashCommand("remindme", "Set an alert for something ahead of time")]
     [RequireUserPermission(ChannelPermission.SendMessages)]
-    public async Task ExecuteRemindTaskAsync(InteractionContext ctx, [Summary("task", "What you should be reminded of")] string taskTodo, [Summary("unit", "Time unit to be muliplied by the next factor parameter")] TimeSpanType timeUnit, [Summary("factor", "Amount of instances of the specified time unit")] int factor, [Summary("channel", "Fallback for if you don't want the bot to dm you")] ITextChannel? altChannel = null)
+    public async Task ExecuteRemindTaskAsync([Summary("task", "What you should be reminded of")] string taskTodo, [Summary("unit", "Time unit to be muliplied by the next factor parameter")] TimeSpanType timeUnit, [Summary("factor", "Amount of instances of the specified time unit")] int factor, [Summary("channel", "Fallback for if you don't want the bot to dm you")] ITextChannel? altChannel = null)
     {
         DateTimeOffset now = DateTimeOffset.UtcNow;
         DateTimeOffset endDate = timeUnit.ToEndDate(factor, now);
@@ -23,7 +23,7 @@ public class UtilityCommands(RemindMeSerivce _remindMeService) : InteractionModu
         }
         else
         {
-            _remindMeService.AddRemindMe(ctx.Guild.Id, ctx.User.Id, altChannel?.Id, taskTodo, endDate);
+            _remindMeService.AddRemindMe(Context.Guild.Id, Context.User.Id, altChannel?.Id, taskTodo, endDate);
 
             await RespondAsync($"I will remind you {new TimestampTag(endDate, TimestampTagStyles.Relative)}", ephemeral: true);
         }

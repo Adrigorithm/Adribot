@@ -1,31 +1,46 @@
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Adribot.src.constants.enums;
 using Adribot.src.constants.strings;
 using Adribot.src.entities.minecraft;
-using Discord;
 using Discord.Interactions;
 
 namespace Adribot.src.commands.utilities;
 
 public class MinecraftCommands : InteractionModuleBase
 {
-    private const string DatapackPath = "./temp/";
+    private readonly Dictionary<MinecraftVersion, string> VersionMapper = new() { { MinecraftVersion.Legacy, "Temp/datapack/data/emojiful/recipes/" }, { MinecraftVersion.Modern, "Temp/datapack/data/emojiful/recipe/" } };
 
-    [SlashCommand("datapack", "Compiles Emojiful datapacks from supplied DiscordEmoji")]
-    public async Task CreateDatapackAsync(InteractionContext ctx, [Summary("category", "A name to categorise this emoji collection")] string category, [Summary("emojis", "A chain of DiscordEmoji")] string emojiList)
+    public MinecraftCommands()
     {
+        Directory.CreateDirectory("Temp/datapack/data/emojiful");
+
+        StreamWriter writer = File.CreateText("Temp/datapack/pack.mcmeta");
+
+        writer.Write("{\"pack\":{\"pack_format\":6,\"description\":\"Emojifulemojis!\"}}");
+        writer.Close();
+        writer.Dispose();
+    }
+
+    [SlashCommand("datapack", "Discord emojis -> Emojiful datapack!")]
+    public async Task GenerateDatapackAsync([Summary("minecraft-version")] MinecraftVersion mcVersion, [Summary("category", "Name to group the emoji by in-game")] string category, [Summary("emojis", "List of emoji")] string emojiList, [Summary("hide", "hide this message from public view")] bool isHidden = false)
+    {
+        var datapackParent = "Temp/";
         MatchCollection emojiMatches = Regex.Matches(emojiList, ConstantStrings.EmojiRegex);
 
         if (emojiMatches.Count > 0)
         {
-            foreach (var filePath in Directory.GetFiles(DatapackPath, "*?.zip"))
+            foreach (var filePath in Directory.GetFiles(datapackParent, "*?.zip"))
+            {
                 File.Delete(filePath);
+            }
 
-            Directory.Delete(DatapackPath + "datapack/data/emojiful/recipes/", true);
-            Directory.CreateDirectory(DatapackPath + "datapack/data/emojiful/recipes/");
+            Directory.Delete(datapackParent + "datapack/data/emojiful", true);
+            Directory.CreateDirectory(VersionMapper[mcVersion]);
 
             for (var i = 0; i < emojiMatches.Count; i++)
             {
@@ -37,15 +52,17 @@ public class MinecraftCommands : InteractionModuleBase
                     Type = "emojiful:emoji_recipe"
                 };
 
-                FileStream fs = File.Create(DatapackPath + $"datapack/data/emojiful/recipes/{emojiMatches[i].Groups[2].Value.ToLower()}.json");
+                FileStream fs = File.Create($"{VersionMapper[mcVersion]}{emojiMatches[i].Groups[2].Value.ToLower()}.json");
 
                 await JsonSerializer.SerializeAsync(fs, emoji);
                 await fs.DisposeAsync();
             }
-            var fileName = $"{ctx.User.Username}-" + category + "-emojiful-datapack.zip";
-            ZipFile.CreateFromDirectory(DatapackPath + "datapack/", DatapackPath + fileName);
 
-            await RespondWithFileAsync(new FileAttachment(File.OpenRead(DatapackPath + fileName), fileName), ephemeral: true);
+            var fileName = $"{Context.User.GlobalName ?? "notch"}-{category}-emojiful-datapack.zip";
+
+            ZipFile.CreateFromDirectory(datapackParent + "datapack/", datapackParent + fileName);
+
+            await RespondWithFileAsync(File.OpenRead(datapackParent + fileName), fileName, ephemeral: isHidden);
         }
     }
 }

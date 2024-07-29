@@ -52,9 +52,9 @@ public class FunCommands(SecretsProvider _secretsProvider) : InteractionModuleBa
 
     [SlashCommand("pp", "Calculates your pp size")]
     [RequireUserPermission(ChannelPermission.SendMessages)]
-    public async Task GetPpSizeAsync(InteractionContext ctx, [Summary("user", "user to calculate the pp size for")] IUser user = null, [Summary("unit", "unit to display the pp size in")] DistanceUnit unit = DistanceUnit.Inch)
+    public async Task GetPpSizeAsync([Summary("user", "user to calculate the pp size for")] IUser user = null, [Summary("unit", "unit to display the pp size in")] DistanceUnit unit = DistanceUnit.Inch)
     {
-        var memberId = user?.Id ?? ctx.User.Id;
+        var memberId = user?.Id ?? Context.User.Id;
         short sum = 0;
 
         memberId.ToString().ToList().ForEach(c => sum += (short)char.GetNumericValue(c));
@@ -64,6 +64,6 @@ public class FunCommands(SecretsProvider _secretsProvider) : InteractionModuleBa
         if (unit == DistanceUnit.Inch)
             ppSize = (short)(ppSize / 2.5);
 
-        await ReplyAsync($"${user?.Mention ?? ctx.User.Mention}, Your pp size is {Convert.ToString(ppSize)} {(unit == DistanceUnit.Inch ? " inch" : " cm")}");
+        await ReplyAsync($"${user?.Mention ?? Context.User.Mention}, Your pp size is {Convert.ToString(ppSize)} {(unit == DistanceUnit.Inch ? " inch" : " cm")}");
     }
 }

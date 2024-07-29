@@ -15,14 +15,14 @@ public class AdminCommands(InfractionService _infractionService) : InteractionMo
 {
     [SlashCommand("clear", "Deletes given amount of messages")]
     [RequireUserPermission(ChannelPermission.ManageMessages)]
-    public async Task DeleteMessagesAsync(InteractionContext ctx, [Summary("Amount", "Amount of messages to delete"), MinValue(1), MaxValue(100)] short amount)
+    public async Task DeleteMessagesAsync([Summary("Amount", "Amount of messages to delete"), MinValue(1), MaxValue(100)] short amount)
     {
-        IAsyncEnumerable<IReadOnlyCollection<IMessage>> messages = ctx.Channel.GetMessagesAsync(amount);
+        IAsyncEnumerable<IReadOnlyCollection<IMessage>> messages = Context.Channel.GetMessagesAsync(amount);
         IEnumerable<IMessage> messagesFlattened = await messages.FlattenAsync();
 
-        await (ctx.Channel as ITextChannel).DeleteMessagesAsync(messagesFlattened);
+        await (Context.Channel as ITextChannel).DeleteMessagesAsync(messagesFlattened);
 
-        IMessage? oldMessage = await ctx.Channel.GetMessageAsync(messagesFlattened.Last().Id);
+        IMessage? oldMessage = await Context.Channel.GetMessageAsync(messagesFlattened.Last().Id);
         var confirmMessage = oldMessage is not null
             ? $"Ink too dry! Some messages could not be deleted."
             : $"Deleted {messagesFlattened.Count()} Message{(messagesFlattened.Count() > 1 ? "s" : "")}.";
@@ -44,12 +44,12 @@ public class AdminCommands(InfractionService _infractionService) : InteractionMo
     [SlashCommand("ban", "Bans members")]
     [RequireUserPermission(GuildPermission.BanMembers)]
     [RequireContext(ContextType.Guild)]
-    public async Task BanMemberAsync(InteractionContext ctx, [Summary("Member", "Member to ban")] SocketGuildUser member, [Summary("Unit", "The duration multiplied by the factor parameter")] TimeSpanType type = TimeSpanType.Months, [Summary("Factor", "The amound of specified time units."), MinValue(1)] int factor = 1, [Summary("Messages", "Anount of messages by this user to delete")] int deleteMessages = 0, [Summary("Reason", "The reason for this infraction")] string? reason = null)
+    public async Task BanMemberAsync([Summary("Member", "Member to ban")] SocketGuildUser member, [Summary("Unit", "The duration multiplied by the factor parameter")] TimeSpanType type = TimeSpanType.Months, [Summary("Factor", "The amound of specified time units."), MinValue(1)] int factor = 1, [Summary("Messages", "Anount of messages by this user to delete")] int deleteMessages = 0, [Summary("Reason", "The reason for this infraction")] string? reason = null)
     {
         DateTimeOffset now = DateTimeOffset.UtcNow;
         DateTimeOffset endDate = type.ToEndDate(factor, now);
 
-        _infractionService.AddInfraction(ctx.Guild.Id, member.Id, endDate, InfractionType.Ban, reason);
+        _infractionService.AddInfraction(Context.Guild.Id, member.Id, endDate, InfractionType.Ban, reason);
 
         await member.BanAsync(deleteMessages, reason);
     }

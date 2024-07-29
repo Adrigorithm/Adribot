@@ -9,7 +9,7 @@ public class RemoteAccessCommands(RemoteAccessService remoteAccess) : Interactio
 {
     [SlashCommand("exec", "interact with a target server")]
     [RequireOwner]
-    public async Task ExecAsync(InteractionContext ctx, [Summary("mode", "Type of action to execute")] RemoteAccessActionType action, [Summary("guild", "Id of the guild to connect to")] ulong? guildId = null, [Summary("channel", "channel id to connect to within current guild")] ulong? channelId = null, [Summary("message", "text to send as a message")] string? message = null)
+    public async Task ExecAsync([Summary("mode", "Type of action to execute")] RemoteAccessActionType action, [Summary("guild", "Id of the guild to connect to")] ulong? guildId = null, [Summary("channel", "channel id to connect to within current guild")] ulong? channelId = null, [Summary("message", "text to send as a message")] string? message = null)
     {
         (bool, string?) result = await remoteAccess.ExecAsync(action, guildId, channelId, message);
 
