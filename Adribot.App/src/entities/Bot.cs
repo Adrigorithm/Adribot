@@ -18,6 +18,7 @@ public class Bot
     private readonly DGuildRepository _dGuildRepository;
     private readonly DiscordClientProvider _clientProvider;
     private readonly InteractionService _interactionService;
+    private IServiceProvider _serviceProvider;
 
     public Bot(DiscordClientProvider clientProvider, DGuildRepository dGuildRepository)
     {
@@ -36,8 +37,12 @@ public class Bot
         await _interactionService.ExecuteCommandAsync(ctx, null);
     }
 
-    public async Task StartAsync(string token, TokenType tokenType = TokenType.Bot) =>
-        await _clientProvider.Client.LoginAsync(tokenType, token, false);
+    public async Task StartAsync(string token, IServiceProvider services, TokenType tokenType = TokenType.Bot)
+    {
+        _serviceProvider = services;
+        await _clientProvider.Client.LoginAsync(tokenType, token);
+        await _clientProvider.Client.StartAsync();
+    }
 
     public async Task StopAsync() =>
         await _clientProvider.Client.LogoutAsync();
@@ -74,7 +79,7 @@ public class Bot
 
     private async Task ReadyAsync()
     {
-        await _interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), null);
+        await _interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
         await _interactionService.RegisterCommandsGloballyAsync();
 
         IEnumerable<SocketGuild> guilds = _clientProvider.Client.Guilds;

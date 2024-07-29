@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 
@@ -7,10 +9,19 @@ public class DiscordClientProvider
 {
     public DiscordSocketClient Client { get; init; }
 
-    public DiscordClientProvider() =>
+    public DiscordClientProvider()
+    {
         Client = new DiscordSocketClient(new DiscordSocketConfig
         {
             GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.MessageContent
         });
 
+        Client.Log += LogAsync;
+    }
+
+    private static Task LogAsync(LogMessage message)
+    {
+        Console.WriteLine(message.ToString());
+        return Task.CompletedTask;
+    }
 }

@@ -44,7 +44,7 @@ internal static class Program
     private static async Task RunAsync()
     {
         await _serviceProvider.GetRequiredService<AdribotContext>().Database.MigrateAsync();
-        await _serviceProvider.GetRequiredService<Bot>().StartAsync(_serviceProvider.GetRequiredService<SecretsProvider>().Config.BotToken);
+        await _serviceProvider.GetRequiredService<Bot>().StartAsync(_serviceProvider.GetRequiredService<SecretsProvider>().Config.BotToken, _serviceProvider);
 
         await Task.Delay(-1);
     }
