@@ -21,7 +21,8 @@ internal static class Program
         _serviceProvider = new ServiceCollection()
             .AddSingleton(secrets)
             .AddDbContext<AdribotContext>(
-                optionsAction: (options) => options.UseSqlServer(secrets.Config.SqlConnectionString)
+                optionsAction: (options) => options.UseSqlServer(secrets.Config.SqlConnectionString),
+                contextLifetime: ServiceLifetime.Transient
             )
             .AddSingleton<DGuildRepository>()
             .AddSingleton<DiscordClientProvider>()
