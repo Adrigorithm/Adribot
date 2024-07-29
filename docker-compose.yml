@@ -9,12 +9,19 @@ services:
       - "1433:1433"
     secrets:
       - db_password
+    healthcheck:
+      test: ["/bin/sh", "sqlcmd -S localhost -U SA -P $(cat /run/secrets/db_password) -Q 'SELECT 1'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   bot:
     image: adribot_backend
     container_name: adribot_backend
     depends_on:
-      - adribot_db
+      adribot_db:
+        condition: service_healthy
     environment:
       DISCORD_EMBED_COLOUR: "0x191970"
       DEV_ID: 135081249017430016
