@@ -71,7 +71,6 @@ Yes.
 - [ ] Provide clearer error messages / feedback for end user (in progress)
 - [ ] Add NMBS data access
 - [ ] ~~Add DeLijn data access~~ (impossible without scraping)
-- [ x ] Convert to Discord.NET
 
 ## Support
 
