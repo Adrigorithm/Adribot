@@ -23,7 +23,7 @@ services:
       adribot_db:
         condition: service_healthy
     environment:
-      DISCORD_EMBED_COLOUR: "0x191970"
+      DISCORD_EMBED_COLOUR: "FF191970"
       DEV_ID: 135081249017430016
       DB_CONNECTION: /run/secrets/db_connection
       CAT_TOKEN: /run/secrets/cat_token

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text.Json;
 using Adribot.src.config;
+using Adribot.src.extensions;
 using Microsoft.Extensions.Configuration;
 
 namespace Adribot.src.services.providers;
@@ -49,7 +50,7 @@ public class SecretsProvider(ConfigValueType config)
             BotToken = config["BOT_TOKEN"] ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_botToken"),
             CatToken = config["CAT_TOKEN"] ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_catToken"),
             DevUserId = Convert.ToUInt64(config["DEV_ID"] ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_devUserId")),
-            EmbedColour = config["DISCORD_EMBED_COLOUR"] ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_embedColour"),
+            EmbedColour = config["DISCORD_EMBED_COLOUR"]?.ToDiscordColour() ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_embedColour"),
             SqlConnectionString = config["DB_CONNECTION"] ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_sqlConnectionString")
         });
     }
@@ -66,7 +67,7 @@ public class SecretsProvider(ConfigValueType config)
             DevUserId = devUserId is null || devUserId == 0
                 ? throw new ArgumentNullException(nameof(devUserId), "Enviroment variable not found: Adribot_devUserId")
                 : (ulong)devUserId,
-            EmbedColour = embedColour ?? throw new ArgumentNullException(nameof(embedColour), "Enviroment variable not found: Adribot_embedColour"),
+            EmbedColour = embedColour?.ToDiscordColour() ?? throw new ArgumentNullException(nameof(embedColour), "Enviroment variable not found: Adribot_embedColour"),
             SqlConnectionString = string.IsNullOrWhiteSpace(sqlConnectionString)
                 ? throw new ArgumentNullException("Enviroment variable not found: Adribot_sqlConnectionString")
                 : sqlConnectionString

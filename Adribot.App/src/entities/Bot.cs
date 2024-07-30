@@ -10,6 +10,7 @@ using Adribot.src.services.providers;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Adribot.src.entities;
 
@@ -34,7 +35,7 @@ public class Bot
     private async Task InteractionCreatedAsync(SocketInteraction interaction)
     {
         var ctx = new SocketInteractionContext(_clientProvider.Client, interaction);
-        await _interactionService.ExecuteCommandAsync(ctx, null);
+        await _interactionService.ExecuteCommandAsync(ctx, _serviceProvider);
     }
 
     public async Task StartAsync(string token, IServiceProvider services, TokenType tokenType = TokenType.Bot)
@@ -79,6 +80,8 @@ public class Bot
 
     private async Task ReadyAsync()
     {
+        _serviceProvider.GetServices<object>().ToList().ForEach(s => Console.WriteLine(s.GetType().Name));
+
         await _interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
         await _interactionService.RegisterCommandsGloballyAsync();
 

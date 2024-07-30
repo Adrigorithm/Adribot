@@ -1,4 +1,6 @@
+using System;
 using Adribot.src.entities.discord;
+using Discord;
 using Discord.WebSocket;
 
 namespace Adribot.src.extensions;
@@ -26,5 +28,15 @@ public static class DiscordObjectExtensions
             MemberId = member.Id,
             DGuildId = dGuildId,
             Mention = member.Mention
+        };
+
+    public static Color ToDiscordColour(this string colourString, int baseFormat = 16) =>
+        string.IsNullOrWhiteSpace(colourString)
+            ? throw new ArgumentException($"Cannot parse colour from an empty string")
+            : colourString.Length switch
+        {
+            6 => new Color(Convert.ToUInt32("FF" + colourString, baseFormat)),
+            8 => new Color(Convert.ToUInt32(colourString, baseFormat)),
+            _ => throw new ArgumentException($"Cannot parse colour: {colourString}")
         };
 }

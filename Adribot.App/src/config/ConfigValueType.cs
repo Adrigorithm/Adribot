@@ -1,4 +1,6 @@
 using System.Text.Json.Serialization;
+using Adribot.src.parsers.converts;
+using Discord;
 
 namespace Adribot.src.config;
 
@@ -14,7 +16,8 @@ public record ConfigValueType
     public string SqlConnectionString { get; init; }
 
     [JsonPropertyName("embedColour")]
-    public string EmbedColour { get; init; }
+    [JsonConverter(typeof(StringColourConverter))]
+    public Color EmbedColour { get; init; }
 
     [JsonPropertyName("devUserId")]
     public ulong DevUserId { get; init; }

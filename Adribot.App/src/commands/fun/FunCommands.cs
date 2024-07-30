@@ -44,7 +44,7 @@ public class FunCommands(SecretsProvider _secretsProvider) : InteractionModuleBa
                 break;
         }
 
-        embed.Color = new Color(Convert.ToUInt32(_secretsProvider.Config.EmbedColour));
+        embed.Color = _secretsProvider.Config.EmbedColour;
         embed.Title = "You asked, I delivered.";
 
         await ReplyAsync(embed: embed.Build());
