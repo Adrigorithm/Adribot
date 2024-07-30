@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.src.data.repositories;
 
-public class IcsCalendarRepository : BaseRepository
+public sealed class IcsCalendarRepository : BaseRepository
 {
-    public IcsCalendarRepository(IDbContextFactory<AdribotContext> _botContextFactory) : base(_botContextFactory) {}
+    public IcsCalendarRepository(IDbContextFactory<AdribotContext> _botContextFactory) : base(_botContextFactory) { }
 
     public IEnumerable<IcsCalendar> GetIcsCalendarsNotExpired()
     {
@@ -51,7 +51,7 @@ public class IcsCalendarRepository : BaseRepository
     public void RemoveCalendar(IcsCalendar calendar)
     {
         using AdribotContext _botContext = CreateDbContext();
-        
+
         _botContext.Remove(calendar);
         _botContext.SaveChanges();
     }

@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.src.data.repositories;
 
-public class TagRepository : BaseRepository
+public sealed class TagRepository : BaseRepository
 {
-    public TagRepository(IDbContextFactory<AdribotContext> _botContextFactory) : base(_botContextFactory) {}
+    public TagRepository(IDbContextFactory<AdribotContext> _botContextFactory) : base(_botContextFactory) { }
 
     public IEnumerable<Tag> GetAllTags()
     {

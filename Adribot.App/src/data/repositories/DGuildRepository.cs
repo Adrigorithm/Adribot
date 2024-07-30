@@ -8,7 +8,7 @@ namespace Adribot.src.data.repositories;
 
 public sealed class DGuildRepository : BaseRepository
 {
-    public DGuildRepository(IDbContextFactory<AdribotContext> _botContextFactory) : base(_botContextFactory) {}
+    public DGuildRepository(IDbContextFactory<AdribotContext> _botContextFactory) : base(_botContextFactory) { }
 
     public Dictionary<ulong, (ulong channelId, string? starEmoji, int? threshold)> GetStarboards()
     {

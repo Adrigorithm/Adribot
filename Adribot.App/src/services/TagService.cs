@@ -84,10 +84,9 @@ public sealed class TagService
 
     public (Tag?, string?) CreateTempTag(ulong guildId, ulong memberId, string tagName, string tagContent, DateTimeOffset createdAt, bool allowOverride)
     {
-        if (FakeExtensions.AreAllNullOrWhiteSpace(tagName, tagContent))
-            return (null, $"The {nameof(tagName)} and {nameof(tagContent)} cannot be empty.");
-
-        return !_tags.ContainsKey(guildId) || !_tags[guildId].TryGetValue(tagName, out Tag tag) || (allowOverride && tag.DMember.MemberId == memberId)
+        return FakeExtensions.AreAllNullOrWhiteSpace(tagName, tagContent)
+            ? (null, $"The {nameof(tagName)} and {nameof(tagContent)} cannot be empty.")
+            : !_tags.ContainsKey(guildId) || !_tags[guildId].TryGetValue(tagName, out Tag tag) || (allowOverride && tag.DMember.MemberId == memberId)
             ? (new Tag
             {
                 Content = tagContent,

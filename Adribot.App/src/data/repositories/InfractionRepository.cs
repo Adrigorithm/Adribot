@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.src.data.repositories;
 
-public class InfractionRepository : BaseRepository
+public sealed class InfractionRepository : BaseRepository
 {
-    public InfractionRepository(IDbContextFactory<AdribotContext> _botContextFactory) : base(_botContextFactory) {}
+    public InfractionRepository(IDbContextFactory<AdribotContext> _botContextFactory) : base(_botContextFactory) { }
 
     public IEnumerable<Infraction> GetInfractionsToOldNotExpired()
     {
@@ -42,7 +42,7 @@ public class InfractionRepository : BaseRepository
     public void SetExpiredStatus(Infraction infraction, bool isExpired)
     {
         using AdribotContext _botContext = CreateDbContext();
-        
+
         _botContext.Infractions.First(i => i.InfractionId == infraction.InfractionId).IsExpired = isExpired;
         _botContext.SaveChanges();
     }
