@@ -14,7 +14,7 @@ namespace Adribot.src.services;
 public sealed class InfractionService : BaseTimerService
 {
     private readonly InfractionRepository _infractionRepository;
-    private readonly List<Infraction> _infractions = [];
+    private readonly IEnumerable<Infraction> _infractions = [];
 
     public InfractionService(InfractionRepository infractionRepository, DiscordClientProvider clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
     {
@@ -22,7 +22,7 @@ public sealed class InfractionService : BaseTimerService
         Client.UserUpdated += ClientUserupdatedAsync;
 
         _infractionRepository = infractionRepository;
-        _infractions = _infractionRepository.GetInfractionsToOldNotExpired().ToList();
+        _infractions = _infractionRepository.GetInfractionsToOldNotExpired();
     }
 
     private async Task ClientUserupdatedAsync(SocketUser user1, SocketUser user2)
@@ -52,7 +52,7 @@ public sealed class InfractionService : BaseTimerService
 
     public override async Task Work()
     {
-        if (_infractions.Count > 0)
+        if (_infractions.Count() > 0)
         {
             Infraction? infraction = _infractions.FirstOrDefault(i => i.EndDate.CompareTo(DateTimeOffset.UtcNow) <= 0);
 
@@ -74,7 +74,7 @@ public sealed class InfractionService : BaseTimerService
                         break;
                 }
 
-                _infractions.Remove(infraction);
+                _infractions.ToList().Remove(infraction);
                 _infractionRepository.SetExpiredStatus(infraction, true);
             }
         }
@@ -90,16 +90,16 @@ public sealed class InfractionService : BaseTimerService
     public void AddInfraction(Infraction infraction)
     {
         var isAdded = false;
-        for (var i = 0; i < _infractions.Count; i++)
+        for (var i = 0; i < _infractions.Count(); i++)
         {
-            if (_infractions[i].EndDate.CompareTo(infraction.EndDate) > 0)
+            if (_infractions.ElementAt(i).EndDate.CompareTo(infraction.EndDate) > 0)
             {
-                _infractions.Insert(i, infraction);
+                _infractions.ToList().Insert(i, infraction);
                 isAdded = true;
             }
         }
 
         if (!isAdded)
-            _infractions.Add(infraction);
+            _infractions.Append(infraction);
     }
 }

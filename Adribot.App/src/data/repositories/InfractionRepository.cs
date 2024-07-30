@@ -15,7 +15,7 @@ public sealed class InfractionRepository : BaseRepository
     {
         using AdribotContext _botContext = CreateDbContext();
 
-        return _botContext.Infractions.Include(i => i.DMember).Include(i => i.DMember.DGuild).OrderByDescending(i => i.EndDate).Where(i => !i.IsExpired);
+        return _botContext.Infractions.Include(i => i.DMember).Include(i => i.DMember.DGuild).OrderByDescending(i => i.EndDate).Where(i => !i.IsExpired).ToList();
     }
 
     public Infraction AddInfraction(ulong guildId, ulong memberId, DateTimeOffset endDate, InfractionType type, string reason = "No reason provided", bool isExpired = false)

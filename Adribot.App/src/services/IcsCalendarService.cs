@@ -16,16 +16,16 @@ namespace Adribot.src.services;
 
 public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository, SecretsProvider secretsProvider, DiscordClientProvider clientProvider, int timerInterval = 60) : BaseTimerService(clientProvider, secretsProvider, timerInterval)
 {
-    private List<IcsCalendar> _calendars;
+    private IEnumerable<IcsCalendar> _calendars;
 
     public override Task Work()
     {
-        _calendars = _calendarRepository.GetIcsCalendarsNotExpired().ToList();
+        _calendars = _calendarRepository.GetIcsCalendarsNotExpired();
 
-        if (_calendars.Count > 0)
+        if (_calendars.Count() > 0)
         {
             var eventsToPost = new List<(int calendarId, ulong guildId, ulong channelId, Event[] events)>();
-            _calendars.ForEach(c => eventsToPost.Add((c.IcsCalendarId, c.DMember.DGuild.GuildId, c.ChannelId, c.Events.Where(e => !e.IsPosted && e.End > DateTimeOffset.Now && e.End - DateTimeOffset.Now <= TimeSpan.FromMinutes(10)).ToArray())));
+            _calendars.ToList().ForEach(c => eventsToPost.Add((c.IcsCalendarId, c.DMember.DGuild.GuildId, c.ChannelId, c.Events.Where(e => !e.IsPosted && e.End > DateTimeOffset.Now && e.End - DateTimeOffset.Now <= TimeSpan.FromMinutes(10)).ToArray())));
 
             PostEvents(eventsToPost);
         }
@@ -81,7 +81,7 @@ public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository
         var calendar = Calendar.Load(await GetStreamFromUri(icsFileUri));
         IEnumerable<Event> calendarEvents = calendar.Events.ToList().Select(e => e.ToEvent());
 
-        _calendars.Add(_calendarRepository.AddCalendar(calendar.Name, guildId, memberId, channelId, calendarEvents));
+        _calendars.Append(_calendarRepository.AddCalendar(calendar.Name, guildId, memberId, channelId, calendarEvents));
 
         static async Task<Stream> GetStreamFromUri(Uri uri)
         {
@@ -104,7 +104,7 @@ public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository
         if (!member.GuildPermissions.ManageMessages || member.Id != calendar.DMember.MemberId)
             return false;
 
-        _calendars.Remove(calendar);
+        _calendars.ToList().Remove(calendar);
         _calendarRepository.RemoveCalendar(calendar);
 
         return true;

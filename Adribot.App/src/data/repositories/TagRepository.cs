@@ -13,7 +13,7 @@ public sealed class TagRepository : BaseRepository
     {
         using AdribotContext _botContext = CreateDbContext();
 
-        return _botContext.Tags.Include(t => t.DMember).Include(t => t.DMember.DGuild);
+        return _botContext.Tags.Include(t => t.DMember).Include(t => t.DMember.DGuild).ToList();
     }
 
     public Tag AddTag(ulong guildId, ulong memberId, Tag tag)

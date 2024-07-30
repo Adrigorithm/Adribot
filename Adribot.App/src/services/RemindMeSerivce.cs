@@ -13,19 +13,19 @@ namespace Adribot.src.services;
 public sealed class RemindMeSerivce : BaseTimerService
 {
     private readonly RemindMeRepository _remindMeRespository;
-    private readonly List<Reminder> _reminders = [];
+    private readonly IEnumerable<Reminder> _reminders = [];
 
     public RemindMeSerivce(RemindMeRepository remindMeRepository, DiscordClientProvider client, SecretsProvider secretsProvider, int timerInterval = 10) : base(client, secretsProvider, timerInterval)
     {
         _remindMeRespository = remindMeRepository;
-        _reminders = _remindMeRespository.GetRemindersToOld().ToList();
+        _reminders = _remindMeRespository.GetRemindersToOld();
     }
 
     public override async Task Work()
     {
-        if (_reminders.Count > 0)
+        if (_reminders.Count() > 0)
         {
-            Reminder? reminder = _reminders.Count > 0 && _reminders[0].EndDate.CompareTo(DateTimeOffset.UtcNow) <= 0 ? _reminders[0] : null;
+            Reminder? reminder = _reminders.Count() > 0 && _reminders.First().EndDate.CompareTo(DateTimeOffset.UtcNow) <= 0 ? _reminders.First() : null;
 
             if (reminder is not null)
             {
@@ -42,7 +42,7 @@ public sealed class RemindMeSerivce : BaseTimerService
                     ? await guild.GetUser(reminder.DMember.MemberId).SendMessageAsync(embed: embed.Build())
                     : await ((ITextChannel)guild.Channels.First(c => c.Id == (ulong)reminder.Channel)).SendMessageAsync(reminder.DMember.Mention, embed: embed.Build(), allowedMentions: AllowedMentions.All);
 
-                _reminders.Remove(reminder);
+                _reminders.ToList().Remove(reminder);
                 _remindMeRespository.RemoveReminder(reminder);
             }
         }
@@ -52,13 +52,13 @@ public sealed class RemindMeSerivce : BaseTimerService
     {
         Reminder reminder = _remindMeRespository.AddRemindMe(guildId, memberId, channelId, content, endDate);
 
-        var indexOlderReminder = _reminders.Count > 0
-            ? _reminders.FindIndex(r => r.EndDate.CompareTo(reminder.EndDate) > 0)
+        var indexOlderReminder = _reminders.Count() > 0
+            ? _reminders.ToList().FindIndex(r => r.EndDate.CompareTo(reminder.EndDate) > 0)
             : -1;
 
         if (indexOlderReminder == -1)
-            _reminders.Add(reminder);
+            _reminders.Append(reminder);
         else
-            _reminders.Insert(indexOlderReminder, reminder);
+            _reminders.ToList().Insert(indexOlderReminder, reminder);
     }
 }

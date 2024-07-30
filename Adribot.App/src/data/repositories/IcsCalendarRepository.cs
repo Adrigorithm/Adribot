@@ -14,7 +14,7 @@ public sealed class IcsCalendarRepository : BaseRepository
     {
         using AdribotContext _botContext = CreateDbContext();
 
-        return _botContext.IcsCalendars.Include(c => c.Events).Include(c => c.DMember).Where(c => c.Events.OrderBy(e => e.EventId).Last().End > DateTimeOffset.Now);
+        return _botContext.IcsCalendars.Include(c => c.Events).Include(c => c.DMember).Where(c => c.Events.OrderBy(e => e.EventId).Last().End > DateTimeOffset.Now).ToList();
     }
 
     public void ChangeEventsPostedStatus(Dictionary<int, List<(int eventId, bool posted)>> events)
