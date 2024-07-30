@@ -6,13 +6,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.src.data.repositories;
 
-public class IcsCalendarRepository(AdribotContext _botContext)
+public class IcsCalendarRepository : BaseRepository
 {
-    public IEnumerable<IcsCalendar> GetIcsCalendarsNotExpired() =>
-        _botContext.IcsCalendars.Include(c => c.Events).Include(c => c.DMember).Where(c => c.Events.OrderBy(e => e.EventId).Last().End > DateTimeOffset.Now);
+    public IcsCalendarRepository(IDbContextFactory<AdribotContext> _botContextFactory) : base(_botContextFactory) {}
+
+    public IEnumerable<IcsCalendar> GetIcsCalendarsNotExpired()
+    {
+        using AdribotContext _botContext = CreateDbContext();
+
+        return _botContext.IcsCalendars.Include(c => c.Events).Include(c => c.DMember).Where(c => c.Events.OrderBy(e => e.EventId).Last().End > DateTimeOffset.Now);
+    }
 
     public void ChangeEventsPostedStatus(Dictionary<int, List<(int eventId, bool posted)>> events)
     {
+        using AdribotContext _botContext = CreateDbContext();
+
         foreach (var icsCalendarId in events.Keys)
         {
             IcsCalendar calendar = _botContext.IcsCalendars.Include(c => c.Events).First(c => c.IcsCalendarId == icsCalendarId);
@@ -24,6 +32,8 @@ public class IcsCalendarRepository(AdribotContext _botContext)
 
     public IcsCalendar AddCalendar(string calendarName, ulong guildId, ulong memberId, ulong channelId, IEnumerable<Event> events)
     {
+        using AdribotContext _botContext = CreateDbContext();
+
         var calendar = new IcsCalendar
         {
             ChannelId = channelId,
@@ -40,6 +50,8 @@ public class IcsCalendarRepository(AdribotContext _botContext)
 
     public void RemoveCalendar(IcsCalendar calendar)
     {
+        using AdribotContext _botContext = CreateDbContext();
+        
         _botContext.Remove(calendar);
         _botContext.SaveChanges();
     }

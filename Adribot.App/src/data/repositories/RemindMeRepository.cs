@@ -6,19 +6,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.src.data.repositories;
 
-public class RemindMeRepository(AdribotContext _botContext)
+public class RemindMeRepository : BaseRepository
 {
-    public IEnumerable<Reminder> GetRemindersToOld() =>
-        _botContext.Reminders.Include(r => r.DMember).Include(r => r.DMember.DGuild).OrderByDescending(r => r.EndDate);
+    public RemindMeRepository(IDbContextFactory<AdribotContext> _botContextFactory) : base(_botContextFactory) {}
+
+    public IEnumerable<Reminder> GetRemindersToOld()
+    {
+        using AdribotContext _botContext = CreateDbContext();
+
+        return _botContext.Reminders.Include(r => r.DMember).Include(r => r.DMember.DGuild).OrderByDescending(r => r.EndDate);
+    }
 
     public void RemoveReminder(Reminder reminder)
     {
+        using AdribotContext _botContext = CreateDbContext();
+
         _botContext.Remove(reminder);
         _botContext.SaveChanges();
     }
 
     public Reminder AddRemindMe(ulong guildId, ulong memberId, ulong? channelId, string content, DateTimeOffset endDate)
     {
+        using AdribotContext _botContext = CreateDbContext();
+        
         DateTimeOffset now = DateTimeOffset.UtcNow;
         var reminder = new Reminder
         {

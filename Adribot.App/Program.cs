@@ -20,9 +20,8 @@ internal static class Program
 
         _serviceProvider = new ServiceCollection()
             .AddSingleton(secrets)
-            .AddDbContext<AdribotContext>(
-                optionsAction: (options) => options.UseSqlServer(secrets.Config.SqlConnectionString),
-                contextLifetime: ServiceLifetime.Transient
+            .AddDbContextFactory<AdribotContext>(
+                optionsAction: (options) => options.UseSqlServer(secrets.Config.SqlConnectionString)
             )
             .AddSingleton<DGuildRepository>()
             .AddSingleton<DiscordClientProvider>()
@@ -44,7 +43,13 @@ internal static class Program
 
     private static async Task RunAsync()
     {
-        await _serviceProvider.GetRequiredService<AdribotContext>().Database.MigrateAsync();
+        IDbContextFactory<AdribotContext> contextFactory = _serviceProvider.GetRequiredService<IDbContextFactory<AdribotContext>>();
+
+        using (AdribotContext context = await contextFactory.CreateDbContextAsync())
+        {
+            await context.Database.MigrateAsync();
+        }
+
         await _serviceProvider.GetRequiredService<Bot>().StartAsync(_serviceProvider.GetRequiredService<SecretsProvider>().Config.BotToken, _serviceProvider);
 
         await Task.Delay(-1);
