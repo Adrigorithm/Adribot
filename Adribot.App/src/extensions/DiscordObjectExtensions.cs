@@ -35,8 +35,8 @@ public static class DiscordObjectExtensions
             ? throw new ArgumentException($"Cannot parse colour from an empty string")
             : colourString.Length switch
         {
-            6 => new Color(Convert.ToUInt32("FF" + colourString, baseFormat)),
-            8 => new Color(Convert.ToUInt32(colourString, baseFormat)),
+            6 => new Color(Convert.ToUInt32(colourString, baseFormat)),
+            8 => new Color(Convert.ToUInt32(colourString[2..], baseFormat)),
             _ => throw new ArgumentException($"Cannot parse colour: {colourString}")
         };
 }
