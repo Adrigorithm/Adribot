@@ -15,17 +15,19 @@ public class AdminCommands(InfractionService _infractionService) : InteractionMo
 {
     [SlashCommand("clear", "Deletes given amount of messages")]
     [RequireUserPermission(ChannelPermission.ManageMessages)]
+    [RequireBotPermission(ChannelPermission.ManageMessages)]
     public async Task DeleteMessagesAsync([Summary("Amount", "Amount of messages to delete"), MinValue(1), MaxValue(100)] short amount)
     {
         IAsyncEnumerable<IReadOnlyCollection<IMessage>> messages = Context.Channel.GetMessagesAsync(amount);
         IEnumerable<IMessage> messagesFlattened = await messages.FlattenAsync();
+        IEnumerable<IMessage> messagesToDelete = messagesFlattened.TakeWhile(m => m.Timestamp.AddDays(14) >= DateTimeOffset.Now);
+        var oldMessages = amount - messagesToDelete.Count();
 
-        await (Context.Channel as ITextChannel).DeleteMessagesAsync(messagesFlattened);
+        await (Context.Channel as ITextChannel).DeleteMessagesAsync(messagesToDelete);
 
-        IMessage? oldMessage = await Context.Channel.GetMessageAsync(messagesFlattened.Last().Id);
-        var confirmMessage = oldMessage is not null
-            ? $"Ink too dry! Some messages could not be deleted."
-            : $"Deleted {messagesFlattened.Count()} Message{(messagesFlattened.Count() > 1 ? "s" : "")}.";
+        var confirmMessage = oldMessages > 0
+            ? $"Ink too dry! `{oldMessages}` of `{messagesFlattened.Count()}` message{(amount > 1 ? "s" : "")} could not be deleted."
+            : $"Deleted {amount} Message{(amount > 1 ? "s" : "")}.";
 
         await RespondAsync(confirmMessage.ToString(), ephemeral: true);
     }
