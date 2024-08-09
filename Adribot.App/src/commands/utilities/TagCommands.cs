@@ -63,7 +63,7 @@ public class TagCommands(TagService _tagService) : InteractionModuleBase
                 }
                 else
                 {
-                    await ReplyAsync($"Tag `{tagName}` disappeared in the void.");
+                    await RespondAsync($"Tag `{tagName}` disappeared in the void.");
                 }
 
                 break;

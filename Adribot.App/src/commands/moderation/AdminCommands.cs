@@ -41,6 +41,8 @@ public class AdminCommands(InfractionService _infractionService) : InteractionMo
         DateTimeOffset endDate = type.ToEndDate(factor, now);
 
         await member.SetTimeOutAsync(endDate - now);
+
+        await RespondAsync();
     }
 
     [SlashCommand("ban", "Bans members")]
@@ -54,5 +56,7 @@ public class AdminCommands(InfractionService _infractionService) : InteractionMo
         _infractionService.AddInfraction(Context.Guild.Id, member.Id, endDate, InfractionType.Ban, reason);
 
         await member.BanAsync(deleteMessages, reason);
+
+        await RespondAsync();
     }
 }

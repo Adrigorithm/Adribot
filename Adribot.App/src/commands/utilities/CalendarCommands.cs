@@ -71,7 +71,7 @@ public class CalendarCommands(IcsCalendarService _icsCalendarService) : Interact
                     if (cEvent is null)
                         await RespondAsync($"Calendar `{calendarName}` for guild [{Context.Guild.Id}] does not exist.", ephemeral: true);
                     else
-                        await ReplyAsync(embed: cEvent.GeneratePXLEmbedBuilder().Build());
+                        await RespondAsync(embed: cEvent.GeneratePXLEmbedBuilder().Build());
                 }
 
                 break;

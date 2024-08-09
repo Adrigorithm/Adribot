@@ -11,14 +11,13 @@ using Discord.WebSocket;
 
 namespace Adribot.src.services;
 
-public sealed class InfractionService : BaseTimerService
+public sealed partial class InfractionService : BaseTimerService
 {
     private readonly InfractionRepository _infractionRepository;
     private readonly IEnumerable<Infraction> _infractions = [];
 
     public InfractionService(InfractionRepository infractionRepository, DiscordClientProvider clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
     {
-        // TODO: Figure out how to add events later
         Client.UserUpdated += ClientUserupdatedAsync;
 
         _infractionRepository = infractionRepository;
