@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -56,9 +55,20 @@ public class FunCommands(IHttpClientFactory _httpClientFactory, SecretsProvider 
         var memberId = user?.Id ?? Context.User.Id;
         var sum = SumOfDigits(memberId);
 
-        int SumOfDigits(ulong number) =>
-            number.ToString().Sum(n => n - '0');
+        static int SumOfDigits(ulong largeNumber)
+        {
+            var sum = 0;
 
+            while (largeNumber > 0)
+            {
+                sum += (int)(largeNumber % 10);
+                largeNumber /= 10;
+            }
+
+            return sum;
+        }
+
+        // I should probably change this :wires:
         var ppSize = (short)(Math.Pow(memberId, 1.0 / sum) * 10 / (memberId.ToString()[0] - '0'));
 
         if (unit == DistanceUnit.Inch)
