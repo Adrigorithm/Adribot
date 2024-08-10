@@ -5,7 +5,7 @@ using Discord.Interactions;
 
 namespace Adribot.src.commands.utilities;
 
-public class StarboardCommands(StarboardService _starboardService) : InteractionModuleBase
+public class StarboardCommands(StarboardService _starboardService) : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("starboard", "Configure the starboard service")]
     [RequireUserPermission(GuildPermission.Administrator)]

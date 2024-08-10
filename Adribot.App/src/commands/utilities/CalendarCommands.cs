@@ -11,7 +11,7 @@ using Discord.WebSocket;
 
 namespace Adribot.src.commands.utilities;
 
-public class CalendarCommands(IcsCalendarService _icsCalendarService) : InteractionModuleBase
+public class CalendarCommands(IcsCalendarService _icsCalendarService) : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("calendar", "Perform various calendar tasks")]
     [RequireUserPermission(ChannelPermission.SendMessages)]

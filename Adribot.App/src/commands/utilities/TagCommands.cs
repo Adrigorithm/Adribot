@@ -11,7 +11,7 @@ using Discord.Interactions;
 
 namespace Adribot.src.commands.utilities;
 
-public class TagCommands(TagService _tagService) : InteractionModuleBase
+public class TagCommands(TagService _tagService) : InteractionModuleBase<SocketInteractionContext>
 {
     [RequireUserPermission(ChannelPermission.SendMessages)]
     [SlashCommand("tag", "Display (information about) a tag")]

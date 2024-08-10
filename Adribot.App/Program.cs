@@ -23,6 +23,7 @@ internal static class Program
             .AddDbContextFactory<AdribotContext>(
                 optionsAction: (options) => options.UseSqlServer(secrets.Config.SqlConnectionString)
             )
+            .AddHttpClient()
             .AddSingleton<DGuildRepository>()
             .AddSingleton<DiscordClientProvider>()
             .AddSingleton<Bot>()

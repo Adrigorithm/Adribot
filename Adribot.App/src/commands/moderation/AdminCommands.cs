@@ -11,7 +11,7 @@ using Discord.WebSocket;
 
 namespace Adribot.src.commands.moderation;
 
-public class AdminCommands(InfractionService _infractionService) : InteractionModuleBase
+public class AdminCommands(InfractionService _infractionService) : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("clear", "Deletes given amount of messages")]
     [RequireUserPermission(ChannelPermission.ManageMessages)]

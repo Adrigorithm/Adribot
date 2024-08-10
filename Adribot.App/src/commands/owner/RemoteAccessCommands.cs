@@ -5,7 +5,7 @@ using Discord.Interactions;
 
 namespace Adribot.src.commands.utilities;
 
-public class RemoteAccessCommands(RemoteAccessService remoteAccess) : InteractionModuleBase
+public class RemoteAccessCommands(RemoteAccessService remoteAccess) : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("exec", "interact with a target server")]
     [RequireOwner]

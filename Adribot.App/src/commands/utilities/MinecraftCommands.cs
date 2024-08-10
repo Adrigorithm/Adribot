@@ -11,7 +11,7 @@ using Discord.Interactions;
 
 namespace Adribot.src.commands.utilities;
 
-public class MinecraftCommands : InteractionModuleBase
+public class MinecraftCommands : InteractionModuleBase<SocketInteractionContext>
 {
     private readonly Dictionary<MinecraftVersion, string> VersionMapper = new() { { MinecraftVersion.Legacy, "Temp/datapack/data/emojiful/recipes/" }, { MinecraftVersion.Modern, "Temp/datapack/data/emojiful/recipe/" } };
 
