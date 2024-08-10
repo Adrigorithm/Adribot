@@ -6,8 +6,6 @@ using Adribot.src.constants.enums;
 using Adribot.src.data.repositories;
 using Adribot.src.entities.discord;
 using Adribot.src.services.providers;
-using Discord;
-using Discord.WebSocket;
 
 namespace Adribot.src.services;
 
@@ -24,31 +22,6 @@ public sealed partial class InfractionService : BaseTimerService
         _infractions = _infractionRepository.GetInfractionsToOldNotExpired();
     }
 
-    private async Task ClientUserupdatedAsync(SocketUser user1, SocketUser user2)
-    {
-        if (user2 is SocketGuildUser user)
-            await CheckHoistAsync(user);
-    }
-
-    private async Task CheckHoistAsync(SocketGuildUser user)
-    {
-        if (!user.GuildPermissions.Administrator && user.DisplayName[0] < 48)
-        {
-            if (!_infractions.Any(i => i.DMember.MemberId == user.Id && i.Type == InfractionType.Hoist && !i.IsExpired))
-            {
-                Infraction infraction = _infractionRepository.AddInfraction(user.Guild.Id, user.Id, DateTimeOffset.UtcNow.AddHours(24), InfractionType.Hoist, "Hoisting is poop");
-                AddInfraction(infraction);
-            }
-
-            if (user.DisplayName != "💩")
-            {
-                await user.ModifyAsync(m => m.Nickname = "💩");
-                await user.SendMessageAsync("You were trying to hoist, stop trying to hoist.\n" +
-                    "I have therefore changed your name to 💩 for 24 hours.");
-            }
-        }
-    }
-
     public override async Task Work()
     {
         if (_infractions.Count() > 0)
@@ -60,14 +33,10 @@ public sealed partial class InfractionService : BaseTimerService
                 switch (infraction.Type)
                 {
                     case InfractionType.Hoist:
-                        await Client.Guilds.First(g => g.Id == infraction.DMember.DGuild.GuildId).Users.First(u => u.Id == infraction.DMember.MemberId).ModifyAsync(m => m.Nickname = "");
+                        RemovePoopNickname(infraction);
                         break;
                     case InfractionType.Ban:
-                        SocketGuild guild = Client.Guilds.First(g => g.Id == infraction.DMember.DGuild.GuildId);
-                        SocketGuildUser user = guild.GetUser(infraction.DMember.MemberId);
-
-                        await guild.RemoveBanAsync(user);
-                        await user.SendMessageAsync($"You have been unbanned from {guild.Name}!\nDo not let it happen again.");
+                        await UnbanUserAsync(infraction);
                         break;
                     default:
                         break;
@@ -86,7 +55,7 @@ public sealed partial class InfractionService : BaseTimerService
         AddInfraction(infraction);
     }
 
-    public void AddInfraction(Infraction infraction)
+    private void AddInfraction(Infraction infraction)
     {
         var isAdded = false;
         for (var i = 0; i < _infractions.Count(); i++)
