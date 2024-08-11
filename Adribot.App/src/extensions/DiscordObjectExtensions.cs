@@ -34,9 +34,9 @@ public static class DiscordObjectExtensions
         string.IsNullOrWhiteSpace(colourString)
             ? throw new ArgumentException($"Cannot parse colour from an empty string")
             : colourString.Length switch
-        {
-            6 => new Color(Convert.ToUInt32(colourString, baseFormat)),
-            8 => new Color(Convert.ToUInt32(colourString[2..], baseFormat)),
-            _ => throw new ArgumentException($"Cannot parse colour: {colourString}")
-        };
+            {
+                6 => new Color(Convert.ToUInt32(colourString, baseFormat)),
+                8 => new Color(Convert.ToUInt32(colourString[2..], baseFormat)),
+                _ => throw new ArgumentException($"Cannot parse colour: {colourString}")
+            };
 }

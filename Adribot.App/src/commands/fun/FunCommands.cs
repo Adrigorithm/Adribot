@@ -17,6 +17,7 @@ namespace Adribot.src.commands.fun;
 public class FunCommands(IHttpClientFactory _httpClientFactory, SecretsProvider _secretsProvider) : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("get", "Gets a random animal")]
+    [RequireBotPermission(ChannelPermission.SendMessages)]
     [RequireUserPermission(ChannelPermission.SendMessages)]
     public async Task GetAnimalAsync(AnimalType animal = AnimalType.Cat)
     {
@@ -49,6 +50,7 @@ public class FunCommands(IHttpClientFactory _httpClientFactory, SecretsProvider 
     }
 
     [SlashCommand("pp", "Calculates your pp size")]
+    [RequireBotPermission(ChannelPermission.SendMessages)]
     [RequireUserPermission(ChannelPermission.SendMessages)]
     public async Task GetPpSizeAsync([Summary("user", "user to calculate the pp size for")] IUser user = null, [Summary("unit", "unit to display the pp size in")] DistanceUnit unit = DistanceUnit.Inch)
     {
@@ -68,8 +70,9 @@ public class FunCommands(IHttpClientFactory _httpClientFactory, SecretsProvider 
             return sum;
         }
 
-        // I should probably change this :wires:
-        var ppSize = (short)(Math.Pow(memberId, 1.0 / sum) * 10 / (memberId.ToString()[0] - '0'));
+        var memberIdLog10 = Math.Log10(memberId);
+        var firstDigit = (short)Math.Pow(10, memberIdLog10 - (short)memberIdLog10);
+        var ppSize = (short)(Math.Pow(memberId, 1.0 / sum) * 10 / firstDigit);
 
         if (unit == DistanceUnit.Inch)
             ppSize = (short)(ppSize / 2.5);
