@@ -53,6 +53,6 @@ Yes.
 
 ## Support
 
-Please craete an issue. If not applicable or your question is too specific you can contact me through discord. My pomelo name is `adrigorithm`.
+Please create an issue. If not applicable or your question is too specific you can contact me through discord. My pomelo name is `adrigorithm`.
 
 ps: Pomelo is a fruit 🍊
