@@ -366,3 +366,6 @@ Adribot.App/secret/
 Adribot.App/temp/*.zip
 
 Secrets/
+
+# Editor shit
+.idea
