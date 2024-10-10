@@ -14,7 +14,7 @@ using Discord.Interactions;
 
 namespace Adribot.src.commands.fun;
 
-public class FunCommands(IHttpClientFactory _httpClientFactory, SecretsProvider _secretsProvider) : InteractionModuleBase<SocketInteractionContext>
+public class FunCommands(IHttpClientFactory httpClientFactory, SecretsProvider secretsProvider) : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("get", "Gets a random animal")]
     [RequireBotPermission(ChannelPermission.SendMessages)]
@@ -22,12 +22,12 @@ public class FunCommands(IHttpClientFactory _httpClientFactory, SecretsProvider 
     public async Task GetAnimalAsync(AnimalType animal = AnimalType.Cat)
     {
         EmbedBuilder embed = new();
-        HttpClient httpClient = _httpClientFactory.CreateClient();
+        HttpClient httpClient = httpClientFactory.CreateClient();
 
         switch (animal)
         {
             case AnimalType.Dog:
-                List<Dog> dogApiObject = await JsonSerializer.DeserializeAsync<List<Dog>>(await httpClient.GetStreamAsync($"{ConstantStrings.DogBaseUri}?api_key={_secretsProvider.Config.CatToken}"));
+                List<Dog> dogApiObject = await JsonSerializer.DeserializeAsync<List<Dog>>(await httpClient.GetStreamAsync($"{ConstantStrings.DogBaseUri}?api_key={secretsProvider.Config.CatToken}"));
                 embed.ImageUrl = dogApiObject[0].Url;
 
                 break;
@@ -37,13 +37,13 @@ public class FunCommands(IHttpClientFactory _httpClientFactory, SecretsProvider 
 
                 break;
             default: // Cat
-                List<Cat> catApiObject = await JsonSerializer.DeserializeAsync<List<Cat>>(await httpClient.GetStreamAsync($"{ConstantStrings.CatBaseUri}?api_key={_secretsProvider.Config.CatToken}"));
+                List<Cat> catApiObject = await JsonSerializer.DeserializeAsync<List<Cat>>(await httpClient.GetStreamAsync($"{ConstantStrings.CatBaseUri}?api_key={secretsProvider.Config.CatToken}"));
                 embed.ImageUrl = catApiObject[0].Url;
 
                 break;
         }
 
-        embed.Color = _secretsProvider.Config.EmbedColour;
+        embed.Color = secretsProvider.Config.EmbedColour;
         embed.Title = "You asked, I delivered.";
 
         await RespondAsync(embed: embed.Build());

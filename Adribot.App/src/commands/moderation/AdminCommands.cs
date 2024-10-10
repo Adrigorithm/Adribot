@@ -11,7 +11,7 @@ using Discord.WebSocket;
 
 namespace Adribot.src.commands.moderation;
 
-public class AdminCommands(InfractionService _infractionService) : InteractionModuleBase<SocketInteractionContext>
+public class AdminCommands(InfractionService infractionService) : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("clear", "Deletes given amount of messages")]
     [RequireUserPermission(ChannelPermission.ManageMessages)]
@@ -53,7 +53,7 @@ public class AdminCommands(InfractionService _infractionService) : InteractionMo
         DateTimeOffset now = DateTimeOffset.UtcNow;
         DateTimeOffset endDate = type.ToEndDate(factor, now);
 
-        _infractionService.AddInfraction(Context.Guild.Id, member.Id, endDate, InfractionType.Ban, reason);
+        infractionService.AddInfraction(Context.Guild.Id, member.Id, endDate, InfractionType.Ban, reason);
 
         await member.BanAsync(deleteMessages, reason);
 

@@ -5,6 +5,7 @@ using Discord.WebSocket;
 
 namespace Adribot.src.helpers;
 
+// ReSharper disable once InconsistentNaming
 public static class CLIDiscordBuilder
 {
     public static string DiscordMessage(string channelName, string userName, string message) =>

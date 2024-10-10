@@ -16,10 +16,10 @@ public class DiscordClientProvider
             GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.MessageContent
         });
 
-        Client.Log += LogAsync;
+        Client.Log += Log;
     }
 
-    private static Task LogAsync(LogMessage message)
+    private static Task Log(LogMessage message)
     {
         Console.WriteLine(message.ToString());
         return Task.CompletedTask;

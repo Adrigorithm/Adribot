@@ -13,7 +13,7 @@ namespace Adribot.src.commands.utilities;
 
 public class MinecraftCommands : InteractionModuleBase<SocketInteractionContext>
 {
-    private readonly Dictionary<MinecraftVersion, string> VersionMapper = new() { { MinecraftVersion.Legacy, "Temp/datapack/data/emojiful/recipes/" }, { MinecraftVersion.Modern, "Temp/datapack/data/emojiful/recipe/" } };
+    private readonly Dictionary<MinecraftVersion, string> _versionMapper = new() { { MinecraftVersion.Legacy, "Temp/datapack/data/emojiful/recipes/" }, { MinecraftVersion.Modern, "Temp/datapack/data/emojiful/recipe/" } };
 
     public MinecraftCommands()
     {
@@ -40,7 +40,7 @@ public class MinecraftCommands : InteractionModuleBase<SocketInteractionContext>
             }
 
             Directory.Delete(datapackParent + "datapack/data/emojiful", true);
-            Directory.CreateDirectory(VersionMapper[mcVersion]);
+            Directory.CreateDirectory(_versionMapper[mcVersion]);
 
             for (var i = 0; i < emojiMatches.Count; i++)
             {
@@ -52,7 +52,7 @@ public class MinecraftCommands : InteractionModuleBase<SocketInteractionContext>
                     Type = "emojiful:emoji_recipe"
                 };
 
-                FileStream fs = File.Create($"{VersionMapper[mcVersion]}{emojiMatches[i].Groups[2].Value.ToLower()}.json");
+                FileStream fs = File.Create($"{_versionMapper[mcVersion]}{emojiMatches[i].Groups[2].Value.ToLower()}.json");
 
                 await JsonSerializer.SerializeAsync(fs, emoji);
                 await fs.DisposeAsync();

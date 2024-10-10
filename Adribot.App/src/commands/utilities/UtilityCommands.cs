@@ -8,7 +8,7 @@ using Discord.Interactions;
 
 namespace Adribot.src.commands.utilities;
 
-public class UtilityCommands(RemindMeSerivce _remindMeService) : InteractionModuleBase<SocketInteractionContext>
+public class UtilityCommands(RemindMeSerivce remindMeService) : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("remindme", "Set an alert for something ahead of time")]
     public async Task ExecuteRemindTaskAsync([Summary("task", "What you should be reminded of")] string taskTodo, [Summary("unit", "Time unit to be muliplied by the next factor parameter")] TimeSpanType timeUnit, [Summary("factor", "Amount of instances of the specified time unit")] int factor, [Summary("channel", "Fallback for if you don't want the bot to dm you")] ITextChannel? altChannel = null)
@@ -22,7 +22,7 @@ public class UtilityCommands(RemindMeSerivce _remindMeService) : InteractionModu
         }
         else
         {
-            _remindMeService.AddRemindMe(Context.Guild.Id, Context.User.Id, altChannel?.Id, taskTodo, endDate);
+            remindMeService.AddRemindMe(Context.Guild.Id, Context.User.Id, altChannel?.Id, taskTodo, endDate);
 
             await RespondAsync($"I will remind you {new TimestampTag(endDate, TimestampTagStyles.Relative)}", ephemeral: true);
         }

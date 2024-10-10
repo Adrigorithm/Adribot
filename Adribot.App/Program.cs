@@ -14,7 +14,8 @@ internal static class Program
 {
     private static IServiceProvider _serviceProvider;
 
-    public static async Task MainAsync(string[] args)
+    // ReSharper disable once InconsistentNaming
+    public static async Task Main(string[] args)
     {
         var secrets = SecretsProvider.LoadFromEnv();
 

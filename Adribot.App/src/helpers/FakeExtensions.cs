@@ -23,6 +23,7 @@ public static class FakeExtensions
         return sb.ToString();
     }
 
+    // ReSharper disable once InconsistentNaming
     public static string GetMarkdownCSV(string[] strings)
     {
         var sb = new StringBuilder();
@@ -38,6 +39,6 @@ public static class FakeExtensions
         return sb.ToString();
     }
 
-    public static bool AreAllNullOrWhiteSpace(params IEnumerable<string> strings) =>
+    public static bool AreAllNullOrWhiteSpace(params string[] strings) =>
         strings.All(s => string.IsNullOrWhiteSpace(s));
 }

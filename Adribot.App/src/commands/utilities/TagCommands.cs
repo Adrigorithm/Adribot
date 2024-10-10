@@ -11,7 +11,7 @@ using Discord.Interactions;
 
 namespace Adribot.src.commands.utilities;
 
-public class TagCommands(TagService _tagService) : InteractionModuleBase<SocketInteractionContext>
+public class TagCommands(TagService tagService) : InteractionModuleBase<SocketInteractionContext>
 {
     [RequireUserPermission(ChannelPermission.SendMessages)]
     [SlashCommand("tag", "Display (information about) a tag")]
@@ -25,7 +25,7 @@ public class TagCommands(TagService _tagService) : InteractionModuleBase<SocketI
                 if (string.IsNullOrWhiteSpace(tagName))
                     await RespondAsync("A tagName cannot be whitespace", ephemeral: true);
 
-                Tag? tag = _tagService.TryGetTag(tagName, Context.Guild.Id);
+                Tag? tag = tagService.TryGetTag(tagName, Context.Guild.Id);
 
                 if (tag is null)
                 {
@@ -42,7 +42,7 @@ public class TagCommands(TagService _tagService) : InteractionModuleBase<SocketI
                 break;
             case CrudOperation.New:
             case CrudOperation.Set:
-                (Tag?, string?) tempTag = _tagService.CreateTempTag(Context.Guild.Id, Context.User.Id, tagName, newContent, Context.Interaction.CreatedAt, operation == CrudOperation.Set);
+                (Tag?, string?) tempTag = tagService.CreateTempTag(Context.Guild.Id, Context.User.Id, tagName, newContent, Context.Interaction.CreatedAt, operation == CrudOperation.Set);
 
                 if (tempTag.Item1 is null)
                 {
@@ -50,14 +50,14 @@ public class TagCommands(TagService _tagService) : InteractionModuleBase<SocketI
                 }
                 else
                 {
-                    _tagService.SetTag(Context.Guild.Id, Context.User.Id, tempTag.Item1);
+                    tagService.SetTag(Context.Guild.Id, Context.User.Id, tempTag.Item1);
 
                     await RespondAsync($"Tag `{tagName}` {(operation == CrudOperation.Set ? "updated" : "created")}.{Environment.NewLine}Check it out using `/tag {tagName} [GET|INFO]`");
                 }
 
                 break;
             case CrudOperation.Delete:
-                if (!_tagService.TryRemoveTag(tagName, Context.Guild.Id))
+                if (!tagService.TryRemoveTag(tagName, Context.Guild.Id))
                 {
                     await RespondAsync($"A tag with tagname `{tagName}` could not be found.", ephemeral: true);
                 }
@@ -68,7 +68,7 @@ public class TagCommands(TagService _tagService) : InteractionModuleBase<SocketI
 
                 break;
             case CrudOperation.List:
-                IEnumerable<Tag> tags = _tagService.GetAllTags(Context.Guild.Id);
+                IEnumerable<Tag> tags = tagService.GetAllTags(Context.Guild.Id);
                 if (tags.Count() == 0)
                 {
                     await RespondAsync("No tags could be found.", ephemeral: true);

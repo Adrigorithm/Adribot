@@ -8,62 +8,62 @@ namespace Adribot.src.data.repositories;
 
 public sealed class DGuildRepository : BaseRepository
 {
-    public DGuildRepository(IDbContextFactory<AdribotContext> _botContextFactory) : base(_botContextFactory) { }
+    public DGuildRepository(IDbContextFactory<AdribotContext> botContextFactory) : base(botContextFactory) { }
 
     public Dictionary<ulong, (ulong channelId, string? starEmoji, int? threshold)> GetStarboards()
     {
-        using AdribotContext _botContext = CreateDbContext();
+        using AdribotContext botContext = CreateDbContext();
 
-        return _botContext.DGuilds.Where(dg => dg.StarboardChannel != null).ToDictionary(dg => dg.GuildId, dg => ((ulong)dg.StarboardChannel, dg.StarEmoji, dg.StarThreshold));
+        return botContext.DGuilds.Where(dg => dg.StarboardChannel != null).ToDictionary(dg => dg.GuildId, dg => ((ulong)dg.StarboardChannel, dg.StarEmoji, dg.StarThreshold));
     }
 
     public void SetStarboard(ulong guildId, ulong channelId, string? starEmoji, int? threshold)
     {
-        using AdribotContext _botContext = CreateDbContext();
+        using AdribotContext botContext = CreateDbContext();
 
-        DGuild guild = _botContext.DGuilds.First(dg => dg.GuildId == guildId);
+        DGuild guild = botContext.DGuilds.First(dg => dg.GuildId == guildId);
         guild.StarboardChannel = channelId;
         guild.StarEmoji = starEmoji;
         guild.StarThreshold = threshold;
 
-        _botContext.SaveChanges();
+        botContext.SaveChanges();
     }
 
     public FrozenDictionary<ulong, ulong[]> GetGuildsWithMembers()
     {
-        using AdribotContext _botContext = CreateDbContext();
+        using AdribotContext botContext = CreateDbContext();
 
-        return _botContext.DGuilds.Include(dg => dg.Members).ToFrozenDictionary(dg => dg.GuildId, dg => dg.Members.Select(dm => dm.MemberId).ToArray());
+        return botContext.DGuilds.Include(dg => dg.Members).ToFrozenDictionary(dg => dg.GuildId, dg => dg.Members.Select(dm => dm.MemberId).ToArray());
     }
 
     public void AddDGuild(DGuild dGuild)
     {
-        using AdribotContext _botContext = CreateDbContext();
+        using AdribotContext botContext = CreateDbContext();
 
-        _botContext.DGuilds.Add(dGuild);
-        _botContext.SaveChanges();
+        botContext.DGuilds.Add(dGuild);
+        botContext.SaveChanges();
     }
 
     public DGuild GetGuild(ulong guildId)
     {
-        using AdribotContext _botContext = CreateDbContext();
+        using AdribotContext botContext = CreateDbContext();
 
-        return _botContext.DGuilds.First(dg => dg.GuildId == guildId);
+        return botContext.DGuilds.First(dg => dg.GuildId == guildId);
     }
 
     public void UpdateDGuild(DGuild dGuild)
     {
-        using AdribotContext _botContext = CreateDbContext();
+        using AdribotContext botContext = CreateDbContext();
 
-        _botContext.Update(dGuild);
-        _botContext.SaveChanges();
+        botContext.Update(dGuild);
+        botContext.SaveChanges();
     }
 
     public void AddMembersToGuild(ulong guildId, IEnumerable<(ulong, string)> membersToAdd)
     {
-        using AdribotContext _botContext = CreateDbContext();
+        using AdribotContext botContext = CreateDbContext();
 
-        DGuild guild = _botContext.DGuilds.First(dg => dg.GuildId == guildId);
+        DGuild guild = botContext.DGuilds.First(dg => dg.GuildId == guildId);
 
         foreach ((ulong, string) member in membersToAdd)
         {
@@ -75,7 +75,7 @@ public sealed class DGuildRepository : BaseRepository
             });
         }
 
-        _botContext.Update(guild);
-        _botContext.SaveChanges();
+        botContext.Update(guild);
+        botContext.SaveChanges();
     }
 }

@@ -36,6 +36,7 @@ public class Event : IDataStructure
             Footer = new EmbedFooterBuilder { Text = Location }
         };
 
+    // ReSharper disable once InconsistentNaming
     public EmbedBuilder GeneratePXLEmbedBuilder()
     {
         var descriptionLines = Description.Split('\n');

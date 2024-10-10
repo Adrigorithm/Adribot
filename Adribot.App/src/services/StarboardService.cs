@@ -32,9 +32,8 @@ public sealed class StarboardService : BaseTimerService
 
         if (channel is ITextChannel textChannel && _outputChannels.ContainsKey(textChannel.GuildId))
         {
-#pragma warning disable IDE0007 // Use implicit type
+            // ReSharper disable once SuggestVarOrType_BuiltInTypes
             (var channelId, string? starEmoji, var threshold) = _outputChannels[textChannel.GuildId];
-#pragma warning restore IDE0007 // Use implicit type
 
             KeyValuePair<IEmote, ReactionMetadata> starEmojiKvp = message.Reactions.FirstOrDefault(r => r.Key.Name == starEmoji);
             var starEmojiCount = starEmojiKvp.Key is null

@@ -11,7 +11,7 @@ using Discord.WebSocket;
 
 namespace Adribot.src.commands.utilities;
 
-public class CalendarCommands(IcsCalendarService _icsCalendarService) : InteractionModuleBase<SocketInteractionContext>
+public class CalendarCommands(IcsCalendarService icsCalendarService) : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("calendar", "Perform various calendar tasks")]
     [RequireUserPermission(ChannelPermission.SendMessages)]
@@ -31,7 +31,7 @@ public class CalendarCommands(IcsCalendarService _icsCalendarService) : Interact
                 }
                 else
                 {
-                    await _icsCalendarService.AddCalendarAsync(Context.Guild.Id, Context.User.Id, channelId is not null ? (ulong)channelId : Context.Channel.Id, new Uri(uri));
+                    await icsCalendarService.AddCalendarAsync(Context.Guild.Id, Context.User.Id, channelId is not null ? (ulong)channelId : Context.Channel.Id, new Uri(uri));
                     await RespondAsync($"Calendar `{calendarName}` for guild [{Context.Guild.Id}] was added successfully.", ephemeral: true);
                 }
 
@@ -43,7 +43,7 @@ public class CalendarCommands(IcsCalendarService _icsCalendarService) : Interact
                 }
                 else
                 {
-                    var isDeleted = _icsCalendarService.TryDeleteCalendar(Context.User as SocketGuildUser, GetIcsCalendar(Context.Guild.Id, calendarName));
+                    var isDeleted = icsCalendarService.TryDeleteCalendar(Context.User as SocketGuildUser, GetIcsCalendar(Context.Guild.Id, calendarName));
                     await RespondAsync($"Calendar `{calendarName}` for guild [{Context.Guild.Id}] {(isDeleted ? "was added successfully." : "is not to be deleted by you.")}", ephemeral: true);
                 }
 
@@ -76,7 +76,7 @@ public class CalendarCommands(IcsCalendarService _icsCalendarService) : Interact
 
                 break;
             case CalendarCrudOperation.List:
-                var calendarNames = _icsCalendarService.GetCalendarNames(Context.Guild.Id);
+                var calendarNames = icsCalendarService.GetCalendarNames(Context.Guild.Id);
                 await RespondAsync(FakeExtensions.GetMarkdownCSV(calendarNames), ephemeral: true);
 
                 break;
@@ -84,5 +84,5 @@ public class CalendarCommands(IcsCalendarService _icsCalendarService) : Interact
     }
 
     private IcsCalendar? GetIcsCalendar(ulong guildId, string name) =>
-        _icsCalendarService.GetCalendarByName(guildId, name);
+        icsCalendarService.GetCalendarByName(guildId, name);
 }

@@ -14,13 +14,13 @@ using Ical.Net;
 
 namespace Adribot.src.services;
 
-public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository, SecretsProvider secretsProvider, DiscordClientProvider clientProvider, int timerInterval = 60) : BaseTimerService(clientProvider, secretsProvider, timerInterval)
+public sealed class IcsCalendarService(IcsCalendarRepository calendarRepository, SecretsProvider secretsProvider, DiscordClientProvider clientProvider, int timerInterval = 60) : BaseTimerService(clientProvider, secretsProvider, timerInterval)
 {
     private IEnumerable<IcsCalendar> _calendars;
 
     public override Task Work()
     {
-        _calendars = _calendarRepository.GetIcsCalendarsNotExpired();
+        _calendars = calendarRepository.GetIcsCalendarsNotExpired();
 
         if (_calendars.Count() > 0)
         {
@@ -63,7 +63,7 @@ public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository
                 }
             });
 
-            _calendarRepository.ChangeEventsPostedStatus(eventsPosted);
+            calendarRepository.ChangeEventsPostedStatus(eventsPosted);
         });
     }
 
@@ -81,7 +81,7 @@ public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository
         var calendar = Calendar.Load(await GetStreamFromUri(icsFileUri));
         IEnumerable<Event> calendarEvents = calendar.Events.ToList().Select(e => e.ToEvent());
 
-        _calendars.Append(_calendarRepository.AddCalendar(calendar.Name, guildId, memberId, channelId, calendarEvents));
+        _calendars.Append(calendarRepository.AddCalendar(calendar.Name, guildId, memberId, channelId, calendarEvents));
 
         static async Task<Stream> GetStreamFromUri(Uri uri)
         {
@@ -105,7 +105,7 @@ public sealed class IcsCalendarService(IcsCalendarRepository _calendarRepository
             return false;
 
         _calendars.ToList().Remove(calendar);
-        _calendarRepository.RemoveCalendar(calendar);
+        calendarRepository.RemoveCalendar(calendar);
 
         return true;
     }

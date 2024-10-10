@@ -7,43 +7,42 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.src.data.repositories;
 
-public sealed class InfractionRepository : BaseRepository
+public sealed class InfractionRepository(IDbContextFactory<AdribotContext> botContextFactory)
+    : BaseRepository(botContextFactory)
 {
-    public InfractionRepository(IDbContextFactory<AdribotContext> _botContextFactory) : base(_botContextFactory) { }
-
     public IEnumerable<Infraction> GetInfractionsToOldNotExpired()
     {
-        using AdribotContext _botContext = CreateDbContext();
+        using AdribotContext botContext = CreateDbContext();
 
-        return _botContext.Infractions.Include(i => i.DMember).Include(i => i.DMember.DGuild).OrderByDescending(i => i.EndDate).Where(i => !i.IsExpired).ToList();
+        return botContext.Infractions.Include(i => i.DMember).Include(i => i.DMember.DGuild).OrderByDescending(i => i.EndDate).Where(i => !i.IsExpired).ToList();
     }
 
     public Infraction AddInfraction(ulong guildId, ulong memberId, DateTimeOffset endDate, InfractionType type, string reason = "No reason provided", bool isExpired = false)
     {
-        using AdribotContext _botContext = CreateDbContext();
+        using AdribotContext botContext = CreateDbContext();
 
         DateTimeOffset now = DateTimeOffset.UtcNow;
         var infraction = new Infraction
         {
             Date = now,
-            DMember = _botContext.DMembers.Include(dm => dm.DGuild).First(dm => dm.MemberId == memberId && dm.DGuild.GuildId == guildId),
+            DMember = botContext.DMembers.Include(dm => dm.DGuild).First(dm => dm.MemberId == memberId && dm.DGuild.GuildId == guildId),
             EndDate = endDate,
             IsExpired = isExpired,
             Reason = reason,
             Type = type
         };
 
-        _botContext.Add(infraction);
-        _botContext.SaveChanges();
+        botContext.Add(infraction);
+        botContext.SaveChanges();
 
         return infraction;
     }
 
     public void SetExpiredStatus(Infraction infraction, bool isExpired)
     {
-        using AdribotContext _botContext = CreateDbContext();
+        using AdribotContext botContext = CreateDbContext();
 
-        _botContext.Infractions.First(i => i.InfractionId == infraction.InfractionId).IsExpired = isExpired;
-        _botContext.SaveChanges();
+        botContext.Infractions.First(i => i.InfractionId == infraction.InfractionId).IsExpired = isExpired;
+        botContext.SaveChanges();
     }
 }

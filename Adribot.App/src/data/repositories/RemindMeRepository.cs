@@ -6,28 +6,27 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.src.data.repositories;
 
-public sealed class RemindMeRepository : BaseRepository
+public sealed class RemindMeRepository(IDbContextFactory<AdribotContext> botContextFactory)
+    : BaseRepository(botContextFactory)
 {
-    public RemindMeRepository(IDbContextFactory<AdribotContext> _botContextFactory) : base(_botContextFactory) { }
-
     public IEnumerable<Reminder> GetRemindersToOld()
     {
-        using AdribotContext _botContext = CreateDbContext();
+        using AdribotContext botContext = CreateDbContext();
 
-        return _botContext.Reminders.Include(r => r.DMember).Include(r => r.DMember.DGuild).OrderByDescending(r => r.EndDate).ToList();
+        return botContext.Reminders.Include(r => r.DMember).Include(r => r.DMember.DGuild).OrderByDescending(r => r.EndDate).ToList();
     }
 
     public void RemoveReminder(Reminder reminder)
     {
-        using AdribotContext _botContext = CreateDbContext();
+        using AdribotContext botContext = CreateDbContext();
 
-        _botContext.Remove(reminder);
-        _botContext.SaveChanges();
+        botContext.Remove(reminder);
+        botContext.SaveChanges();
     }
 
     public Reminder AddRemindMe(ulong guildId, ulong memberId, ulong? channelId, string content, DateTimeOffset endDate)
     {
-        using AdribotContext _botContext = CreateDbContext();
+        using AdribotContext botContext = CreateDbContext();
 
         DateTimeOffset now = DateTimeOffset.UtcNow;
         var reminder = new Reminder
@@ -36,11 +35,11 @@ public sealed class RemindMeRepository : BaseRepository
             Content = content,
             Date = now,
             EndDate = endDate,
-            DMember = _botContext.DMembers.Include(dm => dm.DGuild).First(dm => dm.MemberId == memberId && dm.DGuild.GuildId == guildId)
+            DMember = botContext.DMembers.Include(dm => dm.DGuild).First(dm => dm.MemberId == memberId && dm.DGuild.GuildId == guildId)
         };
 
-        _botContext.Add(reminder);
-        _botContext.SaveChanges();
+        botContext.Add(reminder);
+        botContext.SaveChanges();
 
         return reminder;
     }

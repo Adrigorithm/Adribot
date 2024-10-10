@@ -5,40 +5,39 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.src.data.repositories;
 
-public sealed class TagRepository : BaseRepository
+public sealed class TagRepository(IDbContextFactory<AdribotContext> botContextFactory)
+    : BaseRepository(botContextFactory)
 {
-    public TagRepository(IDbContextFactory<AdribotContext> _botContextFactory) : base(_botContextFactory) { }
-
     public IEnumerable<Tag> GetAllTags()
     {
-        using AdribotContext _botContext = CreateDbContext();
+        using AdribotContext botContext = CreateDbContext();
 
-        return _botContext.Tags.Include(t => t.DMember).Include(t => t.DMember.DGuild).ToList();
+        return botContext.Tags.Include(t => t.DMember).Include(t => t.DMember.DGuild).ToList();
     }
 
     public Tag AddTag(ulong guildId, ulong memberId, Tag tag)
     {
-        using AdribotContext _botContext = CreateDbContext();
+        using AdribotContext botContext = CreateDbContext();
 
-        tag.DMember = _botContext.DMembers.Include(dm => dm.DGuild).First(dm => dm.MemberId == memberId && dm.DGuild.GuildId == guildId);
-        _botContext.Add(tag);
-        _botContext.SaveChanges();
+        tag.DMember = botContext.DMembers.Include(dm => dm.DGuild).First(dm => dm.MemberId == memberId && dm.DGuild.GuildId == guildId);
+        botContext.Add(tag);
+        botContext.SaveChanges();
         return tag;
     }
 
     public void UpdateTag(Tag tag)
     {
-        using AdribotContext _botContext = CreateDbContext();
+        using AdribotContext botContext = CreateDbContext();
 
-        _botContext.Update(tag);
-        _botContext.SaveChanges();
+        botContext.Update(tag);
+        botContext.SaveChanges();
     }
 
     public void Remove(Tag tag)
     {
-        using AdribotContext _botContext = CreateDbContext();
+        using AdribotContext botContext = CreateDbContext();
 
-        _botContext.Remove(tag);
-        _botContext.SaveChanges();
+        botContext.Remove(tag);
+        botContext.SaveChanges();
     }
 }
