@@ -47,11 +47,11 @@ public class SecretsProvider(ConfigValueType config)
 
         return new SecretsProvider(new ConfigValueType
         {
-            BotToken = config["BOT_TOKEN"] ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_botToken"),
-            CatToken = config["CAT_TOKEN"] ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_catToken"),
-            DevUserId = Convert.ToUInt64(config["DEV_ID"] ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_devUserId")),
-            EmbedColour = config["DISCORD_EMBED_COLOUR"]?.ToDiscordColour() ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_embedColour"),
-            SqlConnectionString = config["DB_CONNECTION"] ?? throw new ArgumentNullException("Enviroment variable not found: Adribot_sqlConnectionString")
+            BotToken = config["BOT_TOKEN"] ?? throw new ArgumentNullException("Environment variable not found: Adribot_botToken"),
+            CatToken = config["CAT_TOKEN"] ?? throw new ArgumentNullException("Environment variable not found: Adribot_catToken"),
+            DevUserId = Convert.ToUInt64(config["DEV_ID"] ?? throw new ArgumentNullException("Environment variable not found: Adribot_devUserId")),
+            EmbedColour = config["DISCORD_EMBED_COLOUR"]?.ToDiscordColour() ?? throw new ArgumentNullException("Environment variable not found: Adribot_embedColour"),
+            SqlConnectionString = config["DB_CONNECTION"] ?? throw new ArgumentNullException("Environment variable not found: Adribot_sqlConnectionString")
         });
     }
 
@@ -59,13 +59,13 @@ public class SecretsProvider(ConfigValueType config)
         new(new()
         {
             BotToken = string.IsNullOrWhiteSpace(botToken)
-                ? throw new ArgumentNullException(nameof(botToken), "Enviroment variable not found: Adribot_botToken")
+                ? throw new ArgumentNullException(nameof(botToken), "Environment variable not found: Adribot_botToken")
                 : botToken,
             CatToken = string.IsNullOrWhiteSpace(catToken)
-                ? throw new ArgumentNullException(nameof(catToken), "Enviroment variable not found: Adribot_catToken")
+                ? throw new ArgumentNullException(nameof(catToken), "Environment variable not found: Adribot_catToken")
                 : catToken,
             DevUserId = devUserId is null || devUserId == 0
-                ? throw new ArgumentNullException(nameof(devUserId), "Enviroment variable not found: Adribot_devUserId")
+                ? throw new ArgumentNullException(nameof(devUserId), "Environment variable not found: Adribot_devUserId")
                 : (ulong)devUserId,
             EmbedColour = embedColour?.ToDiscordColour() ?? throw new ArgumentNullException(nameof(embedColour), "Enviroment variable not found: Adribot_embedColour"),
             SqlConnectionString = string.IsNullOrWhiteSpace(sqlConnectionString)
