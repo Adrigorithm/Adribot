@@ -14,7 +14,7 @@ internal static class Program
 {
     private static IServiceProvider _serviceProvider;
 
-    public static async Task Main(string[] args)
+    public static async Task MainAsync(string[] args)
     {
         var secrets = SecretsProvider.LoadFromEnv();
 
@@ -46,7 +46,7 @@ internal static class Program
     {
         IDbContextFactory<AdribotContext> contextFactory = _serviceProvider.GetRequiredService<IDbContextFactory<AdribotContext>>();
 
-        using (AdribotContext context = await contextFactory.CreateDbContextAsync())
+        await using (AdribotContext context = await contextFactory.CreateDbContextAsync())
         {
             await context.Database.MigrateAsync();
         }
