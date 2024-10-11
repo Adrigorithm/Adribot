@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json.Serialization;
 using Adribot.src.parsers.converts;
 using Discord;
@@ -21,4 +22,7 @@ public record ConfigValueType
 
     [JsonPropertyName("devUserId")]
     public ulong DevUserId { get; init; }
+
+    public override string ToString()
+        => $"Secrets:\nBot Token: {BotToken}\nCat Token: {CatToken}\nSQL Connection String: {SqlConnectionString}\nEmbed Colour: {EmbedColour}\nDev User Id: {DevUserId}";
 }

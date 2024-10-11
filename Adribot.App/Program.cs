@@ -18,6 +18,7 @@ internal static class Program
     public static async Task Main(string[] args)
     {
         var secrets = SecretsProvider.LoadFromEnv();
+        Console.WriteLine(secrets.Config);
 
         _serviceProvider = new ServiceCollection()
             .AddSingleton(secrets)

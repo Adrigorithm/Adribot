@@ -47,11 +47,11 @@ public class SecretsProvider(ConfigValueType config)
 
         return new SecretsProvider(new ConfigValueType
         {
-            BotToken = config["BOT_TOKEN"] ?? throw new ArgumentNullException("Environment variable not found: Adribot_botToken"),
-            CatToken = config["CAT_TOKEN"] ?? throw new ArgumentNullException("Environment variable not found: Adribot_catToken"),
-            DevUserId = Convert.ToUInt64(config["DEV_ID"] ?? throw new ArgumentNullException("Environment variable not found: Adribot_devUserId")),
-            EmbedColour = config["DISCORD_EMBED_COLOUR"]?.ToDiscordColour() ?? throw new ArgumentNullException("Environment variable not found: Adribot_embedColour"),
-            SqlConnectionString = config["DB_CONNECTION"] ?? throw new ArgumentNullException("Environment variable not found: Adribot_sqlConnectionString")
+            BotToken = config["BOT_TOKEN"] ?? throw new ArgumentNullException(null, "Environment variable not found: Adribot_botToken"),
+            CatToken = config["CAT_TOKEN"] ?? throw new ArgumentNullException(null, "Environment variable not found: Adribot_catToken"),
+            DevUserId = Convert.ToUInt64(config["DEV_ID"] ?? throw new ArgumentNullException(null, "Environment variable not found: Adribot_devUserId")),
+            EmbedColour = config["DISCORD_EMBED_COLOUR"]?.ToDiscordColour() ?? throw new ArgumentNullException(null, "Environment variable not found: Adribot_embedColour"),
+            SqlConnectionString = config["DB_CONNECTION"] ?? throw new ArgumentNullException(null, "Environment variable not found: Adribot_sqlConnectionString")
         });
     }
 
@@ -69,7 +69,7 @@ public class SecretsProvider(ConfigValueType config)
                 : (ulong)devUserId,
             EmbedColour = embedColour?.ToDiscordColour() ?? throw new ArgumentNullException(nameof(embedColour), "Enviroment variable not found: Adribot_embedColour"),
             SqlConnectionString = string.IsNullOrWhiteSpace(sqlConnectionString)
-                ? throw new ArgumentNullException("Enviroment variable not found: Adribot_sqlConnectionString")
+                ? throw new ArgumentNullException(null, "Enviroment variable not found: Adribot_sqlConnectionString")
                 : sqlConnectionString
         });
 }
