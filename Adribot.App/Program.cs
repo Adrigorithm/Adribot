@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Adribot.src.data;
 using Adribot.src.data.repositories;
@@ -17,8 +18,7 @@ internal static class Program
     // ReSharper disable once InconsistentNaming
     public static async Task Main(string[] args)
     {
-        var secrets = SecretsProvider.LoadFromEnv();
-        Console.WriteLine(secrets.Config);
+        var secrets = SecretsProvider.LoadFromEnv(envVarsAreFiles: true);
 
         _serviceProvider = new ServiceCollection()
             .AddSingleton(secrets)

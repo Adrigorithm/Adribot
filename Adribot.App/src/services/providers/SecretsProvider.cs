@@ -38,8 +38,11 @@ public class SecretsProvider(ConfigValueType config)
     /// <summary>
     /// Loads config values from system level environment variables
     /// </summary>
+    /// <param name="config">optionally load from a specific configuration provider</param>
+    /// <param name="envVarsAreFiles">whether the environment values will have file paths instead of the raw values</param>
     /// <returns></returns>
-    public static SecretsProvider LoadFromEnv(IConfiguration? config = null)
+    /// <exception cref="ArgumentNullException"></exception>
+    public static SecretsProvider LoadFromEnv(IConfiguration? config = null, bool envVarsAreFiles = false)
     {
         config ??= new ConfigurationBuilder()
             .AddEnvironmentVariables()
@@ -47,11 +50,23 @@ public class SecretsProvider(ConfigValueType config)
 
         return new SecretsProvider(new ConfigValueType
         {
-            BotToken = config["BOT_TOKEN"] ?? throw new ArgumentNullException(null, "Environment variable not found: Adribot_botToken"),
-            CatToken = config["CAT_TOKEN"] ?? throw new ArgumentNullException(null, "Environment variable not found: Adribot_catToken"),
+            BotToken = config["BOT_TOKEN"] is null 
+                ? throw new ArgumentNullException(null, "Environment variable not found: Adribot_botToken")
+                : envVarsAreFiles
+                    ? File.ReadAllText(config["BOT_TOKEN"])
+                    : config["BOT_TOKEN"],
+            CatToken = config["CAT_TOKEN"] is null 
+                ? throw new ArgumentNullException(null, "Environment variable not found: Adribot_catToken")
+                : envVarsAreFiles
+                    ? File.ReadAllText(config["CAT_TOKEN"])
+                    : config["CAT_TOKEN"],
             DevUserId = Convert.ToUInt64(config["DEV_ID"] ?? throw new ArgumentNullException(null, "Environment variable not found: Adribot_devUserId")),
             EmbedColour = config["DISCORD_EMBED_COLOUR"]?.ToDiscordColour() ?? throw new ArgumentNullException(null, "Environment variable not found: Adribot_embedColour"),
-            SqlConnectionString = config["DB_CONNECTION"] ?? throw new ArgumentNullException(null, "Environment variable not found: Adribot_sqlConnectionString")
+            SqlConnectionString = config["DB_CONNECTION"] is null 
+                ? throw new ArgumentNullException(null, "Environment variable not found: Adribot_sqlConnectionString")
+                : envVarsAreFiles
+                    ? File.ReadAllText(config["DB_CONNECTION"])
+                    : config["DB_CONNECTION"]
         });
     }
 
