@@ -3,7 +3,7 @@ using Adribot.src.constants.enums;
 using Adribot.src.services;
 using Discord.Interactions;
 
-namespace Adribot.src.commands.utilities;
+namespace Adribot.src.commands.owner;
 
 public class RemoteAccessCommands(RemoteAccessService remoteAccess) : InteractionModuleBase<SocketInteractionContext>
 {
