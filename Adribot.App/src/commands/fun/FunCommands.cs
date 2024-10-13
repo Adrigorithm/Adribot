@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Adribot.constants.enums;
-using Adribot.constants.strings;
-using Adribot.entities.fun.cat;
-using Adribot.entities.fun.dog;
-using Adribot.entities.fun.fox;
-using Adribot.services.providers;
+using Adribot.Constants.Enums;
+using Adribot.Constants.Strings;
+using Adribot.Entities.Fun.Cat;
+using Adribot.Entities.Fun.Dog;
+using Adribot.Entities.Fun.Fox;
+using Adribot.Services.Providers;
 using Discord;
 using Discord.Interactions;
 
-namespace Adribot.commands.fun;
+namespace Adribot.Commands.Fun;
 
 public class FunCommands(IHttpClientFactory httpClientFactory, SecretsProvider secretsProvider) : InteractionModuleBase<SocketInteractionContext>
 {

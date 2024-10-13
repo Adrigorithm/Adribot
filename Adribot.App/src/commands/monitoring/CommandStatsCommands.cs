@@ -1,4 +1,4 @@
-namespace Adribot.commands.monitoring;
+namespace Adribot.Commands.Monitoring;
 
 public class CommandStatsCommands
 {

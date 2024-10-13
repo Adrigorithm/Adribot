@@ -1,12 +1,12 @@
 using System;
 using System.Threading.Tasks;
-using Adribot.constants.enums;
-using Adribot.extensions;
-using Adribot.services;
+using Adribot.Constants.Enums;
+using Adribot.Extensions;
+using Adribot.Services;
 using Discord;
 using Discord.Interactions;
 
-namespace Adribot.commands.utilities;
+namespace Adribot.Commands.Utilities;
 
 public class UtilityCommands(RemindMeSerivce remindMeService) : InteractionModuleBase<SocketInteractionContext>
 {

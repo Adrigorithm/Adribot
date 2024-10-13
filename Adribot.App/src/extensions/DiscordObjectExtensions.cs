@@ -1,9 +1,9 @@
 using System;
-using Adribot.entities.discord;
+using Adribot.Entities.Discord;
 using Discord;
 using Discord.WebSocket;
 
-namespace Adribot.extensions;
+namespace Adribot.Extensions;
 
 public static class DiscordObjectExtensions
 {

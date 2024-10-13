@@ -1,7 +1,8 @@
 using System.Threading.Tasks;
+using Adribot.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Adribot.data.repositories;
+namespace Adribot.Data.Repositories;
 
 public abstract class BaseRepository(IDbContextFactory<AdribotContext> dbContextFactory)
 {

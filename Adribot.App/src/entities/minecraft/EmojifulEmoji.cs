@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Adribot.entities.minecraft;
+namespace Adribot.Entities.Minecraft;
 
 public record EmojifulEmoji
 {

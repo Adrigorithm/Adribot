@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Adribot.constants.enums;
-using Adribot.extensions;
-using Adribot.services;
+using Adribot.Constants.Enums;
+using Adribot.Extensions;
+using Adribot.Services;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 
-namespace Adribot.commands.moderation;
+namespace Adribot.Commands.Moderation;
 
 public class AdminCommands(InfractionService infractionService) : InteractionModuleBase<SocketInteractionContext>
 {

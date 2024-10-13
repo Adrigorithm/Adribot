@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Adribot.constants.enums;
-using Adribot.entities.utilities;
-using Adribot.services;
+using Adribot.Constants.Enums;
+using Adribot.Entities.Utilities;
+using Adribot.Services;
 using Discord;
 using Discord.Interactions;
 
-namespace Adribot.commands.utilities;
+namespace Adribot.Commands.Utilities;
 
 public class TagCommands(TagService tagService) : InteractionModuleBase<SocketInteractionContext>
 {

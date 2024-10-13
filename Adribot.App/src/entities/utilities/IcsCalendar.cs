@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Adribot.data;
-using Adribot.entities.discord;
+using Adribot.Data;
+using Adribot.Entities.Discord;
 using Discord;
 
-namespace Adribot.entities.utilities;
+namespace Adribot.Entities.Utilities;
 
 public class IcsCalendar : IDataStructure
 {

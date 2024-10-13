@@ -1,10 +1,10 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Adribot.config;
-using Adribot.services.providers;
+using Adribot.Config;
+using Adribot.Services.Providers;
 using Discord.WebSocket;
 
-namespace Adribot.services;
+namespace Adribot.Services;
 
 public abstract class BaseTimerService : ITimerService
 {

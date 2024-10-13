@@ -1,15 +1,15 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Adribot.constants.enums;
-using Adribot.entities.utilities;
-using Adribot.helpers;
-using Adribot.services;
+using Adribot.Constants.Enums;
+using Adribot.Entities.Utilities;
+using Adribot.Helpers;
+using Adribot.Services;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 
-namespace Adribot.commands.utilities;
+namespace Adribot.Commands.Utilities;
 
 public class CalendarCommands(IcsCalendarService icsCalendarService) : InteractionModuleBase<SocketInteractionContext>
 {

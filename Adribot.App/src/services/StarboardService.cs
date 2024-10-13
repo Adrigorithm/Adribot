@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Adribot.data.repositories;
-using Adribot.services.providers;
+using Adribot.Data.Repositories;
+using Adribot.Services.Providers;
 using Discord;
 using Discord.WebSocket;
 
-namespace Adribot.services;
+namespace Adribot.Services;
 
 public sealed class StarboardService : BaseTimerService
 {

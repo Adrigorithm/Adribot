@@ -4,7 +4,7 @@ using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 
-namespace Adribot.helpers;
+namespace Adribot.Helpers;
 
 public class RequirePermissionOrUserAttribute : PreconditionAttribute
 {

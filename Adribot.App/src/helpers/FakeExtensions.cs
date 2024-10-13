@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Adribot.helpers;
+namespace Adribot.Helpers;
 
 public static class FakeExtensions
 {

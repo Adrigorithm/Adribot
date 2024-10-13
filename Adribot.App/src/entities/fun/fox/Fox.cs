@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Adribot.entities.fun.fox;
+namespace Adribot.Entities.Fun.Fox;
 
 public record Fox(
     [property: JsonPropertyName("image")] string Image,

@@ -1,4 +1,4 @@
-namespace Adribot.constants.strings;
+namespace Adribot.Constants.Strings;
 
 public static class ConstantStrings
 {

@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
-using Adribot.services;
+using Adribot.Services;
 using Discord;
 using Discord.Interactions;
 
-namespace Adribot.commands.utilities;
+namespace Adribot.Commands.Utilities;
 
 public class StarboardCommands(StarboardService starboardService) : InteractionModuleBase<SocketInteractionContext>
 {

@@ -1,10 +1,10 @@
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Adribot.services.providers;
+using Adribot.Services.Providers;
 using Discord.WebSocket;
 
-namespace Adribot.services;
+namespace Adribot.Services;
 
 public class StatisticsService(DiscordClientProvider clientProvider)
 {

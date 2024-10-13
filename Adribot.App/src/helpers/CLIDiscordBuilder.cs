@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using Discord.WebSocket;
 
-namespace Adribot.helpers;
+namespace Adribot.Helpers;
 
 // ReSharper disable once InconsistentNaming
 public static class CLIDiscordBuilder

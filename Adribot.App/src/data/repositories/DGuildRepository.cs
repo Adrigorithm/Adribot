@@ -1,10 +1,11 @@
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
-using Adribot.entities.discord;
+using Adribot.Data;
+using Adribot.Entities.Discord;
 using Microsoft.EntityFrameworkCore;
 
-namespace Adribot.data.repositories;
+namespace Adribot.Data.Repositories;
 
 public sealed class DGuildRepository : BaseRepository
 {

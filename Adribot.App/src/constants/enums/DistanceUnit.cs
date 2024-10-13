@@ -1,6 +1,6 @@
 using Discord.Interactions;
 
-namespace Adribot.constants.enums;
+namespace Adribot.Constants.Enums;
 
 public enum DistanceUnit
 {

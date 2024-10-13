@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Adribot.data.repositories;
-using Adribot.entities.utilities;
-using Adribot.services.providers;
+using Adribot.Data.Repositories;
+using Adribot.Entities.Utilities;
+using Adribot.Services.Providers;
 using Discord;
 using Discord.WebSocket;
 
-namespace Adribot.services;
+namespace Adribot.Services;
 
 public sealed class RemindMeSerivce : BaseTimerService
 {

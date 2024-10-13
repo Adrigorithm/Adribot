@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using Adribot.entities.utilities;
+using Adribot.Data;
+using Adribot.Entities.Utilities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Adribot.data.repositories;
+namespace Adribot.Data.Repositories;
 
 public sealed class TagRepository(IDbContextFactory<AdribotContext> botContextFactory)
     : BaseRepository(botContextFactory)

@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Adribot.constants.enums;
-using Adribot.entities.discord;
+using Adribot.Constants.Enums;
+using Adribot.Data;
+using Adribot.Entities.Discord;
 using Microsoft.EntityFrameworkCore;
 
-namespace Adribot.data.repositories;
+namespace Adribot.Data.Repositories;
 
 public sealed class InfractionRepository(IDbContextFactory<AdribotContext> botContextFactory)
     : BaseRepository(botContextFactory)

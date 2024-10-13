@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Adribot.data;
+using Adribot.Data;
 using Discord;
 
-namespace Adribot.entities.discord;
+namespace Adribot.Entities.Discord;
 
 public class DGuild : IComparable, IDataStructure
 {
