@@ -1,11 +1,11 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Adribot.src.data;
-using Adribot.src.data.repositories;
-using Adribot.src.entities;
-using Adribot.src.services;
-using Adribot.src.services.providers;
+using Adribot.data;
+using Adribot.data.repositories;
+using Adribot.entities;
+using Adribot.services;
+using Adribot.services.providers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 

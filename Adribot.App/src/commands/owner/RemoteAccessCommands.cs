@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
-using Adribot.src.constants.enums;
-using Adribot.src.services;
+using Adribot.constants.enums;
+using Adribot.services;
 using Discord.Interactions;
 
-namespace Adribot.src.commands.owner;
+namespace Adribot.commands.owner;
 
 public class RemoteAccessCommands(RemoteAccessService remoteAccess) : InteractionModuleBase<SocketInteractionContext>
 {

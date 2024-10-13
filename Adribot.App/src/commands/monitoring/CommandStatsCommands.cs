@@ -1,8 +1,4 @@
-using System.Threading.Tasks;
-using Discord;
-using Discord.Interactions;
-
-namespace Adribot.src.commands.monitoring;
+namespace Adribot.commands.monitoring;
 
 public class CommandStatsCommands
 {

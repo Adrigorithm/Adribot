@@ -1,6 +1,6 @@
 using Discord.Interactions;
 
-namespace Adribot.src.constants.enums;
+namespace Adribot.constants.enums;
 
 public enum CrudOperation
 {

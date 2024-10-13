@@ -4,15 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Adribot.src.data.repositories;
-using Adribot.src.entities.utilities;
-using Adribot.src.extensions;
-using Adribot.src.services.providers;
+using Adribot.data.repositories;
+using Adribot.entities.utilities;
+using Adribot.extensions;
+using Adribot.services.providers;
 using Discord;
 using Discord.WebSocket;
 using Ical.Net;
 
-namespace Adribot.src.services;
+namespace Adribot.services;
 
 public sealed class IcsCalendarService(IcsCalendarRepository calendarRepository, SecretsProvider secretsProvider, DiscordClientProvider clientProvider, int timerInterval = 60) : BaseTimerService(clientProvider, secretsProvider, timerInterval)
 {

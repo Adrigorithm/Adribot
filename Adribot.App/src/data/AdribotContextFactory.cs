@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 
-namespace Adribot.src.data;
+namespace Adribot.data;
 
 public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<AdribotContext>
 {

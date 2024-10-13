@@ -1,8 +1,8 @@
-using Adribot.src.entities.discord;
-using Adribot.src.entities.utilities;
+using Adribot.entities.discord;
+using Adribot.entities.utilities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Adribot.src.data;
+namespace Adribot.data;
 
 public class AdribotContext(DbContextOptions<AdribotContext> options) : DbContext(options)
 {

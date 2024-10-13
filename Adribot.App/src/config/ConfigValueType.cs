@@ -1,9 +1,8 @@
-using System.Text;
 using System.Text.Json.Serialization;
-using Adribot.src.parsers.converts;
+using Adribot.parsers.converters;
 using Discord;
 
-namespace Adribot.src.config;
+namespace Adribot.config;
 
 public record ConfigValueType
 {

@@ -4,15 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Adribot.src.data.repositories;
-using Adribot.src.extensions;
-using Adribot.src.services.providers;
+using Adribot.data.repositories;
+using Adribot.extensions;
+using Adribot.services.providers;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Adribot.src.entities;
+namespace Adribot.entities;
 
 public class Bot
 {

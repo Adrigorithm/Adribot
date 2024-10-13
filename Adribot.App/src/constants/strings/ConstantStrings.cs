@@ -1,4 +1,4 @@
-namespace Adribot.src.constants.strings;
+namespace Adribot.constants.strings;
 
 public static class ConstantStrings
 {

@@ -1,6 +1,4 @@
-using Discord;
-
-namespace Adribot.src.constants.enums;
+namespace Adribot.constants.enums;
 
 public enum CommandScope
 {

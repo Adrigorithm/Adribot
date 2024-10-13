@@ -1,9 +1,9 @@
 using System;
-using Adribot.src.data;
-using Adribot.src.entities.discord;
+using Adribot.data;
+using Adribot.entities.discord;
 using Discord;
 
-namespace Adribot.src.entities.utilities;
+namespace Adribot.entities.utilities;
 
 public class Reminder : IDataStructure
 {
