@@ -39,4 +39,9 @@ public static class DiscordObjectExtensions
                 8 => new Color(Convert.ToUInt32(colourString[2..], baseFormat)),
                 _ => throw new ArgumentException($"Cannot parse colour: {colourString}")
             };
+
+    public static string ToString(this SocketApplicationCommand command)
+        => $"Command: {command.Name} [{(command.IsGlobalCommand
+                ? "Global"
+                : "Guild")}]";
 }

@@ -1,6 +1,11 @@
+using System.Threading.Tasks;
+using Adribot.Services;
+using Discord;
+using Discord.Interactions;
+
 namespace Adribot.Commands.Monitoring;
 
-public class CommandStatsCommands
+public class CommandStatsCommands(StatisticsService statisticsService) : InteractionModuleBase<SocketInteractionContext>
 {
     // [SlashCommand("commands", "retrieve stats for the registered application commands")]
     // [RequireUserPermission(ChannelPermission.SendMessages)]
