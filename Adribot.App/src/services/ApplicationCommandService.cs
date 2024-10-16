@@ -9,6 +9,24 @@ namespace Adribot.Services;
 
 public class ApplicationCommandService(DiscordClientProvider clientProvider)
 {
+    /// <summary>
+    /// Unregisters an application command
+    /// </summary>
+    /// <param name="commandName">Name of the command to delete</param>
+    /// <param name="guildId">Specify the guild ID within the guild command should be deleted</param>
+    /// <returns></returns>
+    public async Task<bool> UnregisterCommandAsync(string commandName, ulong? guildId = null)
+    {
+        SocketApplicationCommand? command = (await GetCommandsByNameAsync([commandName], guildId)).FirstOrDefault();
+        
+        if (command is null)
+            return false;
+
+        await command.DeleteAsync();
+        
+        return true;
+    }
+    
     private async Task<IReadOnlyCollection<SocketApplicationCommand>> GetCommandsByNameAsync(IEnumerable<string> commandNames,
         ulong? guildId = null, bool includeGlobal = false)
     {

@@ -29,7 +29,7 @@ internal static class Program
             .AddSingleton<DGuildRepository>()
             .AddSingleton<DiscordClientProvider>()
             .AddSingleton<Bot>()
-            .AddSingleton<StatisticsService>()
+            .AddSingleton<ApplicationCommandService>()
             .AddSingleton<RemoteAccessService>()
             .AddSingleton<InfractionRepository>()
             .AddSingleton<RemindMeRepository>()
