@@ -12,7 +12,7 @@ namespace Adribot.Services;
 public sealed partial class InfractionService : BaseTimerService
 {
     private readonly InfractionRepository _infractionRepository;
-    private readonly IEnumerable<Infraction> _infractions = [];
+    private readonly IEnumerable<Infraction> _infractions;
 
     public InfractionService(InfractionRepository infractionRepository, DiscordClientProvider clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
     {
@@ -24,7 +24,7 @@ public sealed partial class InfractionService : BaseTimerService
 
     public override async Task Work()
     {
-        if (_infractions.Count() > 0)
+        if (_infractions.Any())
         {
             Infraction? infraction = _infractions.FirstOrDefault(i => i.EndDate.CompareTo(DateTimeOffset.UtcNow) <= 0);
 
@@ -37,8 +37,6 @@ public sealed partial class InfractionService : BaseTimerService
                         break;
                     case InfractionType.Ban:
                         await UnbanUserAsync(infraction);
-                        break;
-                    default:
                         break;
                 }
 
@@ -68,6 +66,6 @@ public sealed partial class InfractionService : BaseTimerService
         }
 
         if (!isAdded)
-            _infractions.Append(infraction);
+            _ = _infractions.Append(infraction);
     }
 }
