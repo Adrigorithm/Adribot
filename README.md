@@ -22,7 +22,31 @@ This list showcases a few of the more **visual** features and does in no way cov
 
 ## Deployment
 
-soon
+- Clone it
+- `cd Adribot`
+- `mkdir Secrets`
+- `cd Secrets`
+- Create a bot account on the [discord developer platform](https://discord.com/developers/applications) and take note of the bot token (let's call it **bot_token**)
+- Now do the same for the [cat api](https://thecatapi.com/). We will call this **cat_token**
+
+Now inside the **Secrets** directory, create 4 plain text files with just the secrets inside:
+- `echo "User ID=SA;Password=YourSecretPassword123*;Database=Adribot;Server=adribot_db;Encrypt=False" > db_connection.txt`
+If you are going to use this in production **PLEASE** do not do this. Instead, make sure to enable encryption by getting a valid certificate. Also refrain from using the SA user.
+- `echo YourSecretPassword123 > db_password.txt`
+- `echo cat_token > cat_token.txt`
+- `echo bot_token > bot_token.txt`
+Now it is time to build the app. Make sure you have docker installed.
+- `docker compose up`
+
+secrets:
+  db_password:
+    file: ./Secrets/db_password.txt
+  db_connection:
+    file: ./Secrets/db_connection.txt
+  cat_token:
+    file: ./Secrets/cat_token.txt
+  bot_token:
+    file: ./Secrets/bot_token.txt
 
 ## Contributing
 
