@@ -19,49 +19,53 @@ public class CommandStatsCommands(ApplicationCommandService commandService) : In
     [RequireUserPermission(ChannelPermission.SendMessages)]
     public async Task GetStatsAsync([Summary("metric", "The name of the metric you want to retrieve")] MonitoringOptions metric = MonitoringOptions.AllCommands, [Summary("guildId", "The guild to get statistics from")] ulong? guildId = null)
     {
+        ImmutableArray<SocketApplicationCommand> guildCommands; 
+        ImmutableArray<SocketApplicationCommand> globalCommands;
+        
         switch (metric)
         {
             case MonitoringOptions.GuildCommands:
                 if (guildId is null)
                     await RespondAsync("Cannot search by guild without a guild ID.", ephemeral: true);
                 
-                IReadOnlyCollection<SocketApplicationCommand>? guildCommands = await commandService.GetAllCommandsAsync(guildId!.Value);
+                guildCommands = [..await commandService.GetAllCommandsAsync(guildId!.Value)];
                 
-                if (guildCommands.Count == 0)
+                if (guildCommands.Length == 0)
                     await RespondAsync($"No commands found in guild with ID {guildId}", ephemeral: true);
                 
                 await RespondAsync(CommandListString(guildCommands, false, guildId));
                 
                 break;
             case MonitoringOptions.GlobalCommands:
-                IReadOnlyCollection<SocketApplicationCommand> globalCommands = await commandService.GetAllCommandsAsync();
+                globalCommands = [..await commandService.GetAllCommandsAsync()];
                 
-                if (globalCommands.Count == 0)
+                if (globalCommands.Length == 0)
                     await RespondAsync("No commands found.", ephemeral: true);
                 
                 await RespondAsync(CommandListString(globalCommands));
                 
                 break;
             case MonitoringOptions.AllCommands:
-                IReadOnlyCollection<SocketApplicationCommand> commands = await commandService.GetAllCommandsAsync(guildId!.Value, true);
+                IReadOnlyCollection<SocketApplicationCommand> commands = await commandService.GetAllCommandsAsync(guildId, true);
                 
                 if (commands.Count == 0)
                     await RespondAsync("No commands found.", ephemeral: true);
 
+                guildCommands = guildId is null
+                    ? []
+                    : [..commands.TakeWhile(c => !c.IsGlobalCommand)];
+
+                globalCommands = guildCommands.Length == commands.Count
+                    ? []
+                    : [..guildCommands.Skip(guildCommands.Length)];
+
                 var sb = new StringBuilder();
 
-                if (commands.First().Key is null)
-                {
-                    sb.AppendLine(CommandListString(commands[0]));
-
-                    if (commands.Count > 1)
-                    {
-                        commands.Remove(null!);
-                        commands.ToImmutableList().ForEach(c => sb.AppendLine(CommandListString(c.Value, false, c.Key)));
-                    }
-                }
-                else
-                    commands.ToImmutableList().ForEach(c => sb.AppendLine(CommandListString(c.Value, false, c.Key)));
+                if (guildCommands.Length > 0)
+                    sb.AppendLine(CommandListString(guildCommands, false, guildId));
+                
+                if (globalCommands.Length > 0)
+                    sb.AppendLine(CommandListString(globalCommands));
                 
                 await RespondAsync(sb.ToString());
                 
@@ -86,7 +90,7 @@ public class CommandStatsCommands(ApplicationCommandService commandService) : In
             ? new StringBuilder($"Global Commands (`{commands.Count}`):")
             : new StringBuilder($"Guild `{guildId}` Commands (`{commands.Count}`):");
         
-        commands.ToImmutableList().ForEach(c => sb.AppendLine($" `{c.Key}`"));
+        commands.ToImmutableList().ForEach(c => sb.AppendLine($" `{c.Name}`"));
 
         return sb.ToString();
     }
