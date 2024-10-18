@@ -48,7 +48,7 @@ public class ApplicationCommandService(DiscordClientProvider clientProvider)
         return commands;
     }
 
-    private async Task<IReadOnlyCollection<SocketApplicationCommand>> GetAllCommandsAsync(ulong? guildId = null, bool includeGlobal = false)
+    public async Task<IReadOnlyCollection<SocketApplicationCommand>> GetAllCommandsAsync(ulong? guildId = null, bool includeGlobal = false)
     {
         if (guildId is null)
             return await clientProvider.Client.GetGlobalApplicationCommandsAsync();

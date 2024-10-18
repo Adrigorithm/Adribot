@@ -13,7 +13,7 @@ using Discord.WebSocket;
 
 namespace Adribot.Commands.Monitoring;
 
-public class CommandStatsCommands(StatisticsService statisticsService) : InteractionModuleBase<SocketInteractionContext>
+public class CommandStatsCommands(ApplicationCommandService commandService) : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("stats", "retrieve stats for a specific metric")]
     [RequireUserPermission(ChannelPermission.SendMessages)]
@@ -25,7 +25,7 @@ public class CommandStatsCommands(StatisticsService statisticsService) : Interac
                 if (guildId is null)
                     await RespondAsync("Cannot search by guild without a guild ID.", ephemeral: true);
                 
-                FrozenDictionary<string, SocketApplicationCommand> guildCommands = await statisticsService.GetGuildCommandsAsync(guildId!.Value);
+                IReadOnlyCollection<SocketApplicationCommand>? guildCommands = await commandService.GetAllCommandsAsync(guildId!.Value);
                 
                 if (guildCommands.Count == 0)
                     await RespondAsync($"No commands found in guild with ID {guildId}", ephemeral: true);
@@ -34,7 +34,7 @@ public class CommandStatsCommands(StatisticsService statisticsService) : Interac
                 
                 break;
             case MonitoringOptions.GlobalCommands:
-                FrozenDictionary<string, SocketApplicationCommand> globalCommands = await statisticsService.GetGlobalCommandsAsync();
+                IReadOnlyCollection<SocketApplicationCommand> globalCommands = await commandService.GetAllCommandsAsync();
                 
                 if (globalCommands.Count == 0)
                     await RespondAsync("No commands found.", ephemeral: true);
@@ -43,7 +43,7 @@ public class CommandStatsCommands(StatisticsService statisticsService) : Interac
                 
                 break;
             case MonitoringOptions.AllCommands:
-                Dictionary<ulong?, FrozenDictionary<string, SocketApplicationCommand>> commands = await statisticsService.GetAllCommandsAsync();
+                IReadOnlyCollection<SocketApplicationCommand> commands = await commandService.GetAllCommandsAsync(guildId!.Value, true);
                 
                 if (commands.Count == 0)
                     await RespondAsync("No commands found.", ephemeral: true);
@@ -80,7 +80,7 @@ public class CommandStatsCommands(StatisticsService statisticsService) : Interac
     /// <param name="isGlobal"></param>
     /// <param name="guildId">Guild ID to set if the commands are guild commands</param>
     /// <returns>A nicely formatted string of command names</returns>
-    private string CommandListString(FrozenDictionary<string, SocketApplicationCommand> commands, bool isGlobal = true, ulong? guildId = null)
+    private string CommandListString(IReadOnlyCollection<SocketApplicationCommand> commands, bool isGlobal = true, ulong? guildId = null)
     {
         StringBuilder sb = isGlobal
             ? new StringBuilder($"Global Commands (`{commands.Count}`):")
