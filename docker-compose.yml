@@ -27,6 +27,7 @@ services:
       DB_CONNECTION: /run/secrets/db_connection
       CAT_TOKEN: /run/secrets/cat_token
       BOT_TOKEN: /run/secrets/bot_token
+      DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: false
     volumes:
       - ./Adribot.App:/Adribot
     build:
