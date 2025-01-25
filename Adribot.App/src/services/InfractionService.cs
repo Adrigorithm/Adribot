@@ -19,12 +19,14 @@ public sealed partial class InfractionService : BaseTimerService
         Client.UserUpdated += ClientUserupdatedAsync;
 
         _infractionRepository = infractionRepository;
+        Console.WriteLine("Loading infractions...");
         _infractions = _infractionRepository.GetInfractionsToOldNotExpired();
+        Console.WriteLine($"Loaded {_infractions.Count()} infractions.");
     }
 
     public override async Task Work()
     {
-        if (_infractions.Any())
+        if (_infractions is not null && _infractions.Any())
         {
             Infraction? infraction = _infractions.FirstOrDefault(i => i.EndDate.CompareTo(DateTimeOffset.UtcNow) <= 0);
 
