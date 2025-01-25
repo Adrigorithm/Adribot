@@ -15,18 +15,19 @@ public sealed class StarboardService : BaseTimerService
     /// <summary>
     /// A dictionary where the Key is a guild id
     /// </summary>
-    private readonly Dictionary<ulong, (ulong channelId, string? starEmoji, int? threshold)> _outputChannels = [];
+    private Dictionary<ulong, (ulong channelId, string? starEmoji, int? threshold)>? _outputChannels;
 
     public StarboardService(DGuildRepository starboardRepository, DiscordClientProvider clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
     {
         clientProvider.Client.ReactionAdded += ReactionAddedAsync;
 
         _starboardRepository = starboardRepository;
-        _outputChannels = _starboardRepository.GetStarboards();
     }
 
     private async Task ReactionAddedAsync(Cacheable<IUserMessage, ulong> cacheable1, Cacheable<IMessageChannel, ulong> cacheable2, SocketReaction reaction)
     {
+        _outputChannels ??= _starboardRepository.GetStarboards();
+        
         IMessageChannel channel = await cacheable2.GetOrDownloadAsync();
         IUserMessage message = await cacheable1.GetOrDownloadAsync();
 

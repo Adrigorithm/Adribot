@@ -16,19 +16,19 @@ namespace Adribot.Services;
 
 public sealed class IcsCalendarService(IcsCalendarRepository calendarRepository, SecretsProvider secretsProvider, DiscordClientProvider clientProvider, int timerInterval = 60) : BaseTimerService(clientProvider, secretsProvider, timerInterval)
 {
-    private IEnumerable<IcsCalendar> _calendars;
+    private IEnumerable<IcsCalendar>? _calendars;
 
     public override Task Work()
     {
-        _calendars = calendarRepository.GetIcsCalendarsNotExpired();
+        _calendars ??= calendarRepository.GetIcsCalendarsNotExpired();
+        
+        if (!_calendars.Any())
+            return Task.CompletedTask;
 
-        if (_calendars.Count() > 0)
-        {
-            var eventsToPost = new List<(int calendarId, ulong guildId, ulong channelId, Event[] events)>();
-            _calendars.ToList().ForEach(c => eventsToPost.Add((c.IcsCalendarId, c.DMember.DGuild.GuildId, c.ChannelId, c.Events.Where(e => !e.IsPosted && e.End > DateTimeOffset.Now && e.End - DateTimeOffset.Now <= TimeSpan.FromMinutes(10)).ToArray())));
+        var eventsToPost = new List<(int calendarId, ulong guildId, ulong channelId, Event[] events)>();
+        _calendars.ToList().ForEach(c => eventsToPost.Add((c.IcsCalendarId, c.DMember.DGuild.GuildId, c.ChannelId, c.Events.Where(e => !e.IsPosted && e.End > DateTimeOffset.Now && e.End - DateTimeOffset.Now <= TimeSpan.FromMinutes(10)).ToArray())));
 
-            PostEvents(eventsToPost);
-        }
+        PostEvents(eventsToPost);
 
         return Task.CompletedTask;
     }

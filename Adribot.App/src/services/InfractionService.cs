@@ -12,45 +12,43 @@ namespace Adribot.Services;
 public sealed partial class InfractionService : BaseTimerService
 {
     private readonly InfractionRepository _infractionRepository;
-    private readonly IEnumerable<Infraction> _infractions;
+    private IEnumerable<Infraction>? _infractions;
 
-    public InfractionService(InfractionRepository infractionRepository, DiscordClientProvider clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
+    public InfractionService(InfractionRepository infractionRepository, DiscordClientProvider clientProvider,
+        SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
     {
         Client.UserUpdated += ClientUserupdatedAsync;
 
         _infractionRepository = infractionRepository;
-        Console.WriteLine("Loading infractions...");
-        _infractions = _infractionRepository.GetInfractionsToOldNotExpired();
-        Console.WriteLine($"Loaded {_infractions.Count()} infractions.");
     }
 
     public override async Task Work()
     {
-        if (_infractions is not null && _infractions.Any())
+        _infractions ??= _infractionRepository.GetInfractionsToOldNotExpired();
+        Infraction? infraction = _infractions.FirstOrDefault(i => i.EndDate.CompareTo(DateTimeOffset.UtcNow) <= 0);
+
+        if (infraction is null)
+            return;
+        
+        switch (infraction.Type)
         {
-            Infraction? infraction = _infractions.FirstOrDefault(i => i.EndDate.CompareTo(DateTimeOffset.UtcNow) <= 0);
-
-            if (infraction is not null)
-            {
-                switch (infraction.Type)
-                {
-                    case InfractionType.Hoist:
-                        RemovePoopNickname(infraction);
-                        break;
-                    case InfractionType.Ban:
-                        await UnbanUserAsync(infraction);
-                        break;
-                }
-
-                _infractions.ToList().Remove(infraction);
-                _infractionRepository.SetExpiredStatus(infraction, true);
-            }
+            case InfractionType.Hoist:
+                RemovePoopNickname(infraction);
+                break;
+            case InfractionType.Ban:
+                await UnbanUserAsync(infraction);
+                break;
         }
+
+        _infractions.ToList().Remove(infraction);
+        _infractionRepository.SetExpiredStatus(infraction, true);
     }
 
-    public void AddInfraction(ulong guildId, ulong memberId, DateTimeOffset endDate, InfractionType type, string reason, bool isExpired = false)
+    public void AddInfraction(ulong guildId, ulong memberId, DateTimeOffset endDate, InfractionType type, string reason,
+        bool isExpired = false)
     {
-        Infraction infraction = _infractionRepository.AddInfraction(guildId, memberId, endDate, type, reason, isExpired);
+        Infraction infraction =
+            _infractionRepository.AddInfraction(guildId, memberId, endDate, type, reason, isExpired);
 
         AddInfraction(infraction);
     }

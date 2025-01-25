@@ -36,7 +36,7 @@ internal static class Program
             .AddSingleton<IcsCalendarRepository>()
             .AddSingleton<TagRepository>()
             .AddSingleton<InfractionService>()
-            .AddSingleton<RemindMeSerivce>()
+            .AddSingleton<RemindMeService>()
             .AddSingleton<IcsCalendarService>()
             .AddSingleton<StarboardService>()
             .AddSingleton<TagService>()
