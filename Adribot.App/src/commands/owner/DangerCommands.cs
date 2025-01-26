@@ -13,12 +13,19 @@ public class DangerCommands(ApplicationCommandService commandService) : Interact
         [Summary("name", "name of the command")] string name,
         [Summary("guild", "Id of the guild to manage commands for")] string? guildId = null)
     {
-        var conversionSucceeded = ulong.TryParse(guildId, out var guildIdParsed);
+        switch (action)
+        {
+            case CrudOperation.Delete:
+                _ = ulong.TryParse(guildId, out var guildIdParsed);
+                var deleted = await commandService.UnregisterCommandAsync(name, guildIdParsed);
         
-        var deleted = await commandService.UnregisterCommandAsync(name, guildIdParsed);
-        
-        await RespondAsync(deleted 
-            ? $"Unregistered command **{name}**"
-            : $"Failed to unregister command **{name}**", ephemeral: true);
+                await RespondAsync(deleted 
+                    ? $"Unregistered command **{name}**"
+                    : $"Failed to unregister command **{name}**", ephemeral: true);
+                break;
+            default:
+                await RespondAsync($"Action {action.ToString()} is not a valid action for this command.");
+                break;
+        }
     }
 }

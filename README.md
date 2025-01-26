@@ -20,6 +20,33 @@ This list showcases a few of the more **visual** features and does in no way cov
  - [Discord.Net Library](https://github.com/discord-net/Discord.Net)
  - [Discord API](https://discord.com/developers/docs/intro)
 
+## Development
+I recommend using the [Nix](https://nixos.org/download/) package manager (NixOS is lovely, but just Nix will do). If you do not wish to use either, you can obviously still use this software, just reverse engineer the shell.nix file and you will alright.
+
+- Clone it
+- `cd Adribot`
+- `nix-shell` (edit the shell.nix file if you want a custom configurtion (VSCodium instead of Rider for example))
+- `mkdir Secrets`
+- `cd Secrets`
+- Create a bot account on the [discord developer platform](https://discord.com/developers/applications) and take note of the bot token (let's call it **bot_token**)
+- Now do the same for the [cat api](https://thecatapi.com/). We will call this **cat_token**
+
+Now inside the **Secrets** directory, create 4 plain text files with just the secrets inside:
+- `echo "User ID=SA;Password=YourSecretPassword123*;Database=Adribot;Server=172.18.0.2;Encrypt=False" > db_connection.txt`
+- `echo YourSecretPassword123 > db_password.txt`
+- `echo cat_token > cat_token.txt`
+- `echo bot_token > bot_token.txt`
+- `sudo docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourSecretPassword123*" -p 1433:1433 --name sqlserver_dev --hostname sqlserver_dev -d mcr.microsoft.com/mssql/server:2022-latest` You can use other methods to install the database, but you need to make sure you can connect to it. I use docker here because it is convenient.
+- `cd ..`
+- `rider &>/dev/null &` (or start whatever IDE or editor you prefer)
+
+To verify the setup is done properly, we can do a few things:
+- `sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' adribot_db_dev` if you use docker, check output against the host you set for the connection string, they need to match.
+- Run (obviously)
+
+Oh and if you change domain entities that are to be stored in the database, you'll need to use the EF tool
+- `dotnet-ef migrations add MigrationNameHere` (Whilst in **Adribot/Adribot.App**)
+
 ## Deployment
 
 - Clone it
