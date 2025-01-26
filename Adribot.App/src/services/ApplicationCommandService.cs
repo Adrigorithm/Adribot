@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Adribot.Services.Providers;
 using Discord.WebSocket;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Adribot.Services;
 
@@ -17,6 +18,9 @@ public class ApplicationCommandService(DiscordClientProvider clientProvider)
     /// <returns></returns>
     public async Task<bool> UnregisterCommandAsync(string commandName, ulong? guildId = null)
     {
+        if (commandName.IsNullOrEmpty())
+            return false;
+        
         SocketApplicationCommand? command = (await GetCommandsByNameAsync([commandName], guildId)).FirstOrDefault();
         
         if (command is null)
@@ -33,7 +37,7 @@ public class ApplicationCommandService(DiscordClientProvider clientProvider)
         async Task<IReadOnlyCollection<SocketApplicationCommand>> GetGlobalApplicationCommandsByName()
             => (await clientProvider.Client.GetGlobalApplicationCommandsAsync()).ToList().Where(c => commandNames.Contains(c.Name)).ToList();
 
-        if (guildId is null)
+        if (guildId is null or 0)
             return await GetGlobalApplicationCommandsByName();
         
         SocketGuild? guild = clientProvider.Client.GetGuild(guildId.Value);
