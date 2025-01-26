@@ -80,8 +80,6 @@ public class Bot
 
     private async Task ReadyAsync()
     {
-        _serviceProvider.GetServices<object>().ToList().ForEach(s => Console.WriteLine(s.GetType().Name));
-
         await _interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
         await _interactionService.RegisterCommandsGloballyAsync();
 

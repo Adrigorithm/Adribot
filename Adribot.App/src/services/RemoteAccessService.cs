@@ -11,7 +11,7 @@ namespace Adribot.Services;
 
 public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
 {
-    private ulong? _guildId;
+    private ulong _guildId;
     private bool _isAttached;
 
     public async Task<(bool, string?)> ExecAsync(RemoteAccessActionType action, ulong? guildId, ulong? channelId, string? message)
@@ -22,7 +22,7 @@ public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
         switch (action)
         {
             case RemoteAccessActionType.Connect:
-                if (guildId is null)
+                if (guildId is null or 0)
                     return (false, "Can't connect to a guild without an id.");
 
                 if (_isAttached)
@@ -32,18 +32,20 @@ public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
                     return (false, "I am not in this guild!");
 
                 _isAttached = true;
-                _guildId = guildId;
+                _guildId = guildId.Value;
+                
                 clientProvider.Client.MessageReceived += MessageReceived;
 
                 return (true, $"Connected to guild **{guildId}**!");
             case RemoteAccessActionType.Channels:
-                SocketGuild guild = clientProvider.Client.GetGuild((ulong)_guildId);
-                Console.WriteLine(CLIDiscordBuilder.DiscordChannels((ulong)_guildId, guild.Channels));
+                SocketGuild guild = clientProvider.Client.GetGuild(_guildId);
+                
+                Console.WriteLine(CLIDiscordBuilder.DiscordChannels(_guildId, guild.Channels));
 
                 return (true, null);
             case RemoteAccessActionType.Members:
-                SocketGuild guild0 = clientProvider.Client.GetGuild((ulong)_guildId);
-                Console.WriteLine(CLIDiscordBuilder.DiscordMembers((ulong)_guildId, guild0.Users));
+                SocketGuild guild0 = clientProvider.Client.GetGuild(_guildId);
+                Console.WriteLine(CLIDiscordBuilder.DiscordMembers(_guildId, guild0.Users));
 
                 return (true, null);
             case RemoteAccessActionType.Disconnect:
@@ -52,14 +54,17 @@ public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
 
                 return (true, $"Disconnected from guild **{_guildId}**!");
             case RemoteAccessActionType.Message:
-                SocketGuild guild1 = clientProvider.Client.GetGuild((ulong)_guildId);
+                if (channelId is null or 0)
+                    return (false, $"Please provide a valid channel ID.");
+
+                if (string.IsNullOrEmpty(message))
+                    return (false, $"Please provide a valid message string.");
+                
+                SocketGuild guild1 = clientProvider.Client.GetGuild(_guildId);
                 SocketGuildChannel? channel = guild1.Channels.FirstOrDefault(c => c.Id == (ulong)channelId);
 
                 if (channel is null)
                     return (false, $"Can't find channel **{channelId}** in this guild.");
-
-                if (string.IsNullOrEmpty(message))
-                    return (false, $"Please provide a valid message string.");
 
                 try
                 {

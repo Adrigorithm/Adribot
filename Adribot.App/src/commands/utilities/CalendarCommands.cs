@@ -16,7 +16,7 @@ public class CalendarCommands(IcsCalendarService icsCalendarService) : Interacti
     [SlashCommand("calendar", "Perform various calendar tasks")]
     [RequireUserPermission(ChannelPermission.SendMessages)]
     [RequireContext(ContextType.Guild)]
-    public async Task GetNextCalendarEventAsync([Summary("mode", "the task to perform on the calendars")] CalendarCrudOperation option = CalendarCrudOperation.List, [Summary("calendar", "the calendar name to perform the action on")] string? calendarName = null, [Summary("calendarUri", "link to an external ical/ics file")] string? uri = null, [Summary("channel", "channel this calendar will post events to")] ulong? channelId = null)
+    public async Task GetNextCalendarEventAsync([Summary("mode", "the task to perform on the calendars")] CalendarCrudOperation option = CalendarCrudOperation.List, [Summary("calendar", "the calendar name to perform the action on")] string? calendarName = null, [Summary("calendarUri", "link to an external ical/ics file")] string? uri = null, [Summary("channel", "channel this calendar will post events to")] string? channelId = null)
     {
         switch (option)
         {
@@ -31,12 +31,20 @@ public class CalendarCommands(IcsCalendarService icsCalendarService) : Interacti
                 }
                 else
                 {
-                    await icsCalendarService.AddCalendarAsync(Context.Guild.Id, Context.User.Id, channelId is not null ? (ulong)channelId : Context.Channel.Id, new Uri(uri));
+                    var conversionSucceeded = ulong.TryParse(channelId, out var channelIdParsed);
+                    
+                    await icsCalendarService.AddCalendarAsync(Context.Guild.Id, Context.User.Id, conversionSucceeded ? channelIdParsed : Context.Channel.Id, new Uri(uri));
                     await RespondAsync($"Calendar `{calendarName}` for guild [{Context.Guild.Id}] was added successfully.", ephemeral: true);
                 }
 
                 break;
             case CalendarCrudOperation.Delete:
+                if (string.IsNullOrEmpty(calendarName))
+                {
+                    await RespondAsync("Cannot find a nameless calendar. Try again.", ephemeral: true);
+                    return;
+                }
+                
                 if (GetIcsCalendar(Context.Guild.Id, calendarName) is null)
                 {
                     await RespondAsync($"Calendar `{calendarName}` for guild [{Context.Guild.Id}] cannot be deleted because it does not exist.", ephemeral: true);
@@ -49,6 +57,12 @@ public class CalendarCommands(IcsCalendarService icsCalendarService) : Interacti
 
                 break;
             case CalendarCrudOperation.Info:
+                if (string.IsNullOrEmpty(calendarName))
+                {
+                    await RespondAsync("Cannot find a nameless calendar. Try again.", ephemeral: true);
+                    return;
+                }
+                
                 IcsCalendar? calendar = GetIcsCalendar(Context.Guild.Id, calendarName);
 
                 if (calendar is null)
@@ -58,6 +72,12 @@ public class CalendarCommands(IcsCalendarService icsCalendarService) : Interacti
 
                 break;
             case CalendarCrudOperation.Next:
+                if (string.IsNullOrEmpty(calendarName))
+                {
+                    await RespondAsync("Cannot find a nameless calendar. Try again.", ephemeral: true);
+                    return;
+                }
+                
                 IcsCalendar? calendar0 = GetIcsCalendar(Context.Guild.Id, calendarName);
 
                 if (calendar0 is null)

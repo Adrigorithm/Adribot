@@ -17,23 +17,24 @@ public class CommandStatsCommands(ApplicationCommandService commandService) : In
 {
     [SlashCommand("stats", "retrieve stats for a specific metric")]
     [RequireUserPermission(ChannelPermission.SendMessages)]
-    public async Task GetStatsAsync([Summary("metric", "The name of the metric you want to retrieve")] MonitoringOptions metric = MonitoringOptions.AllCommands, [Summary("guildId", "The guild to get statistics from")] ulong? guildId = null)
+    public async Task GetStatsAsync([Summary("metric", "The name of the metric you want to retrieve")] MonitoringOptions metric = MonitoringOptions.AllCommands, [Summary("guildId", "The guild to get statistics from")] string? guildId = null)
     {
         ImmutableArray<SocketApplicationCommand> guildCommands; 
         ImmutableArray<SocketApplicationCommand> globalCommands;
+        ulong guildIdParsed;
         
         switch (metric)
         {
             case MonitoringOptions.GuildCommands:
-                if (guildId is null)
+                if (!ulong.TryParse(guildId, out guildIdParsed))
                     await RespondAsync("Cannot search by guild without a guild ID.", ephemeral: true);
                 
-                guildCommands = [..await commandService.GetAllCommandsAsync(guildId!.Value)];
+                guildCommands = [..await commandService.GetAllCommandsAsync(guildIdParsed)];
                 
                 if (guildCommands.Length == 0)
                     await RespondAsync($"No commands found in guild with ID {guildId}", ephemeral: true);
                 
-                await RespondAsync(CommandListString(guildCommands, false, guildId));
+                await RespondAsync(CommandListString(guildCommands, false, guildIdParsed));
                 
                 break;
             case MonitoringOptions.GlobalCommands:
@@ -46,12 +47,14 @@ public class CommandStatsCommands(ApplicationCommandService commandService) : In
                 
                 break;
             case MonitoringOptions.AllCommands:
-                IReadOnlyCollection<SocketApplicationCommand> commands = await commandService.GetAllCommandsAsync(guildId, true);
+                var conversionSucceeded = ulong.TryParse(guildId, out guildIdParsed);
+                
+                IReadOnlyCollection<SocketApplicationCommand> commands = await commandService.GetAllCommandsAsync(guildIdParsed, true);
                 
                 if (commands.Count == 0)
                     await RespondAsync("No commands found.", ephemeral: true);
 
-                guildCommands = guildId is null
+                guildCommands = !conversionSucceeded
                     ? []
                     : [..commands.TakeWhile(c => !c.IsGlobalCommand)];
 
@@ -62,7 +65,7 @@ public class CommandStatsCommands(ApplicationCommandService commandService) : In
                 var sb = new StringBuilder();
 
                 if (guildCommands.Length > 0)
-                    sb.AppendLine(CommandListString(guildCommands, false, guildId));
+                    sb.AppendLine(CommandListString(guildCommands, false, guildIdParsed));
                 
                 if (globalCommands.Length > 0)
                     sb.AppendLine(CommandListString(globalCommands));
