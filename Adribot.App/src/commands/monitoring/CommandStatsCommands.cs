@@ -60,7 +60,7 @@ public class CommandStatsCommands(ApplicationCommandService commandService) : In
 
                 globalCommands = guildCommands.Length == commands.Count
                     ? []
-                    : [..guildCommands.Skip(guildCommands.Length)];
+                    : [..commands.Skip(guildCommands.Length)];
 
                 var sb = new StringBuilder();
 
@@ -90,10 +90,10 @@ public class CommandStatsCommands(ApplicationCommandService commandService) : In
     private string CommandListString(IReadOnlyCollection<SocketApplicationCommand> commands, bool isGlobal = true, ulong? guildId = null)
     {
         StringBuilder sb = isGlobal
-            ? new StringBuilder($"Global Commands (`{commands.Count}`):")
-            : new StringBuilder($"Guild `{guildId}` Commands (`{commands.Count}`):");
+            ? new StringBuilder($"{Environment.NewLine}Global Commands (`{commands.Count}`):{Environment.NewLine}")
+            : new StringBuilder($"{Environment.NewLine}Guild `{guildId}` Commands (`{commands.Count}`):{Environment.NewLine}");
         
-        commands.ToImmutableList().ForEach(c => sb.AppendLine($" `{c.Name}`"));
+        commands.ToImmutableList().ForEach(c => sb.Append($"`{c.Name}` "));
 
         return sb.ToString();
     }
