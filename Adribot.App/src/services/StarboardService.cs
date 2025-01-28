@@ -46,7 +46,7 @@ public sealed class StarboardService : BaseTimerService
                 var embed = new EmbedBuilder
                 {
                     Author = new EmbedAuthorBuilder().WithName(message.Author.Mention),
-                    Color = new Color(Convert.ToUInt16(Config.EmbedColour)),
+                    Color = Config.EmbedColour,
                     Description = message.Content,
                     Title = $":{starEmoji ?? "star"}: reacted {starEmojiCount} times!",
                     Footer = new EmbedFooterBuilder().WithText(message.GetJumpUrl())

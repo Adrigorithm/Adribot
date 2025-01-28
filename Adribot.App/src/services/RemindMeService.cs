@@ -35,7 +35,7 @@ public sealed class RemindMeService(
         
         var embed = new EmbedBuilder
         {
-            Color = new Color(Convert.ToUInt16(Config.EmbedColour)),
+            Color = Config.EmbedColour,
             Description = reminder.Content,
             Timestamp = reminder.Date,
             Title = "You wanted to be reminded of the following:"
