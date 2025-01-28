@@ -49,10 +49,10 @@ public sealed class StarboardService : BaseTimerService
                     Color = Config.EmbedColour,
                     Description = message.Content,
                     Title = $":{starEmoji ?? "star"}: reacted {starEmojiCount} times!",
-                    Footer = new EmbedFooterBuilder().WithText(message.GetJumpUrl())
+                    Footer = new EmbedFooterBuilder().WithIconUrl(message.GetJumpUrl())
                 };
                 
-                await textChannel.SendMessageAsync(embed: embed.Build());
+                await textChannel.SendMessageAsync(embed: embed.Build(), allowedMentions: AllowedMentions.All);
             }
         }
     }
