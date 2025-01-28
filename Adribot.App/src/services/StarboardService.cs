@@ -51,6 +51,8 @@ public sealed class StarboardService : BaseTimerService
                     Title = $":{starEmoji ?? "star"}: reacted {starEmojiCount} times!",
                     Footer = new EmbedFooterBuilder().WithText(message.GetJumpUrl())
                 };
+                
+                await textChannel.SendMessageAsync(embed: embed.Build());
             }
         }
     }
@@ -58,7 +60,9 @@ public sealed class StarboardService : BaseTimerService
     public void Configure(ulong guildId, ulong channelId, string? emoji, int starThreshold)
     {
         _starboardRepository.SetStarboard(guildId, channelId, emoji, starThreshold);
-
+        
+        // Change this
+        _outputChannels ??= _starboardRepository.GetStarboards();
         _outputChannels[guildId] = (channelId, emoji, starThreshold);
     }
 }
