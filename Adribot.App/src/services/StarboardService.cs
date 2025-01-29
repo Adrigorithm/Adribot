@@ -57,9 +57,9 @@ public sealed class StarboardService : BaseTimerService
         }
     }
 
-    public void Configure(ulong guildId, ulong channelId, string? emoji, int starThreshold)
+    public void Configure(ulong guildId, ulong channelId, IEnumerable<IEmote> emotes, int starThreshold)
     {
-        _starboardRepository.SetStarboard(guildId, channelId, emoji, starThreshold);
+        _starboardRepository.SetStarboard(guildId, channelId, emotes, starThreshold);
         
         // Change this
         _outputChannels ??= _starboardRepository.GetStarboards();
