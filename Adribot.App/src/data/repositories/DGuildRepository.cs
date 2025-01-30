@@ -1,8 +1,11 @@
 using System.Collections.Frozen;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
+using System.Text;
 using Adribot.Data;
 using Adribot.Entities.Discord;
+using Discord;
 using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.Data.Repositories;
@@ -11,20 +14,24 @@ public sealed class DGuildRepository : BaseRepository
 {
     public DGuildRepository(IDbContextFactory<AdribotContext> botContextFactory) : base(botContextFactory) { }
 
-    public Dictionary<ulong, (ulong channelId, string? starEmoji, int? threshold)> GetStarboards()
+    public Dictionary<ulong, (ulong channelId, string? emotes, int? threshold)> GetStarboards()
     {
         using AdribotContext botContext = CreateDbContext();
 
-        return botContext.DGuilds.Where(dg => dg.StarboardChannel != null).ToDictionary(dg => dg.GuildId, dg => ((ulong)dg.StarboardChannel, dg.StarEmoji, dg.StarThreshold));
+        return botContext.DGuilds.Where(dg => dg.StarboardChannel != null).ToDictionary(dg => dg.GuildId, dg => ((ulong)dg.StarboardChannel, StarEmoji: dg.StarEmotes, dg.StarThreshold));
     }
 
-    public void SetStarboard(ulong guildId, ulong channelId, string? starEmoji, int? threshold)
+    public void SetStarboard(ulong guildId, ulong channelId, IEnumerable<IEmote> emotes, int? threshold)
     {
         using AdribotContext botContext = CreateDbContext();
-
+        
         DGuild guild = botContext.DGuilds.First(dg => dg.GuildId == guildId);
+        StringBuilder emotesString = new();
+        
+        emotes.ToImmutableList().ForEach(e => emotesString.AppendLine(e.Name));
+        
         guild.StarboardChannel = channelId;
-        guild.StarEmoji = starEmoji;
+        guild.StarEmotes = emotesString.ToString();
         guild.StarThreshold = threshold;
 
         botContext.SaveChanges();

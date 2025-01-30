@@ -15,7 +15,7 @@ public sealed class StarboardService : BaseTimerService
     /// <summary>
     /// A dictionary where the Key is a guild id
     /// </summary>
-    private Dictionary<ulong, (ulong channelId, string? starEmoji, int? threshold)>? _outputChannels;
+    private Dictionary<ulong, (ulong channelId, List<IEmote> starEmoji, int? threshold)>? _outputChannels;
 
     public StarboardService(DGuildRepository starboardRepository, DiscordClientProvider clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
     {
@@ -63,6 +63,6 @@ public sealed class StarboardService : BaseTimerService
         
         // Change this
         _outputChannels ??= _starboardRepository.GetStarboards();
-        _outputChannels[guildId] = (channelId, emoji, starThreshold);
+        _outputChannels[guildId] = (channelId, emotes, starThreshold);
     }
 }

@@ -1,4 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using System.Text;
 using Adribot.Entities.Discord;
 using Discord;
 using Discord.WebSocket;
@@ -44,4 +48,27 @@ public static class DiscordObjectExtensions
         => $"Command: {command.Name} [{(command.IsGlobalCommand
                 ? "Global"
                 : "Guild")}]";
+
+    public static string ToEmoteString(this IEnumerable<IEmote> emotes)
+    {
+        var emoteString = new StringBuilder();
+        
+        emotes.ToImmutableList().ForEach(e => emoteString.AppendLine(e.Name));
+        
+        return emoteString.ToString();
+    }
+    
+    public static List<Emote> ToEmoteList(this string emoteString)
+    {
+        var emotes = emoteString.Split(Environment.NewLine);
+        
+        return emotes.ToList().ConvertAll(Emote.Parse);
+    }
+    
+    public static List<Emoji> ToEmojiList(this string emojiString)
+    {
+        var emojis = emojiString.Split(Environment.NewLine);
+        
+        return emojis.ToList().ConvertAll(Emoji.Parse);
+    }
 }

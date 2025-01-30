@@ -24,7 +24,7 @@ public class StarboardCommands(StarboardService starboardService) : InteractionM
 
             if (!isValid.isValid)
             {
-                await RespondAsync($"Could not parse emotes: {isValid.error}");
+                await RespondAsync($"Could not parse emotes: {isValid.error}", ephemeral: true);
                 return;
             }
 
@@ -38,13 +38,18 @@ public class StarboardCommands(StarboardService starboardService) : InteractionM
             
             if (!isValid.isValid)
             {
-                await RespondAsync($"Could not parse emojis: {isValid.error}");
+                await RespondAsync($"Could not parse emojis: {isValid.error}", ephemeral: true);
                 return;
             }
             
             emoteList.AddRange(emojisParsed);
         }
-        
+
+        if (emoteList.Count == 0)
+        {
+            await RespondAsync("No emotes found", ephemeral: true);
+            return;
+        }
         
         starboardService.Configure(Context.Guild.Id, channel?.Id ?? Context.Channel.Id, emoteList, amount);
 

@@ -12,7 +12,10 @@ public class DGuild : IComparable, IDataStructure
 
     public ulong GuildId { get; set; }
     public ulong? StarboardChannel { get; set; }
-    public string? StarEmoji { get; set; }
+    
+    // Discord emoji names can be of "infinite" length
+    // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
+    public List<IEmote>? StarEmotes { get; set; }
     public int? StarThreshold { get; set; }
 
     public List<DMember> Members { get; set; } = [];
@@ -67,6 +70,6 @@ public class DGuild : IComparable, IDataStructure
             Author = new EmbedAuthorBuilder { Name = "<@608275633218519060>" },
             Title = GuildId.ToString(),
             Description = $"This guild contains {Members.Count} members.\n" +
-                $"Starred messages ({StarEmoji} >=3) are sent to channel {StarboardChannel}."
+                $"Starred messages ({StarEmotes} >=3) are sent to channel {StarboardChannel}."
         };
 }
