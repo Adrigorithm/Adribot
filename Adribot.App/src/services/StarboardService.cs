@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Adribot.Data.Repositories;
 using Adribot.Services.Providers;
 using Discord;
 using Discord.WebSocket;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Adribot.Services;
 
@@ -15,7 +17,7 @@ public sealed class StarboardService : BaseTimerService
     /// <summary>
     /// A dictionary where the Key is a guild id
     /// </summary>
-    private Dictionary<ulong, (ulong channelId, List<IEmote> starEmoji, int? threshold)>? _outputChannels;
+    private Dictionary<ulong, (ulong channelId, List<Emote> starEmotes, List<Emoji> starEmojis, int? threshold)>? _outputChannels;
 
     public StarboardService(DGuildRepository starboardRepository, DiscordClientProvider clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
     {
@@ -33,22 +35,23 @@ public sealed class StarboardService : BaseTimerService
 
         if (channel is ITextChannel textChannel && _outputChannels.ContainsKey(textChannel.GuildId))
         {
-            // ReSharper disable once SuggestVarOrType_BuiltInTypes
-            (var channelId, string? starEmoji, var threshold) = _outputChannels[textChannel.GuildId];
-
-            KeyValuePair<IEmote, ReactionMetadata> starEmojiKvp = message.Reactions.FirstOrDefault(r => r.Key.Name == starEmoji);
-            var starEmojiCount = starEmojiKvp.Key is null
+            (ulong channelId, List<Emote> starEmotes, List<Emoji> starEmojis, int? threshold) starboard = _outputChannels[textChannel.GuildId];
+            IEnumerable<KeyValuePair<IEmote, ReactionMetadata>>? starEmojiKvp = message.Reactions.Where(r => starboard.starEmotes.Contains(r.Key) || starboard.starEmojis.Contains(r.Key));
+            var starEmojiCount = starEmojiKvp.IsNullOrEmpty()
                 ? 0
-                : starEmojiKvp.Value.ReactionCount;
+                : starEmojiKvp.Sum(kvp => kvp.Value.ReactionCount);
 
-            if (starEmojiCount >= threshold)
+            if (starEmojiCount >= starboard.threshold)
             {
+                var starReactionsString = new StringBuilder();
+                starEmojiKvp.ToList().ForEach(kvp => starReactionsString.AppendLine($"{kvp.Key.Name}: x{kvp.Value.ReactionCount}!"));
+                
                 var embed = new EmbedBuilder
                 {
                     Author = new EmbedAuthorBuilder().WithName(message.Author.Mention),
                     Color = Config.EmbedColour,
                     Description = message.Content,
-                    Title = $":{starEmoji ?? "star"}: reacted {starEmojiCount} times!",
+                    Title = starReactionsString.ToString(),
                     Footer = new EmbedFooterBuilder().WithIconUrl(message.GetJumpUrl())
                 };
                 
@@ -57,12 +60,10 @@ public sealed class StarboardService : BaseTimerService
         }
     }
 
-    public void Configure(ulong guildId, ulong channelId, IEnumerable<IEmote> emotes, int starThreshold)
+    public void Configure(ulong guildId, ulong channelId, List<Emote> emotes, List<Emoji> emojis, int starThreshold)
     {
-        _starboardRepository.SetStarboard(guildId, channelId, emotes, starThreshold);
+        _starboardRepository.SetStarboard(guildId, channelId, emotes, emojis, starThreshold);
         
-        // Change this
         _outputChannels ??= _starboardRepository.GetStarboards();
-        _outputChannels[guildId] = (channelId, emotes, starThreshold);
     }
 }

@@ -1,6 +1,7 @@
 using System.Text;
 using Adribot.Entities.Discord;
 using Adribot.Entities.Utilities;
+using Adribot.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.Data;
@@ -15,21 +16,20 @@ public class AdribotContext(DbContextOptions<AdribotContext> options) : DbContex
     public DbSet<IcsCalendar> IcsCalendars { get; set; }
     public DbSet<Event> Events { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder) {
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
         modelBuilder
             .Entity<DGuild>()
             .Property(dg => dg.StarEmotes)
             .HasConversion(
-                el =>
-                {
-                    var emotesString = new StringBuilder();
-                    
-                    el.ForEach(e => emotesString.AppendLine(e.Name));
-                    
-                    return emotesString.ToString();
-                }, el =>
-                {
-                    
-                })
+                el => el.ToEmoteString(),
+                el => el.ToEmoteList());
+        
+        modelBuilder
+            .Entity<DGuild>()
+            .Property(dg => dg.StarEmojis)
+            .HasConversion(
+                el => el.ToEmoteString(),
+                el => el.ToEmojiList());
     }
 }

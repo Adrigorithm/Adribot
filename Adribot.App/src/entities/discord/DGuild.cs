@@ -12,10 +12,8 @@ public class DGuild : IComparable, IDataStructure
 
     public ulong GuildId { get; set; }
     public ulong? StarboardChannel { get; set; }
-    
-    // Discord emoji names can be of "infinite" length
-    // ReSharper disable once EntityFramework.ModelValidation.UnlimitedStringLength
-    public List<IEmote>? StarEmotes { get; set; }
+    public List<Emote>? StarEmotes { get; set; }
+    public List<Emoji>? StarEmojis { get; set; }
     public int? StarThreshold { get; set; }
 
     public List<DMember> Members { get; set; } = [];
