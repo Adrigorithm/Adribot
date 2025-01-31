@@ -20,6 +20,8 @@ public class StarboardCommands(StarboardService starboardService) : InteractionM
 
         if (emotes is not null)
         {
+            emotes = emotes.Trim();
+            
             (bool isValid, string error) isValid = EmoteValidator.ValidateEmote(emotes, out emotesList);
 
             if (!isValid.isValid)
@@ -31,6 +33,8 @@ public class StarboardCommands(StarboardService starboardService) : InteractionM
         
         if (emojis is not null)
         {
+            emojis = emojis.Trim();
+            
             (bool isValid, string error) isValid = EmoteValidator.ValidateEmoji(emojis, out emojisList);
             
             if (!isValid.isValid)
