@@ -18,11 +18,10 @@ public sealed class DGuildRepository : BaseRepository
     {
         using AdribotContext botContext = CreateDbContext();
 
-        return botContext.DGuilds.Where(dg => dg.StarboardChannel != null).ToDictionary(dg => dg.GuildId, dg => ((ulong)dg.StarboardChannel, dg.StarEmotes, dg.StarEmojis, dg.StarThreshold));
-        
+        return botContext.DGuilds.Where(dg => dg.StarboardChannel != null).ToDictionary(dg => dg.GuildId, dg => ((ulong)dg.StarboardChannel, dg.StarEmotes?.ConvertAll(Emote.Parse) ?? [], dg.StarEmojis?.ConvertAll(Emoji.Parse) ?? [], dg.StarThreshold));
     }
 
-    public void SetStarboard(ulong guildId, ulong channelId, List<Emote> emotes, List<Emoji> emojis, int? threshold)
+    public void SetStarboard(ulong guildId, ulong channelId, List<string> emotes, List<string> emojis, int? threshold)
     {
         using AdribotContext botContext = CreateDbContext();
         

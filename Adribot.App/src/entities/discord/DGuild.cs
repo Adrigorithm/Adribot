@@ -12,8 +12,8 @@ public class DGuild : IComparable, IDataStructure
 
     public ulong GuildId { get; set; }
     public ulong? StarboardChannel { get; set; }
-    public List<Emote>? StarEmotes { get; set; }
-    public List<Emoji>? StarEmojis { get; set; }
+    public List<string>? StarEmotes { get; set; }
+    public List<string>? StarEmojis { get; set; }
     public int? StarThreshold { get; set; }
 
     public List<DMember> Members { get; set; } = [];

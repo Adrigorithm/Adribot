@@ -15,8 +15,8 @@ public class StarboardCommands(StarboardService starboardService) : InteractionM
     [RequireContext(ContextType.Guild)]
     public async Task ConfigureAsync([Summary("channel", "defaults to current channel")] ITextChannel? channel = null, [Summary("emojis", "list of emojis to track, separated by spaces")] string? emojis = null, [Summary("emotes", "list of emotes to track, separated by spaces")] string? emotes = null, [Summary("threshold", "Amount of staremoji to trigger the service"), MinValue(1), MaxValue(int.MaxValue)] int amount = 3)
     {
-        var emotesList = new List<Emote>();
-        var emojisList = new List<Emoji>();
+        var emotesList = new List<string>();
+        var emojisList = new List<string>();
 
         if (emotes is not null)
         {
@@ -44,7 +44,7 @@ public class StarboardCommands(StarboardService starboardService) : InteractionM
             }
         }
 
-        if (emotesList.Count == 0 || emojisList.Count == 0)
+        if (emotesList.Count == 0 && emojisList.Count == 0)
         {
             await RespondAsync("No emotes found", ephemeral: true);
             return;

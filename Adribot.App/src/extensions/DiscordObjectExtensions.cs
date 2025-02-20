@@ -52,8 +52,10 @@ public static class DiscordObjectExtensions
     public static string ToEmoteString(this IEnumerable<IEmote> emotes)
     {
         var emoteString = new StringBuilder();
+        var emote = new Emote(5, "");
+        emote.
         
-        emotes.ToImmutableList().ForEach(e => emoteString.Append(e.ToString() + ' '));
+        emotes.ToImmutableList().ForEach(e => emoteString.Append(e. + ' '));
         
         return emoteString.ToString()[..(emoteString.Length - 1)];
     }
@@ -61,7 +63,6 @@ public static class DiscordObjectExtensions
     public static List<Emote> ToEmoteList(this string emoteString)
     {
         var emotes = emoteString.Split(' ');
-        
         return emotes.ToList().ConvertAll(Emote.Parse);
     }
     
