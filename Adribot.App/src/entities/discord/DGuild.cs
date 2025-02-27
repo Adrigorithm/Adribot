@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Adribot.Data;
+using Adribot.Entities.Utilities;
 using Discord;
 
 namespace Adribot.Entities.Discord;
@@ -9,13 +10,11 @@ namespace Adribot.Entities.Discord;
 public class DGuild : IComparable, IDataStructure
 {
     public int DGuildId { get; set; }
-
+    
     public ulong GuildId { get; set; }
-    public ulong? StarboardChannel { get; set; }
-    public List<string>? StarEmotes { get; set; }
-    public List<string>? StarEmojis { get; set; }
-    public int? StarThreshold { get; set; }
 
+    public Starboard Starboard { get; set; }
+    
     public List<DMember> Members { get; set; } = [];
 
     public List<DMember> GetMembersDifference(List<DMember> members)
