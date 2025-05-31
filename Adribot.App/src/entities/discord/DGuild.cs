@@ -66,7 +66,6 @@ public class DGuild : IComparable, IDataStructure
         {
             Author = new EmbedAuthorBuilder { Name = "<@608275633218519060>" },
             Title = GuildId.ToString(),
-            Description = $"This guild contains {Members.Count} members.\n" +
-                $"Starred messages ({StarEmotes} >=3) are sent to channel {StarboardChannel}."
+            Description = $"This guild contains {Members.Count} members."
         };
 }

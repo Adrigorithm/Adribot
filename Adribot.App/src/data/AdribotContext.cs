@@ -15,21 +15,6 @@ public class AdribotContext(DbContextOptions<AdribotContext> options) : DbContex
     public DbSet<Tag> Tags { get; set; }
     public DbSet<IcsCalendar> IcsCalendars { get; set; }
     public DbSet<Event> Events { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder
-            .Entity<DGuild>()
-            .Property(dg => dg.StarEmotes)
-            .HasConversion(
-                el => el.ToEmoteString(),
-                el => el.ToEmoteList());
-        
-        modelBuilder
-            .Entity<DGuild>()
-            .Property(dg => dg.StarEmojis)
-            .HasConversion(
-                el => el.ToEmoteString(),
-                el => el.ToEmojiList());
-    }
+    public DbSet<Starboard> Starboards { get; set; }
+    public DbSet<DMessage> DMessages { get; set; }
 }

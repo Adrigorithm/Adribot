@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Adribot.Data.Repositories;
+using Adribot.Entities.Discord;
+using Adribot.Entities.Utilities;
 using Adribot.Services.Providers;
 using Discord;
 using Discord.WebSocket;
@@ -13,13 +15,13 @@ namespace Adribot.Services;
 
 public sealed class StarboardService : BaseTimerService
 {
-    private readonly DGuildRepository _starboardRepository;
-    /// <summary>
-    /// A dictionary where the Key is a guild id
-    /// </summary>
-    private Dictionary<ulong, (ulong channelId, List<Emote> starEmotes, List<Emoji> starEmojis, int? threshold)>? _outputChannels;
+    private readonly StarboardRepository _starboardRepository;
+    private readonly DGuildRepository _guildRepository;
 
-    public StarboardService(DGuildRepository starboardRepository, DiscordClientProvider clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
+    private IEnumerable<DMessage> _starredMessages;
+    private IEnumerable<Starboard> _starboards;
+
+    public StarboardService(StarboardRepository starboardRepository, DGuildRepository guildRepository, DiscordClientProvider clientProvider, SecretsProvider secretsProvider, int timerInterval = 10) : base(clientProvider, secretsProvider, timerInterval)
     {
         clientProvider.Client.ReactionAdded += ReactionAddedAsync;
 
@@ -28,42 +30,68 @@ public sealed class StarboardService : BaseTimerService
 
     private async Task ReactionAddedAsync(Cacheable<IUserMessage, ulong> cacheable1, Cacheable<IMessageChannel, ulong> cacheable2, SocketReaction reaction)
     {
-        _outputChannels ??= _starboardRepository.GetStarboards();
+        _starboards ??= _starboardRepository.GetStarboards();
+        _starredMessages ??= _starboardRepository.GetStarredMessages();
         
         IMessageChannel channel = await cacheable2.GetOrDownloadAsync();
         IUserMessage message = await cacheable1.GetOrDownloadAsync();
 
-        if (channel is ITextChannel textChannel && _outputChannels.ContainsKey(textChannel.GuildId))
-        {
-            (ulong channelId, List<Emote> starEmotes, List<Emoji> starEmojis, int? threshold) starboard = _outputChannels[textChannel.GuildId];
-            IEnumerable<KeyValuePair<IEmote, ReactionMetadata>>? starEmojiKvp = message.Reactions.Where(r => starboard.starEmotes.Contains(r.Key) || starboard.starEmojis.Contains(r.Key));
-            var starEmojiCount = starEmojiKvp.IsNullOrEmpty()
-                ? 0
-                : starEmojiKvp.Sum(kvp => kvp.Value.ReactionCount);
+        if (channel is not ITextChannel textChannel)
+            return;
 
-            if (starEmojiCount >= starboard.threshold)
+        var starboard = _starboards.FirstOrDefault(s => s.DGuild.GuildId == textChannel.GuildId);
+
+        // Starboard configuration not setup
+        if (starboard is null)
+            return;
+
+
+        IEnumerable<KeyValuePair<IEmote, ReactionMetadata>>? starEmojiKvp = message.Reactions.Where(r => starboard.StarEmotes.Contains(r.ToString()) || starboard.StarEmojis.Contains(r.ToString()));
+        var starEmojiCount = starEmojiKvp.IsNullOrEmpty()
+        ? 0
+        : starEmojiKvp.Sum(kvp => kvp.Value.ReactionCount);
+
+        if (starEmojiCount >= starboard.Threshold)
+        {
+            var starReactionsString = new StringBuilder();
+            starEmojiKvp.ToList().ForEach(kvp => starReactionsString.AppendLine($"{kvp.Key.Name}: x{kvp.Value.ReactionCount}!"));
+
+            var embed = new EmbedBuilder
             {
-                var starReactionsString = new StringBuilder();
-                starEmojiKvp.ToList().ForEach(kvp => starReactionsString.AppendLine($"{kvp.Key.Name}: x{kvp.Value.ReactionCount}!"));
-                
-                var embed = new EmbedBuilder
-                {
-                    Author = new EmbedAuthorBuilder().WithName(message.Author.Mention),
-                    Color = Config.EmbedColour,
-                    Description = message.Content,
-                    Title = starReactionsString.ToString(),
-                    Footer = new EmbedFooterBuilder().WithIconUrl(message.GetJumpUrl())
-                };
-                
-                await textChannel.SendMessageAsync(embed: embed.Build(), allowedMentions: AllowedMentions.All);
-            }
+                Author = new EmbedAuthorBuilder().WithName(message.Author.Mention),
+                Color = Config.EmbedColour,
+                Description = message.Content,
+                Title = starReactionsString.ToString(),
+                Footer = new EmbedFooterBuilder().WithIconUrl(message.GetJumpUrl())
+            };
+
+            await textChannel.SendMessageAsync(embed: embed.Build(), allowedMentions: AllowedMentions.All);
         }
     }
 
     public void Configure(ulong guildId, ulong channelId, List<string> emotes, List<string> emojis, int starThreshold)
     {
-        _starboardRepository.SetStarboard(guildId, channelId, emotes, emojis, starThreshold);
-        
-        _outputChannels ??= _starboardRepository.GetStarboards();
+        _starboards ??= _starboardRepository.GetStarboards();
+        var starboard = _starboards.FirstOrDefault(s => s.DGuild.GuildId == guildId);
+
+        if (starboard is null) {
+            var guild = _guildRepository.GetGuild(guildId);
+            starboard = new Starboard {
+                Channel = channelId,
+                DGuild = guild,
+                StarEmojis = emojis,
+                StarEmotes = emotes,
+                Threshold = starThreshold
+            };
+        }
+        else
+        {
+            starboard.Channel = channelId;
+            starboard.StarEmotes = emotes;
+            starboard.StarEmojis = emojis;
+            starboard.Threshold = starThreshold;
+        }
+
+        _starboardRepository.SetupStarBoard(starboard);
     }
 }
