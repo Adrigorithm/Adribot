@@ -18,8 +18,8 @@ public class DangerCommands(ApplicationCommandService commandService) : Interact
             case CrudOperation.Delete:
                 _ = ulong.TryParse(guildId, out var guildIdParsed);
                 var deleted = await commandService.UnregisterCommandAsync(name, guildIdParsed);
-        
-                await RespondAsync(deleted 
+
+                await RespondAsync(deleted
                     ? $"Unregistered command **{name}**"
                     : $"Failed to unregister command **{name}**", ephemeral: true);
                 break;

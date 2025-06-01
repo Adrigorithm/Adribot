@@ -50,19 +50,19 @@ public class SecretsProvider(ConfigValueType config)
 
         return new SecretsProvider(new ConfigValueType
         {
-            BotToken = config["BOT_TOKEN"] is null 
+            BotToken = config["BOT_TOKEN"] is null
                 ? throw new ArgumentNullException(null, "Environment variable not found: Adribot_botToken")
                 : envVarsAreFiles
                     ? File.ReadAllText(config["BOT_TOKEN"])
                     : config["BOT_TOKEN"],
-            CatToken = config["CAT_TOKEN"] is null 
+            CatToken = config["CAT_TOKEN"] is null
                 ? throw new ArgumentNullException(null, "Environment variable not found: Adribot_catToken")
                 : envVarsAreFiles
                     ? File.ReadAllText(config["CAT_TOKEN"])
                     : config["CAT_TOKEN"],
             DevUserId = Convert.ToUInt64(config["DEV_ID"] ?? throw new ArgumentNullException(null, "Environment variable not found: Adribot_devUserId")),
             EmbedColour = config["DISCORD_EMBED_COLOUR"]?.ToDiscordColour() ?? throw new ArgumentNullException(null, "Environment variable not found: Adribot_embedColour"),
-            SqlConnectionString = config["DB_CONNECTION"] is null 
+            SqlConnectionString = config["DB_CONNECTION"] is null
                 ? throw new ArgumentNullException(null, "Environment variable not found: Adribot_sqlConnectionString")
                 : envVarsAreFiles
                     ? File.ReadAllText(config["DB_CONNECTION"])

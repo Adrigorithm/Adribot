@@ -10,7 +10,6 @@ using Adribot.Services.Providers;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Adribot.Entities;
 
@@ -103,7 +102,7 @@ public class Bot
             }
             else
             {
-                var cachedMembers = guildMembers[guildCurrent.Id].ToHashSet();
+                HashSet<ulong> cachedMembers = guildMembers[guildCurrent.Id].ToHashSet();
                 List<(ulong, string)> membersToAdd = [];
 
                 foreach (SocketGuildUser newMember in guildCurrent.Users)

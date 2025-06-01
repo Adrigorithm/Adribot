@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,17 +19,17 @@ public class ApplicationCommandService(DiscordClientProvider clientProvider)
     {
         if (commandName.IsNullOrEmpty())
             return false;
-        
+
         SocketApplicationCommand? command = (await GetCommandsByNameAsync([commandName], guildId)).FirstOrDefault();
-        
+
         if (command is null)
             return false;
 
         await command.DeleteAsync();
-        
+
         return true;
     }
-    
+
     private async Task<IReadOnlyCollection<SocketApplicationCommand>> GetCommandsByNameAsync(IEnumerable<string> commandNames,
         ulong? guildId = null, bool includeGlobal = false)
     {
@@ -39,7 +38,7 @@ public class ApplicationCommandService(DiscordClientProvider clientProvider)
 
         if (guildId is null or 0)
             return await GetGlobalApplicationCommandsByName();
-        
+
         SocketGuild? guild = clientProvider.Client.GetGuild(guildId.Value);
 
         List<SocketApplicationCommand> commands = guild is null
@@ -56,7 +55,7 @@ public class ApplicationCommandService(DiscordClientProvider clientProvider)
     {
         if (guildId is null or 0)
             return await clientProvider.Client.GetGlobalApplicationCommandsAsync();
-        
+
         SocketGuild? guild = clientProvider.Client.GetGuild(guildId.Value);
 
         List<SocketApplicationCommand> commands = guild is null

@@ -33,13 +33,13 @@ public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
 
                 _isAttached = true;
                 _guildId = guildId.Value;
-                
+
                 clientProvider.Client.MessageReceived += MessageReceived;
 
                 return (true, $"Connected to guild **{guildId}**!");
             case RemoteAccessActionType.Channels:
                 SocketGuild guild = clientProvider.Client.GetGuild(_guildId);
-                
+
                 Console.WriteLine(CLIDiscordBuilder.DiscordChannels(_guildId, guild.Channels));
 
                 return (true, null);
@@ -59,7 +59,7 @@ public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
 
                 if (string.IsNullOrEmpty(message))
                     return (false, $"Please provide a valid message string.");
-                
+
                 SocketGuild guild1 = clientProvider.Client.GetGuild(_guildId);
                 SocketGuildChannel? channel = guild1.Channels.FirstOrDefault(c => c.Id == (ulong)channelId);
 

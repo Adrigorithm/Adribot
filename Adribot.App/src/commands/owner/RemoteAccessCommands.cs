@@ -13,7 +13,7 @@ public class RemoteAccessCommands(RemoteAccessService remoteAccess) : Interactio
     {
         _ = ulong.TryParse(guildId, out var guildIdParsed);
         _ = ulong.TryParse(channelId, out var channelIdParsed);
-        
+
         (bool, string?) result = await remoteAccess.ExecAsync(action, guildIdParsed, channelIdParsed, message);
 
         await RespondAsync($"Remote action {(result.Item1 ? "**succeeded**" : "**failed**")} with message:\n`{result.Item2 ?? "No message provided"}`", ephemeral: true);

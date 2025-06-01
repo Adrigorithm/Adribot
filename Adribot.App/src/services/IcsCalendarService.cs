@@ -21,7 +21,7 @@ public sealed class IcsCalendarService(IcsCalendarRepository calendarRepository,
     public override Task Work()
     {
         _calendars ??= calendarRepository.GetIcsCalendarsNotExpired();
-        
+
         if (!_calendars.Any())
             return Task.CompletedTask;
 

@@ -16,7 +16,7 @@ public sealed class TagService(TagRepository tagRepository)
     public void SetTag(ulong guildId, ulong memberId, Tag tag)
     {
         EnsureTagsLoaded();
-        
+
         if (Tags.TryGetValue(guildId, out Dictionary<string, Tag>? tags))
         {
             if (tags.TryGetValue(tag.Name, out Tag? cachedTag))
@@ -43,7 +43,7 @@ public sealed class TagService(TagRepository tagRepository)
     public ImmutableArray<Tag> GetAllTags(ulong guildId)
     {
         EnsureTagsLoaded();
-        
+
         return Tags.ContainsKey(guildId)
             ? Tags[guildId].Values.ToImmutableArray()
             : [];
@@ -52,7 +52,7 @@ public sealed class TagService(TagRepository tagRepository)
     public Tag? TryGetTag(string tagName, ulong guildId)
     {
         EnsureTagsLoaded();
-        
+
         return Tags.ContainsKey(guildId)
             ? Tags[guildId].GetValueOrDefault(tagName)
             : null;
@@ -61,7 +61,7 @@ public sealed class TagService(TagRepository tagRepository)
     public bool TryRemoveTag(string tagname, ulong guildId)
     {
         EnsureTagsLoaded();
-        
+
         if (string.IsNullOrWhiteSpace(tagname))
             return false;
 
@@ -82,7 +82,7 @@ public sealed class TagService(TagRepository tagRepository)
         DateTimeOffset createdAt, bool allowOverride)
     {
         EnsureTagsLoaded();
-        
+
         return FakeExtensions.AreAllNullOrWhiteSpace(tagName, tagContent)
             ? (null, $"The {nameof(tagName)} and {nameof(tagContent)} cannot be empty.")
             : !Tags.ContainsKey(guildId) || !Tags[guildId].TryGetValue(tagName, out Tag tag) || (allowOverride && tag.DMember.MemberId == memberId)
@@ -99,7 +99,7 @@ public sealed class TagService(TagRepository tagRepository)
     {
         if (Tags.Any())
             return;
-        
+
         tagRepository.GetAllTags().ToList().ForEach(t =>
         {
             if (!Tags.ContainsKey(t.DMember.DGuild.GuildId))

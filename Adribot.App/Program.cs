@@ -17,7 +17,7 @@ internal static class Program
     // ReSharper disable once InconsistentNaming
     public static async Task Main(string[] args)
     {
-        var secrets = SecretsProvider.LoadFromEnv(envVarsAreFiles: true);
+        var secrets = SecretsProvider.LoadFromEnv();
 
         _serviceProvider = new ServiceCollection()
             .AddSingleton(secrets)
@@ -37,7 +37,6 @@ internal static class Program
             .AddSingleton<InfractionService>()
             .AddSingleton<RemindMeService>()
             .AddSingleton<IcsCalendarService>()
-            .AddSingleton<StarboardService>()
             .AddSingleton<TagService>()
             .BuildServiceProvider();
 

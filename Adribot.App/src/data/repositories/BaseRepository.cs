@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Adribot.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.Data.Repositories;

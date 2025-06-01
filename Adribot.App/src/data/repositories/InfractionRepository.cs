@@ -2,11 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Adribot.Constants.Enums;
-using Adribot.Data;
 using Adribot.Entities.Discord;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Adribot.Data.Repositories;
 
@@ -18,7 +15,7 @@ public sealed class InfractionRepository(IDbContextFactory<AdribotContext> botCo
         using AdribotContext botContext = CreateDbContext();
 
         DbSet<Infraction> infractions = botContext.Infractions;
-        
+
         return infractions.Include(i => i.DMember).ThenInclude(m => m.DGuild).OrderByDescending(i => i.EndDate).Where(i => !i.IsExpired).ToList();
     }
 

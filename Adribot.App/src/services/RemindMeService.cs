@@ -25,14 +25,14 @@ public sealed class RemindMeService(
 
         if (!_reminders.Any())
             return;
-        
-        Reminder? reminder = _reminders.First().EndDate.CompareTo(DateTimeOffset.UtcNow) <= 0 
-            ? _reminders.First() 
+
+        Reminder? reminder = _reminders.First().EndDate.CompareTo(DateTimeOffset.UtcNow) <= 0
+            ? _reminders.First()
             : null;
-        
+
         if (reminder == null)
             return;
-        
+
         var embed = new EmbedBuilder
         {
             Color = Config.EmbedColour,

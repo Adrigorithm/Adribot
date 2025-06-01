@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Discord;
 
 namespace Adribot.Helpers.validators;
@@ -18,13 +16,13 @@ public static class EmoteValidator
 
             if (!isEmote)
                 return (false, $"Problem parsing {OrdinalNumberalStringifier.Short(i + 1)} emote. No emotes were added.");
-            
+
             emotes.Add(rawEmotes[i]);
         }
-        
+
         return (true, null);
     }
-    
+
     public static (bool isValid, string? error) ValidateEmoji(this string rawEmojiString, out List<string> emojis)
     {
         emojis = [];
@@ -36,10 +34,10 @@ public static class EmoteValidator
 
             if (!isEmoji)
                 return (false, $"Problem parsing {OrdinalNumberalStringifier.Short(i + 1)} emoji. No emojis were added.");
-            
+
             emojis.Add(rawEmojis[i]);
         }
-        
+
         return (true, null);
     }
 }

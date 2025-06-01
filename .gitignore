@@ -362,6 +362,7 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Custom rules
+.env
 Adribot.App/secret/
 Adribot.App/temp/*.zip
 

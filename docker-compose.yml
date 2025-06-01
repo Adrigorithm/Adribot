@@ -3,14 +3,12 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: adribot_db
     environment:
-      MSSQL_SA_PASSWORD_FILE: /run/secrets/db_password
+      MSSQL_SA_PASSWORD: ${db_password}
       ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
-    secrets:
-      - db_password
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P $(cat /run/secrets/db_password) -Q 'SELECT 1' -C"]
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U SA -P fEkINbt54Ny6TY4nvA4eF1EIb4PiwQ17 -Q 'SELECT 1' -C"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -24,26 +22,12 @@ services:
     environment:
       DISCORD_EMBED_COLOUR: "FF191970"
       DEV_ID: 135081249017430016
-      DB_CONNECTION: /run/secrets/db_connection
-      CAT_TOKEN: /run/secrets/cat_token
-      BOT_TOKEN: /run/secrets/bot_token
+      DB_CONNECTION: ${db_connection}
+      CAT_TOKEN: ${cat_token}
+      BOT_TOKEN: ${bot_token}
       DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: false
     volumes:
       - ./Adribot.App:/Adribot
     build:
       context: ./Adribot.App
       dockerfile: Dockerfile
-    secrets:
-      - db_connection
-      - cat_token
-      - bot_token
-
-secrets:
-  db_password:
-    file: ./Secrets/db_password.txt
-  db_connection:
-    file: ./Secrets/db_connection.txt
-  cat_token:
-    file: ./Secrets/cat_token.txt
-  bot_token:
-    file: ./Secrets/bot_token.txt

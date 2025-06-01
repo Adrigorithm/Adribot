@@ -1,7 +1,5 @@
-using System.Text;
 using Adribot.Entities.Discord;
 using Adribot.Entities.Utilities;
-using Adribot.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.Data;
@@ -15,6 +13,4 @@ public class AdribotContext(DbContextOptions<AdribotContext> options) : DbContex
     public DbSet<Tag> Tags { get; set; }
     public DbSet<IcsCalendar> IcsCalendars { get; set; }
     public DbSet<Event> Events { get; set; }
-    public DbSet<Starboard> Starboards { get; set; }
-    public DbSet<DMessage> DMessages { get; set; }
 }

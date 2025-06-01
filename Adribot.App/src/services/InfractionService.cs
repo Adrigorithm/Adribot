@@ -29,7 +29,7 @@ public sealed partial class InfractionService : BaseTimerService
 
         if (infraction is null)
             return;
-        
+
         switch (infraction.Type)
         {
             case InfractionType.Hoist:

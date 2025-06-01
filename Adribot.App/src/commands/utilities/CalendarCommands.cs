@@ -32,7 +32,7 @@ public class CalendarCommands(IcsCalendarService icsCalendarService) : Interacti
                 else
                 {
                     var conversionSucceeded = ulong.TryParse(channelId, out var channelIdParsed);
-                    
+
                     await icsCalendarService.AddCalendarAsync(Context.Guild.Id, Context.User.Id, conversionSucceeded ? channelIdParsed : Context.Channel.Id, new Uri(uri));
                     await RespondAsync($"Calendar `{calendarName}` for guild [{Context.Guild.Id}] was added successfully.", ephemeral: true);
                 }
@@ -44,7 +44,7 @@ public class CalendarCommands(IcsCalendarService icsCalendarService) : Interacti
                     await RespondAsync("Cannot find a nameless calendar. Try again.", ephemeral: true);
                     return;
                 }
-                
+
                 if (GetIcsCalendar(Context.Guild.Id, calendarName) is null)
                 {
                     await RespondAsync($"Calendar `{calendarName}` for guild [{Context.Guild.Id}] cannot be deleted because it does not exist.", ephemeral: true);
@@ -62,7 +62,7 @@ public class CalendarCommands(IcsCalendarService icsCalendarService) : Interacti
                     await RespondAsync("Cannot find a nameless calendar. Try again.", ephemeral: true);
                     return;
                 }
-                
+
                 IcsCalendar? calendar = GetIcsCalendar(Context.Guild.Id, calendarName);
 
                 if (calendar is null)
@@ -77,7 +77,7 @@ public class CalendarCommands(IcsCalendarService icsCalendarService) : Interacti
                     await RespondAsync("Cannot find a nameless calendar. Try again.", ephemeral: true);
                     return;
                 }
-                
+
                 IcsCalendar? calendar0 = GetIcsCalendar(Context.Guild.Id, calendarName);
 
                 if (calendar0 is null)
