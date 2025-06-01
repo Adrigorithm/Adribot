@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Adribot.Data;
+using Adribot.Entities.Utilities;
 using Discord;
 
 namespace Adribot.Entities.Discord;
@@ -11,6 +12,9 @@ public class DGuild : IComparable, IDataStructure
     public int DGuildId { get; set; }
 
     public ulong GuildId { get; set; }
+
+    public int StarboardId { get; set; }
+    public Starboard Starboard { get; set; }
 
     public List<DMember> Members { get; set; } = [];
 
