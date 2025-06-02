@@ -17,6 +17,8 @@ public class Starboard : IDataStructure
     public List<string> EmojiStrings { get; set; } = [];
     public List<string> EmoteStrings { get; set; } = [];
 
+    public List<MessageLink> MessageLinks { get; set; } = [];
+
     public EmbedBuilder GenerateEmbedBuilder()
     {
         var description = DGuild is null
