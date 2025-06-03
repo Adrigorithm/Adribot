@@ -15,10 +15,18 @@ public sealed class StarboardRepository(IDbContextFactory<AdribotContext> botCon
         return botContext.Starboards.Include(s => s.MessageLinks);
     }
 
-    public Starboard? GetStarboardConfiguration(int id)
+    public Starboard? GetStarboardConfiguration(ulong guildId)
     {
         using AdribotContext botContext = CreateDbContext();
         
-        return botContext.Starboards.FirstOrDefault(s => s.StarboardId == id);
+        return botContext.Starboards.Include(s => s.DGuild).Include(s => s.MessageLinks).FirstOrDefault(s => s.DGuild.GuildId == guildId);
+    }
+
+    public void RemoveMessageLink(MessageLink messageLink)
+    {
+        using AdribotContext botContext = CreateDbContext();
+        
+        botContext.MessageLinks.Remove(messageLink);
+        botContext.SaveChanges();
     }
 }
