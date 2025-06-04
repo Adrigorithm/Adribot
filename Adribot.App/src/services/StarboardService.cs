@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Adribot.Data.Repositories;
@@ -14,14 +15,14 @@ public class StarboardService
     
     public StarboardService(DiscordClientProvider clientProvider, StarboardRepository starboardRepository)
     {
-        clientProvider.Client.ReactionAdded += ClientOnReactionAdded;
-        clientProvider.Client.ReactionRemoved += ClientOnReactionRemoved;
-        clientProvider.Client.ReactionsCleared += ClientOnReactionsCleared;
+        clientProvider.Client.ReactionAdded += ClientOnReactionAddedAsync;
+        clientProvider.Client.ReactionRemoved += ClientOnReactionRemovedAsync;
+        clientProvider.Client.ReactionsCleared += ClientOnReactionsClearedAsync;
         
         _starboardRepository = starboardRepository;
     }
 
-    private async Task ClientOnReactionsCleared(Cacheable<IUserMessage, ulong> arg1, Cacheable<IMessageChannel, ulong> arg2)
+    private async Task ClientOnReactionsClearedAsync(Cacheable<IUserMessage, ulong> arg1, Cacheable<IMessageChannel, ulong> arg2)
     {
         if (arg2.Value is not ITextChannel channel)
             return;
@@ -40,13 +41,69 @@ public class StarboardService
         _starboardRepository.RemoveMessageLink(starredMessageLink);
     }
 
-    private Task ClientOnReactionRemoved(Cacheable<IUserMessage, ulong> arg1, Cacheable<IMessageChannel, ulong> arg2, SocketReaction arg3)
+    private async Task ClientOnReactionRemovedAsync(Cacheable<IUserMessage, ulong> arg1, Cacheable<IMessageChannel, ulong> arg2, SocketReaction arg3)
     {
-        throw new System.NotImplementedException();
+        if (arg2.Value is not ITextChannel channel)
+            return;
+
+        Starboard? starboard = _starboardRepository.GetStarboardConfiguration(channel.Guild.Id);
     }
 
-    private Task ClientOnReactionAdded(Cacheable<IUserMessage, ulong> arg1, Cacheable<IMessageChannel, ulong> arg2, SocketReaction arg3)
+    private async Task ClientOnReactionAddedAsync(Cacheable<IUserMessage, ulong> arg1, Cacheable<IMessageChannel, ulong> arg2, SocketReaction arg3)
     {
-        throw new System.NotImplementedException();
+        if (arg2.Value is not ITextChannel channel)
+            return;
+
+        Starboard? starboard = _starboardRepository.GetStarboardConfiguration(channel.Guild.Id);
+
+        if (starboard is null)
+            return;
+
+        Dictionary<string, int> emoteStrings = [];
+
+        starboard.EmojiStrings.ForEach(es => {
+            var emojiString = es.ToString();
+
+            if (emojiString == arg3.Emote.ToString())
+            {
+                var isPresent = emoteStrings.TryGetValue(emojiString, out int value);
+
+                if (isPresent)
+                    emoteStrings[emojiString] = value++;
+                else
+                    emoteStrings.Add(emojiString, 1);
+            }
+        })
+
+        starboard.EmoteStrings.ForEach(es => {
+            var emoteString = es.ToString();
+
+            if (emoteString == arg3.Emote.ToString())
+            {
+                var isPresent = emoteStrings.TryGetValue(emoteString, out int value);
+
+                if (isPresent)
+                    emoteStrings[emoteString] = value++;
+                else
+                    emoteStrings.Add(emoteString, 1);
+            }
+        })
+
+        if (emoteStrings.Count < starboard.Threshold)
+            return;
+
+        MessageLink? starredMessageLink = starboard.MessageLinks.FirstOrDefault(ml => ml.OriginalMessageId == arg1.Id);
+
+        if (starredMessageLink is null)
+        {
+            IGuildChannel? starboardChannel = await channel.Guild.GetChannelAsync(starboard.ChannelId);
+
+            if (starboardChannel is not ITextChannel textChannel)
+                return;
+
+            var message = textChannel.SendMessageAsync();
+            // TODO: construct enum in domain
+        }
+        // TODO: update existing enum
     }
 }
