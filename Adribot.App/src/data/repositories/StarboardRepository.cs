@@ -29,4 +29,12 @@ public sealed class StarboardRepository(IDbContextFactory<AdribotContext> botCon
         botContext.MessageLinks.Remove(messageLink);
         botContext.SaveChanges();
     }
+
+    public void AddMessageLink(MessageLink messageLink)
+    {
+        using AdribotContext botContext = CreateDbContext();
+        
+        botContext.MessageLinks.Add(messageLink);
+        botContext.SaveChanges();
+    }
 }

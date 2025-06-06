@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
+using System.Text;
 using System.Threading.Tasks;
 using Adribot.Data.Repositories;
 using Adribot.Entities.Utilities;
@@ -61,7 +63,8 @@ public class StarboardService
 
         Dictionary<string, int> emoteStrings = [];
 
-        starboard.EmojiStrings.ForEach(es => {
+        starboard.EmojiStrings.ForEach(es =>
+        {
             var emojiString = es.ToString();
 
             if (emojiString == arg3.Emote.ToString())
@@ -73,9 +76,10 @@ public class StarboardService
                 else
                     emoteStrings.Add(emojiString, 1);
             }
-        })
+        });
 
-        starboard.EmoteStrings.ForEach(es => {
+        starboard.EmoteStrings.ForEach(es =>
+        {
             var emoteString = es.ToString();
 
             if (emoteString == arg3.Emote.ToString())
@@ -87,23 +91,54 @@ public class StarboardService
                 else
                     emoteStrings.Add(emoteString, 1);
             }
-        })
+        });
 
         if (emoteStrings.Count < starboard.Threshold)
             return;
 
         MessageLink? starredMessageLink = starboard.MessageLinks.FirstOrDefault(ml => ml.OriginalMessageId == arg1.Id);
+        IGuildChannel? starboardChannel = await channel.Guild.GetChannelAsync(starboard.ChannelId);
+
+        if (starboardChannel is not ITextChannel textChannel)
+            return;
 
         if (starredMessageLink is null)
         {
-            IGuildChannel? starboardChannel = await channel.Guild.GetChannelAsync(starboard.ChannelId);
-
-            if (starboardChannel is not ITextChannel textChannel)
-                return;
-
-            var message = textChannel.SendMessageAsync();
-            // TODO: construct enum in domain
+            IUserMessage message = await textChannel.SendMessageAsync(embed: StarredMessageEmbed(emoteStrings).Build());
+            
+            _starboardRepository.AddMessageLink(new MessageLink
+            {
+                OriginalMessageId = arg1.Id,
+                Starboard = starboard,
+                ReferenceMessageId = message.Id
+            });
+            
+            return;
         }
-        // TODO: update existing enum
+
+        IMessage? starMessage = await textChannel.GetMessageAsync(starredMessageLink.ReferenceMessageId);
+        
+        if (starMessage is not SocketUserMessage userMessage)
+            return;
+        
+        await userMessage.ModifyAsync(m => m.Embed = StarredMessageEmbed(emoteStrings).Build());
+    }
+
+    private EmbedBuilder StarredMessageEmbed(Dictionary<string, int> emoteStrings)
+    {
+        var emoteValues = new StringBuilder();
+
+        foreach (var key in emoteStrings.Keys)
+            emoteValues.AppendLine($"{key} x {emoteStrings[key]}");
+
+        return new EmbedBuilder()
+        {
+            Author = new EmbedAuthorBuilder { Name = "Adrialgorithm" },
+            Fields =
+            [
+                new EmbedFieldBuilder { Name = "Reactions:", IsInline = false, Value = emoteValues.ToString() }
+            ],
+            Title = ""
+        };
     }
 }
