@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Threading.Tasks;
 using Adribot.Data.Repositories;
@@ -45,10 +44,69 @@ public class StarboardService
 
     private async Task ClientOnReactionRemovedAsync(Cacheable<IUserMessage, ulong> arg1, Cacheable<IMessageChannel, ulong> arg2, SocketReaction arg3)
     {
-        if (arg2.Value is not ITextChannel channel)
+         if (arg2.Value is not ITextChannel channel)
             return;
 
-        Starboard? starboard = _starboardRepository.GetStarboardConfiguration(channel.Guild.Id);
+         Starboard? starboard = _starboardRepository.GetStarboardConfiguration(channel.Guild.Id);
+
+         if (starboard is null)
+             return;
+
+         Dictionary<string, int> emoteStrings = [];
+
+         starboard.EmojiStrings.ForEach(es =>
+         {
+             var emojiString = es.ToString();
+
+             if (emojiString == arg3.Emote.ToString())
+             {
+                 var isPresent = emoteStrings.TryGetValue(emojiString, out var value);
+
+                 if (isPresent)
+                     emoteStrings[emojiString] = value + 1;
+                 else
+                     emoteStrings.Add(emojiString, 1);
+             }
+         });
+
+         starboard.EmoteStrings.ForEach(es =>
+         {
+             var emoteString = es.ToString();
+
+             if (emoteString == arg3.Emote.ToString())
+             {
+                 var isPresent = emoteStrings.TryGetValue(emoteString, out var value);
+
+                 if (isPresent)
+                     emoteStrings[emoteString] = value + 1;
+                 else
+                     emoteStrings.Add(emoteString, 1);
+             }
+         });
+        
+         MessageLink? starredMessageLink = starboard.MessageLinks.FirstOrDefault(ml => ml.OriginalMessageId == arg1.Id);
+        
+         if (starredMessageLink == null)
+             return;
+        
+         IGuildChannel? starboardChannel = await channel.Guild.GetChannelAsync(starboard.ChannelId);
+        
+         if (starboardChannel is not ITextChannel textChannel)
+             return;
+
+         if (emoteStrings.Count < starboard.Threshold)
+         {
+             await textChannel.DeleteMessageAsync(starredMessageLink.ReferenceMessageId);
+            
+             return;
+         }
+
+         IMessage? starMessage = await textChannel.GetMessageAsync(starredMessageLink.ReferenceMessageId);
+        
+         if (starMessage is not SocketUserMessage userMessage)
+             return;
+        
+         await userMessage.ModifyAsync(m => m.Embed = StarredMessageEmbed(emoteStrings).Build());
     }
 
     private async Task ClientOnReactionAddedAsync(Cacheable<IUserMessage, ulong> arg1, Cacheable<IMessageChannel, ulong> arg2, SocketReaction arg3)
@@ -69,10 +127,10 @@ public class StarboardService
 
             if (emojiString == arg3.Emote.ToString())
             {
-                var isPresent = emoteStrings.TryGetValue(emojiString, out int value);
+                var isPresent = emoteStrings.TryGetValue(emojiString, out var value);
 
                 if (isPresent)
-                    emoteStrings[emojiString] = value++;
+                    emoteStrings[emojiString] = value + 1;
                 else
                     emoteStrings.Add(emojiString, 1);
             }
@@ -84,10 +142,10 @@ public class StarboardService
 
             if (emoteString == arg3.Emote.ToString())
             {
-                var isPresent = emoteStrings.TryGetValue(emoteString, out int value);
+                var isPresent = emoteStrings.TryGetValue(emoteString, out var value);
 
                 if (isPresent)
-                    emoteStrings[emoteString] = value++;
+                    emoteStrings[emoteString] = value + 1;
                 else
                     emoteStrings.Add(emoteString, 1);
             }
