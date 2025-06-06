@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Adribot.Data.Repositories;
+using Adribot.Entities.Discord;
 using Adribot.Entities.Utilities;
 using Adribot.Services.Providers;
 using Discord;
@@ -13,8 +14,9 @@ namespace Adribot.Services;
 public class StarboardService
 {
     private readonly StarboardRepository _starboardRepository;
+    private readonly DGuildRepository _dGuildRepository;
     
-    public StarboardService(DiscordClientProvider clientProvider, StarboardRepository starboardRepository)
+    public StarboardService(DiscordClientProvider clientProvider, StarboardRepository starboardRepository, DGuildRepository guildRepository)
     {
         clientProvider.Client.ReactionAdded += ClientOnReactionAddedAsync;
         clientProvider.Client.ReactionRemoved += ClientOnReactionRemovedAsync;
@@ -198,5 +200,34 @@ public class StarboardService
             ],
             Title = ""
         };
+    }
+
+    public void Configure(ulong guildId, ulong channelId, List<string> emotesList, List<string> emojisList, int amount)
+    {
+        Starboard? starboard = _starboardRepository.GetStarboardConfiguration(guildId);
+
+        if (starboard is null)
+        {
+            DGuild guild = _dGuildRepository.GetGuild(guildId);
+            
+            _starboardRepository.SetStarboardConfiguration(guildId, new Starboard
+            {
+                ChannelId = channelId,
+                Threshold = amount,
+                EmojiStrings = emojisList,
+                EmoteStrings = emotesList,
+                DGuild = guild
+            }, false);
+        }
+        else
+        //TODO: Add a way to remove/update messages made using previous starboard configuration
+        {
+            starboard.Threshold = amount;
+            starboard.EmojiStrings = emojisList;
+            starboard.EmoteStrings = emotesList;
+            starboard.ChannelId = channelId;
+            
+            _starboardRepository.SetStarboardConfiguration(guildId, starboard, true);
+        }
     }
 }
