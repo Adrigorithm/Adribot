@@ -1,11 +1,11 @@
 using Adribot.Constants.Enums.Recipe;
-using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.Entities.Fun.Recipe;
 
-[PrimaryKey(nameof(IngredientId), nameof(RecipeId))]
 public class RecipeIngredient
 {
+    public int RecipeIngredientId { get; set; }
+
     public int IngredientId { get; set; }
     public Ingredient Ingredient { get; set; }
 
