@@ -23,5 +23,6 @@ public class AdribotContext(DbContextOptions<AdribotContext> options) : DbContex
     public DbSet<MessageLink> MessageLinks { get; set; }
 
     public DbSet<Recipe> Recipes { get; set; }
+    public DbSet<RecipeIngredient> RecipeIngredients { get; set; }
     public DbSet<Ingredient> Ingredients { get; set; }
 }
