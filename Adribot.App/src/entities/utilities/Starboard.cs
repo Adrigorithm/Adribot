@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Runtime.InteropServices.JavaScript;
 using Adribot.Data;
 using Adribot.Entities.Discord;
 using Discord;

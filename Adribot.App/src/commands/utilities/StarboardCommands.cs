@@ -4,7 +4,6 @@ using Adribot.Helpers.validators;
 using Adribot.Services;
 using Discord;
 using Discord.Interactions;
-using Emote = Discord.Emote;
 
 namespace Adribot.Commands.Utilities;
 

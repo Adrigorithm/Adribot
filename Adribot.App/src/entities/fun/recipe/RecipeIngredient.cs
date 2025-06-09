@@ -14,4 +14,5 @@ public class RecipeIngredient
 
     public float Quantity { get; set; }
     public IngredientUnit Unit { get; set; }
+    public bool Optional { get; set; }
 }
