@@ -20,7 +20,7 @@ public class StarboardCommands(StarboardService starboardService) : InteractionM
         if (emotes is not null)
         {
             emotes = emotes.Trim();
-            
+
             (bool isValid, string error) isValid = EmoteValidator.ValidateEmote(emotes, out emotesList);
 
             if (!isValid.isValid)
@@ -29,13 +29,13 @@ public class StarboardCommands(StarboardService starboardService) : InteractionM
                 return;
             }
         }
-        
+
         if (emojis is not null)
         {
             emojis = emojis.Trim();
-            
+
             (bool isValid, string error) isValid = EmoteValidator.ValidateEmoji(emojis, out emojisList);
-            
+
             if (!isValid.isValid)
             {
                 await RespondAsync($"Could not parse emojis: {isValid.error}", ephemeral: true);
@@ -48,7 +48,7 @@ public class StarboardCommands(StarboardService starboardService) : InteractionM
             await RespondAsync("No emotes found", ephemeral: true);
             return;
         }
-        
+
         starboardService.Configure(Context.Guild.Id, channel?.Id ?? Context.Channel.Id, emotesList, emojisList, amount);
 
         await RespondAsync($"Starred messages will now appear in <#{channel?.Id ?? Context.Channel.Id}>");

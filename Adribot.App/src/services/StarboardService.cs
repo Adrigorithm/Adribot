@@ -15,13 +15,13 @@ public class StarboardService
 {
     private readonly StarboardRepository _starboardRepository;
     private readonly DGuildRepository _dGuildRepository;
-    
+
     public StarboardService(DiscordClientProvider clientProvider, StarboardRepository starboardRepository, DGuildRepository guildRepository)
     {
         clientProvider.Client.ReactionAdded += ClientOnReactionAddedAsync;
         clientProvider.Client.ReactionRemoved += ClientOnReactionRemovedAsync;
         clientProvider.Client.ReactionsCleared += ClientOnReactionsClearedAsync;
-        
+
         _starboardRepository = starboardRepository;
     }
 
@@ -29,7 +29,7 @@ public class StarboardService
     {
         if (arg2.Value is not ITextChannel channel)
             return;
-        
+
         Starboard? starboard = _starboardRepository.GetStarboardConfiguration(channel.Guild.Id);
         MessageLink? starredMessageLink = starboard?.MessageLinks.FirstOrDefault(ml => ml.OriginalMessageId == arg1.Id);
 
@@ -37,78 +37,78 @@ public class StarboardService
             return;
 
         IGuildChannel? starboardChannel = await channel.Guild.GetChannelAsync(starboard.ChannelId);
-        
+
         if (starboardChannel is ITextChannel textChannel)
             await textChannel.DeleteMessageAsync(starredMessageLink.ReferenceMessageId);
-        
+
         _starboardRepository.RemoveMessageLink(starredMessageLink);
     }
 
     private async Task ClientOnReactionRemovedAsync(Cacheable<IUserMessage, ulong> arg1, Cacheable<IMessageChannel, ulong> arg2, SocketReaction arg3)
     {
-         if (arg2.Value is not ITextChannel channel)
+        if (arg2.Value is not ITextChannel channel)
             return;
 
-         Starboard? starboard = _starboardRepository.GetStarboardConfiguration(channel.Guild.Id);
+        Starboard? starboard = _starboardRepository.GetStarboardConfiguration(channel.Guild.Id);
 
-         if (starboard is null)
-             return;
+        if (starboard is null)
+            return;
 
-         Dictionary<string, int> emoteStrings = [];
+        Dictionary<string, int> emoteStrings = [];
 
-         starboard.EmojiStrings.ForEach(es =>
-         {
-             var emojiString = es.ToString();
+        starboard.EmojiStrings.ForEach(es =>
+        {
+            var emojiString = es.ToString();
 
-             if (emojiString == arg3.Emote.ToString())
-             {
-                 var isPresent = emoteStrings.TryGetValue(emojiString, out var value);
+            if (emojiString == arg3.Emote.ToString())
+            {
+                var isPresent = emoteStrings.TryGetValue(emojiString, out var value);
 
-                 if (isPresent)
-                     emoteStrings[emojiString] = value + 1;
-                 else
-                     emoteStrings.Add(emojiString, 1);
-             }
-         });
+                if (isPresent)
+                    emoteStrings[emojiString] = value + 1;
+                else
+                    emoteStrings.Add(emojiString, 1);
+            }
+        });
 
-         starboard.EmoteStrings.ForEach(es =>
-         {
-             var emoteString = es.ToString();
+        starboard.EmoteStrings.ForEach(es =>
+        {
+            var emoteString = es.ToString();
 
-             if (emoteString == arg3.Emote.ToString())
-             {
-                 var isPresent = emoteStrings.TryGetValue(emoteString, out var value);
+            if (emoteString == arg3.Emote.ToString())
+            {
+                var isPresent = emoteStrings.TryGetValue(emoteString, out var value);
 
-                 if (isPresent)
-                     emoteStrings[emoteString] = value + 1;
-                 else
-                     emoteStrings.Add(emoteString, 1);
-             }
-         });
-        
-         MessageLink? starredMessageLink = starboard.MessageLinks.FirstOrDefault(ml => ml.OriginalMessageId == arg1.Id);
-        
-         if (starredMessageLink == null)
-             return;
-        
-         IGuildChannel? starboardChannel = await channel.Guild.GetChannelAsync(starboard.ChannelId);
-        
-         if (starboardChannel is not ITextChannel textChannel)
-             return;
+                if (isPresent)
+                    emoteStrings[emoteString] = value + 1;
+                else
+                    emoteStrings.Add(emoteString, 1);
+            }
+        });
 
-         if (emoteStrings.Count < starboard.Threshold)
-         {
-             await textChannel.DeleteMessageAsync(starredMessageLink.ReferenceMessageId);
-            
-             return;
-         }
+        MessageLink? starredMessageLink = starboard.MessageLinks.FirstOrDefault(ml => ml.OriginalMessageId == arg1.Id);
 
-         IMessage? starMessage = await textChannel.GetMessageAsync(starredMessageLink.ReferenceMessageId);
-        
-         if (starMessage is not SocketUserMessage userMessage)
-             return;
-        
-         await userMessage.ModifyAsync(m => m.Embed = StarredMessageEmbed(emoteStrings).Build());
+        if (starredMessageLink == null)
+            return;
+
+        IGuildChannel? starboardChannel = await channel.Guild.GetChannelAsync(starboard.ChannelId);
+
+        if (starboardChannel is not ITextChannel textChannel)
+            return;
+
+        if (emoteStrings.Count < starboard.Threshold)
+        {
+            await textChannel.DeleteMessageAsync(starredMessageLink.ReferenceMessageId);
+
+            return;
+        }
+
+        IMessage? starMessage = await textChannel.GetMessageAsync(starredMessageLink.ReferenceMessageId);
+
+        if (starMessage is not SocketUserMessage userMessage)
+            return;
+
+        await userMessage.ModifyAsync(m => m.Embed = StarredMessageEmbed(emoteStrings).Build());
     }
 
     private async Task ClientOnReactionAddedAsync(Cacheable<IUserMessage, ulong> arg1, Cacheable<IMessageChannel, ulong> arg2, SocketReaction arg3)
@@ -165,22 +165,22 @@ public class StarboardService
         if (starredMessageLink is null)
         {
             IUserMessage message = await textChannel.SendMessageAsync(embed: StarredMessageEmbed(emoteStrings).Build());
-            
+
             _starboardRepository.AddMessageLink(new MessageLink
             {
                 OriginalMessageId = arg1.Id,
                 Starboard = starboard,
                 ReferenceMessageId = message.Id
             });
-            
+
             return;
         }
 
         IMessage? starMessage = await textChannel.GetMessageAsync(starredMessageLink.ReferenceMessageId);
-        
+
         if (starMessage is not SocketUserMessage userMessage)
             return;
-        
+
         await userMessage.ModifyAsync(m => m.Embed = StarredMessageEmbed(emoteStrings).Build());
     }
 
@@ -209,7 +209,7 @@ public class StarboardService
         if (starboard is null)
         {
             DGuild guild = _dGuildRepository.GetGuild(guildId);
-            
+
             _starboardRepository.SetStarboardConfiguration(guildId, new Starboard
             {
                 ChannelId = channelId,
@@ -226,7 +226,7 @@ public class StarboardService
             starboard.EmojiStrings = emojisList;
             starboard.EmoteStrings = emotesList;
             starboard.ChannelId = channelId;
-            
+
             _starboardRepository.SetStarboardConfiguration(guildId, starboard, true);
         }
     }

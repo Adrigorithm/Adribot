@@ -1,8 +1,8 @@
+using System.Threading.Tasks;
 using Adribot.Constants.Enums.Recipe;
 using Adribot.Data;
 using Adribot.Entities.Fun.Recipe;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
 namespace Adribot.Extensions;
 
@@ -15,99 +15,118 @@ public static class DbContextExtensions
 
         // Ingredients
 
-        var ingredient1 = new Ingredient {
+        var ingredient1 = new Ingredient
+        {
             IngredientId = 1,
             Name = "dark chocolate"
         };
 
-        var ingredient2 = new Ingredient {
+        var ingredient2 = new Ingredient
+        {
             IngredientId = 2,
             Name = "coconut oil"
         };
 
-        var ingredient3 = new Ingredient {
+        var ingredient3 = new Ingredient
+        {
             IngredientId = 3,
             Name = "icing sugar"
         };
 
-        var ingredient4 = new Ingredient {
+        var ingredient4 = new Ingredient
+        {
             IngredientId = 4,
             Name = "all-purpose flour"
         };
 
-        var ingredient5 = new Ingredient {
+        var ingredient5 = new Ingredient
+        {
             IngredientId = 5,
             Name = "eggs"
         };
 
-        var ingredient6 = new Ingredient {
+        var ingredient6 = new Ingredient
+        {
             IngredientId = 6,
             Name = "dark chocolate chips"
         };
 
-        var ingredient7 = new Ingredient {
+        var ingredient7 = new Ingredient
+        {
             IngredientId = 7,
             Name = "cane sugar"
         };
 
-        var ingredient8 = new Ingredient {
+        var ingredient8 = new Ingredient
+        {
             IngredientId = 8,
             Name = "rock sugar"
         };
 
-        var ingredient9 = new Ingredient {
+        var ingredient9 = new Ingredient
+        {
             IngredientId = 9,
             Name = "oatmeal (fine)"
         };
 
-        var ingredient10 = new Ingredient {
+        var ingredient10 = new Ingredient
+        {
             IngredientId = 10,
             Name = "coconut milk"
         };
 
-        var ingredient11 = new Ingredient {
+        var ingredient11 = new Ingredient
+        {
             IngredientId = 11,
             Name = "baking soda"
         };
 
-        var ingredient12 = new Ingredient {
+        var ingredient12 = new Ingredient
+        {
             IngredientId = 12,
             Name = "salt"
         };
 
-        var ingredient13 = new Ingredient {
+        var ingredient13 = new Ingredient
+        {
             IngredientId = 13,
             Name = "vanilla essence"
         };
 
-        var ingredient14 = new Ingredient {
+        var ingredient14 = new Ingredient
+        {
             IngredientId = 14,
             Name = "cinnamon ground"
         };
 
-        var ingredient15 = new Ingredient {
+        var ingredient15 = new Ingredient
+        {
             IngredientId = 15,
             Name = "ginger ground"
         };
 
-        var ingredient16 = new Ingredient {
+        var ingredient16 = new Ingredient
+        {
             IngredientId = 16,
             Name = "nutmeg ground"
         };
 
-        var ingredient17 = new Ingredient {
+        var ingredient17 = new Ingredient
+        {
             IngredientId = 17,
             Name = "ground cloves"
         };
 
-        var ingredient18 = new Ingredient {
+        var ingredient18 = new Ingredient
+        {
             IngredientId = 18,
             Name = "baking powder"
         };
 
         // RecipeIngredients
 
-        var recipeIngredient1 = new RecipeIngredient {
+        var recipeIngredient1 = new RecipeIngredient
+        {
             RecipeIngredientId = 1,
             IngredientId = 1,
             RecipeId = 1,
@@ -115,7 +134,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Gramme
         };
 
-        var recipeIngredient2 = new RecipeIngredient {
+        var recipeIngredient2 = new RecipeIngredient
+        {
             RecipeIngredientId = 2,
             IngredientId = 1,
             RecipeId = 1,
@@ -123,7 +143,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Piece
         };
 
-        var recipeIngredient3 = new RecipeIngredient {
+        var recipeIngredient3 = new RecipeIngredient
+        {
             RecipeIngredientId = 3,
             IngredientId = 2,
             RecipeId = 1,
@@ -131,7 +152,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Gramme
         };
 
-        var recipeIngredient4 = new RecipeIngredient {
+        var recipeIngredient4 = new RecipeIngredient
+        {
             RecipeIngredientId = 4,
             IngredientId = 3,
             RecipeId = 1,
@@ -139,7 +161,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Gramme
         };
 
-        var recipeIngredient5 = new RecipeIngredient {
+        var recipeIngredient5 = new RecipeIngredient
+        {
             RecipeIngredientId = 5,
             IngredientId = 4,
             RecipeId = 1,
@@ -147,7 +170,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Gramme
         };
 
-        var recipeIngredient6 = new RecipeIngredient {
+        var recipeIngredient6 = new RecipeIngredient
+        {
             RecipeIngredientId = 6,
             IngredientId = 5,
             RecipeId = 1,
@@ -155,7 +179,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Piece
         };
 
-        var recipeIngredient7 = new RecipeIngredient {
+        var recipeIngredient7 = new RecipeIngredient
+        {
             RecipeIngredientId = 7,
             IngredientId = 6,
             RecipeId = 2,
@@ -163,7 +188,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Gramme
         };
 
-        var recipeIngredient8 = new RecipeIngredient {
+        var recipeIngredient8 = new RecipeIngredient
+        {
             RecipeIngredientId = 8,
             IngredientId = 7,
             RecipeId = 2,
@@ -171,7 +197,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Gramme
         };
 
-        var recipeIngredient9 = new RecipeIngredient {
+        var recipeIngredient9 = new RecipeIngredient
+        {
             RecipeIngredientId = 9,
             IngredientId = 8,
             RecipeId = 2,
@@ -179,7 +206,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Gramme
         };
 
-        var recipeIngredient10 = new RecipeIngredient {
+        var recipeIngredient10 = new RecipeIngredient
+        {
             RecipeIngredientId = 10,
             IngredientId = 2,
             RecipeId = 2,
@@ -187,7 +215,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Gramme
         };
 
-        var recipeIngredient11 = new RecipeIngredient {
+        var recipeIngredient11 = new RecipeIngredient
+        {
             RecipeIngredientId = 11,
             IngredientId = 9,
             RecipeId = 2,
@@ -195,7 +224,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Gramme
         };
 
-        var recipeIngredient12 = new RecipeIngredient {
+        var recipeIngredient12 = new RecipeIngredient
+        {
             RecipeIngredientId = 12,
             IngredientId = 10,
             RecipeId = 2,
@@ -203,7 +233,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Gramme
         };
 
-        var recipeIngredient13 = new RecipeIngredient {
+        var recipeIngredient13 = new RecipeIngredient
+        {
             RecipeIngredientId = 13,
             IngredientId = 5,
             RecipeId = 2,
@@ -211,7 +242,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Piece
         };
 
-        var recipeIngredient14 = new RecipeIngredient {
+        var recipeIngredient14 = new RecipeIngredient
+        {
             RecipeIngredientId = 14,
             IngredientId = 11,
             RecipeId = 2,
@@ -219,7 +251,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Teaspoon
         };
 
-        var recipeIngredient15 = new RecipeIngredient {
+        var recipeIngredient15 = new RecipeIngredient
+        {
             RecipeIngredientId = 15,
             IngredientId = 12,
             RecipeId = 2,
@@ -227,7 +260,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Teaspoon
         };
 
-        var recipeIngredient16 = new RecipeIngredient {
+        var recipeIngredient16 = new RecipeIngredient
+        {
             RecipeIngredientId = 16,
             IngredientId = 13,
             RecipeId = 2,
@@ -236,7 +270,8 @@ public static class DbContextExtensions
             Optional = true
         };
 
-        var recipeIngredient17 = new RecipeIngredient {
+        var recipeIngredient17 = new RecipeIngredient
+        {
             RecipeIngredientId = 17,
             IngredientId = 8,
             RecipeId = 3,
@@ -244,7 +279,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Gramme
         };
 
-        var recipeIngredient18 = new RecipeIngredient {
+        var recipeIngredient18 = new RecipeIngredient
+        {
             RecipeIngredientId = 18,
             IngredientId = 2,
             RecipeId = 3,
@@ -252,7 +288,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Gramme
         };
 
-        var recipeIngredient19 = new RecipeIngredient {
+        var recipeIngredient19 = new RecipeIngredient
+        {
             RecipeIngredientId = 19,
             IngredientId = 5,
             RecipeId = 3,
@@ -260,7 +297,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Piece
         };
 
-        var recipeIngredient20 = new RecipeIngredient {
+        var recipeIngredient20 = new RecipeIngredient
+        {
             RecipeIngredientId = 20,
             IngredientId = 4,
             RecipeId = 3,
@@ -268,7 +306,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Gramme
         };
 
-        var recipeIngredient21 = new RecipeIngredient {
+        var recipeIngredient21 = new RecipeIngredient
+        {
             RecipeIngredientId = 21,
             IngredientId = 18,
             RecipeId = 3,
@@ -276,7 +315,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Teaspoon
         };
 
-        var recipeIngredient22 = new RecipeIngredient {
+        var recipeIngredient22 = new RecipeIngredient
+        {
             RecipeIngredientId = 22,
             IngredientId = 14,
             RecipeId = 3,
@@ -284,7 +324,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Teaspoon
         };
 
-        var recipeIngredient23 = new RecipeIngredient {
+        var recipeIngredient23 = new RecipeIngredient
+        {
             RecipeIngredientId = 23,
             IngredientId = 15,
             RecipeId = 3,
@@ -292,7 +333,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Teaspoon
         };
 
-        var recipeIngredient24 = new RecipeIngredient {
+        var recipeIngredient24 = new RecipeIngredient
+        {
             RecipeIngredientId = 24,
             IngredientId = 16,
             RecipeId = 3,
@@ -300,7 +342,8 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Teaspoon
         };
 
-        var recipeIngredient25 = new RecipeIngredient {
+        var recipeIngredient25 = new RecipeIngredient
+        {
             RecipeIngredientId = 25,
             IngredientId = 17,
             RecipeId = 3,
