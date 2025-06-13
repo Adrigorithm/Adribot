@@ -13,7 +13,6 @@ public class DGuild : IComparable, IDataStructure
 
     public ulong GuildId { get; set; }
 
-    public int StarboardId { get; set; }
     public Starboard Starboard { get; set; }
 
     public List<DMember> Members { get; set; } = [];

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Adribot.Data;
 using Adribot.Data.Repositories;
 using Adribot.Entities;
+using Adribot.Extensions;
 using Adribot.Services;
 using Adribot.Services.Providers;
 using Microsoft.EntityFrameworkCore;
@@ -50,6 +51,7 @@ internal static class Program
         await using (AdribotContext context = await contextFactory.CreateDbContextAsync())
         {
             await context.Database.MigrateAsync();
+            await context.SeedIfEmptyAsync();
         }
 
         await _serviceProvider.GetRequiredService<Bot>().StartAsync(_serviceProvider.GetRequiredService<SecretsProvider>().Config.BotToken, _serviceProvider);
