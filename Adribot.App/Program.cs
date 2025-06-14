@@ -29,6 +29,8 @@ internal static class Program
             .AddSingleton<DGuildRepository>()
             .AddSingleton<DiscordClientProvider>()
             .AddSingleton<Bot>()
+            .AddSingleton<StarboardRepository>()
+            .AddSingleton<StarboardService>()
             .AddSingleton<ApplicationCommandService>()
             .AddSingleton<RemoteAccessService>()
             .AddSingleton<InfractionRepository>()
