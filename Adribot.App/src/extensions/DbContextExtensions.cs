@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Adribot.Constants.Enums.Recipe;
 using Adribot.Data;
@@ -415,26 +416,109 @@ public static class DbContextExtensions
             ]
         };
 
-        context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Ingredients ON");
+        using var transaction = await context.Database.BeginTransactionAsync();
 
-        context.Ingredients.AddRange([ingredient1, ingredient2, ingredient3, ingredient4, ingredient5, ingredient6, ingredient7, ingredient8, ingredient9, ingredient10, ingredient11, ingredient12, ingredient13, ingredient14, ingredient15, ingredient16, ingredient17, ingredient18]);
-        await context.SaveChangesAsync();
+        try
+        {
+            await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.Ingredients ON");
 
-        context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Ingredients OFF");
+            context.Ingredients.AddRange([
+                ingredient1,
+                ingredient2,
+                ingredient3,
+                ingredient4,
+                ingredient5,
+                ingredient6,
+                ingredient7,
+                ingredient8,
+                ingredient9,
+                ingredient10,
+                ingredient11,
+                ingredient12,
+                ingredient13,
+                ingredient14,
+                ingredient15,
+                ingredient16,
+                ingredient17,
+                ingredient18
+            ]);
+            await context.SaveChangesAsync();
 
-        context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Recipes ON");
+            await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.Ingredients OFF");
 
-        context.Recipes.AddRange([recipe1, recipe2, recipe3]);
-        await context.SaveChangesAsync();
+            await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.Recipes ON");
 
-        context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Recipes OFF");
+            context.Recipes.AddRange([
+                recipe1,
+                recipe2,
+                recipe3
+            ]);
+            await context.SaveChangesAsync();
 
-        context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.RecipeIngredients ON");
+            await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.Recipes OFF");
 
-        context.RecipeIngredients.AddRange([recipeIngredient1, recipeIngredient2, recipeIngredient3, recipeIngredient4, recipeIngredient5, recipeIngredient6, recipeIngredient7, recipeIngredient8, recipeIngredient9, recipeIngredient10, recipeIngredient11, recipeIngredient12, recipeIngredient13, recipeIngredient14, recipeIngredient15, recipeIngredient16, recipeIngredient17, recipeIngredient18, recipeIngredient19, recipeIngredient20, recipeIngredient21, recipeIngredient22, recipeIngredient23, recipeIngredient24, recipeIngredient25]);
-        await context.SaveChangesAsync();
+            await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.RecipeIngredients ON");
 
-        context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.RecipeIngredients OFF");
+            context.RecipeIngredients.AddRange([
+                recipeIngredient1,
+                recipeIngredient2,
+                recipeIngredient3,
+                recipeIngredient4,
+                recipeIngredient5,
+                recipeIngredient6,
+                recipeIngredient7,
+                recipeIngredient8,
+                recipeIngredient9,
+                recipeIngredient10,
+                recipeIngredient11,
+                recipeIngredient12,
+                recipeIngredient13,
+                recipeIngredient14,
+                recipeIngredient15,
+                recipeIngredient16,
+                recipeIngredient17,
+                recipeIngredient18,
+                recipeIngredient19,
+                recipeIngredient20,
+                recipeIngredient21,
+                recipeIngredient22,
+                recipeIngredient23,
+                recipeIngredient24,
+                recipeIngredient25
+            ]);
+            await context.SaveChangesAsync();
+
+            await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.RecipeIngredients OFF");
+
+            await transaction.CommitAsync();
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+
+            throw ex;
+        }
+
+        // context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Ingredients ON");
+        //
+        // context.Ingredients.AddRange([ingredient1, ingredient2, ingredient3, ingredient4, ingredient5, ingredient6, ingredient7, ingredient8, ingredient9, ingredient10, ingredient11, ingredient12, ingredient13, ingredient14, ingredient15, ingredient16, ingredient17, ingredient18]);
+        // await context.SaveChangesAsync();
+        //
+        // context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Ingredients OFF");
+        //
+        // context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Recipes ON");
+        //
+        // context.Recipes.AddRange([recipe1, recipe2, recipe3]);
+        // await context.SaveChangesAsync();
+        //
+        // context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Recipes OFF");
+        //
+        // context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.RecipeIngredients ON");
+        //
+        // context.RecipeIngredients.AddRange([recipeIngredient1, recipeIngredient2, recipeIngredient3, recipeIngredient4, recipeIngredient5, recipeIngredient6, recipeIngredient7, recipeIngredient8, recipeIngredient9, recipeIngredient10, recipeIngredient11, recipeIngredient12, recipeIngredient13, recipeIngredient14, recipeIngredient15, recipeIngredient16, recipeIngredient17, recipeIngredient18, recipeIngredient19, recipeIngredient20, recipeIngredient21, recipeIngredient22, recipeIngredient23, recipeIngredient24, recipeIngredient25]);
+        // await context.SaveChangesAsync();
+        //
+        // context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.RecipeIngredients OFF");
 
     }
 }
