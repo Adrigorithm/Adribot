@@ -370,14 +370,6 @@ public static class DbContextExtensions
                 "Evenly distribute the mixture over about 12 cupcake tins (I have no idea what to call them, look at the picture). When this is done gently push a piece of chocolate in each cake until it is partly covered and just not hitting the bottom.",
                 "Bake. Allow to cool for three to five minutes before eating.",
                 "They can remain in room temperature for up to three days. Heaten for fifteen seconds @ 600W in a microwave."
-            ],
-            RecipeIngredients = [
-                recipeIngredient1,
-                recipeIngredient2,
-                recipeIngredient3,
-                recipeIngredient4,
-                recipeIngredient5,
-                recipeIngredient6,
             ]
         };
 
@@ -398,18 +390,6 @@ public static class DbContextExtensions
                 "Put a sheet of baking paper on one oven tin (make sure it covers the whole plate). Pour the mixture on it and device evenly over the plate.",
                 "Bake. Allow to cool for ten minutes and cut into cookies of desired size with a sharp knife or pizza cutter",
                 "They can be preserved in room temperatur for up to five days."
-            ],
-            RecipeIngredients = [
-                recipeIngredient7,
-                recipeIngredient8,
-                recipeIngredient9,
-                recipeIngredient10,
-                recipeIngredient11,
-                recipeIngredient12,
-                recipeIngredient13,
-                recipeIngredient14,
-                recipeIngredient15,
-                recipeIngredient16
             ]
         };
 
@@ -432,26 +412,29 @@ public static class DbContextExtensions
                 "They do rise very little so they can almost touch eachother on the baking sheet, preserving space (use baking paper or something similar).",
                 "Repeat steps until the baking sheet is full (you can bake multiple sheets at once).",
                 "Enjoy! (You may need to repeat the 3 previous tasks depending on the amount of dough you have :) ). They can be kept in room temperature for a few days but if you baked many, the freezer is preferable."
-            ],
-            RecipeIngredients = [
-                recipeIngredient17,
-                recipeIngredient18,
-                recipeIngredient19,
-                recipeIngredient20,
-                recipeIngredient21,
-                recipeIngredient22,
-                recipeIngredient23,
-                recipeIngredient24,
-                recipeIngredient25
             ]
         };
 
-        context.AddRange(
-            recipe1,
-            recipe2,
-            recipe3
-        );
+        context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Ingredients ON");
 
+        context.Ingredients.AddRange([ingredient1, ingredient2, ingredient3, ingredient4, ingredient5, ingredient6, ingredient7, ingredient8, ingredient9, ingredient10, ingredient11, ingredient12, ingredient13, ingredient14, ingredient15, ingredient16, ingredient17, ingredient18]);
         await context.SaveChangesAsync();
+
+        context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Ingredients OFF");
+
+        context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Recipes ON");
+
+        context.Recipes.AddRange([recipe1, recipe2, recipe3]);
+        await context.SaveChangesAsync();
+
+        context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Recipes OFF");
+
+        context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.RecipeIngredients ON");
+
+        context.RecipeIngredients.AddRange([recipeIngredient1, recipeIngredient2, recipeIngredient3, recipeIngredient4, recipeIngredient5, recipeIngredient6, recipeIngredient7, recipeIngredient8, recipeIngredient9, recipeIngredient10, recipeIngredient11, recipeIngredient12, recipeIngredient13, recipeIngredient14, recipeIngredient15, recipeIngredient16, recipeIngredient17, recipeIngredient18, recipeIngredient19, recipeIngredient20, recipeIngredient21, recipeIngredient22, recipeIngredient23, recipeIngredient24, recipeIngredient25]);
+        await context.SaveChangesAsync();
+
+        context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.RecipeIngredients OFF");
+
     }
 }
