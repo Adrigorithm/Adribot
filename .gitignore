@@ -368,5 +368,5 @@ Adribot.App/temp/*.zip
 
 Secrets/
 
-# Editor shit
-.idea
+# Plain text password in here lol
+Adribot.App/nuget.config
