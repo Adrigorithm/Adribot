@@ -13,6 +13,5 @@ public sealed class RecipeRepository(IDbContextFactory<AdribotContext> botContex
         using AdribotContext botContext = CreateDbContext();
 
         return botContext.Recipes.Include(r => r.RecipeIngredients).ThenInclude(ri => ri.Ingredient).ToList();
-
     }
 }

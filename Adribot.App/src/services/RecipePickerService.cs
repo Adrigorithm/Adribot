@@ -16,7 +16,14 @@ public sealed class RecipeService
     public RecipeService(RecipeRepository recipeRepository) =>
         _recipes = recipeRepository.GetAllRecipes();
 
-    public ComponentBuilderV2 GetRecipe(int recipeId)
+    public ComponentBuilderV2? GetRecipe(string recipeName)
     {
+        var recipe = _recipes.FirstOrDefault(r => r.Name.ToLower() == recipeName.ToLower());
+
+        if (recipe is null)
+            return null;
+
         var components = new ComponentBuilderV2()
+            .WithContainer()
+                .WithTextDisplay($"# {recipe.Name}");
     }
