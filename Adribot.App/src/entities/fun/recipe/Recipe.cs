@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Adribot.Constants.Enums;
 using Adribot.Constants.Enums.Recipe;
 
 namespace Adribot.Entities.Fun.Recipe;
@@ -27,4 +28,13 @@ public class Recipe
     public short Duration { get; set; }
 
     public List<RecipeIngredient> RecipeIngredients { get; set; }
+
+    private Units _units = Units.Si;
+
+    public void ConvertNumerals(Units to)
+    {
+        
+        
+        _units = to;
+    }
 }
