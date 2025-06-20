@@ -416,7 +416,7 @@ public static class DbContextExtensions
             ]
         };
 
-        using var transaction = await context.Database.BeginTransactionAsync();
+        using Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = await context.Database.BeginTransactionAsync();
 
         try
         {
@@ -496,7 +496,7 @@ public static class DbContextExtensions
         {
             await transaction.RollbackAsync();
 
-            throw ex;
+            throw;
         }
 
         // context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.Ingredients ON");
