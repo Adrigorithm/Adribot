@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Adribot.Constants.Enums;
 using Adribot.Data.Repositories;
 using Adribot.Entities.Fun.Recipe;
 using Discord;
@@ -45,14 +46,14 @@ public sealed class RecipeService
                     [
                         new SelectMenuOptionBuilder(
                             "Metric",
-                            "",
+                            "1",
                             isDefault: true),
                         new SelectMenuOptionBuilder(
                             "Imperial",
-                            ""),
+                            "2"),
                         new  SelectMenuOptionBuilder(
                             "SI",
-                            "")
+                            "0")
                     ]
                 )
             ])

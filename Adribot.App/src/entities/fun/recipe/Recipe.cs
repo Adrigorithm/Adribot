@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Adribot.Constants.Enums;
 using Adribot.Constants.Enums.Recipe;
+using Adribot.Extensions;
 
 namespace Adribot.Entities.Fun.Recipe;
 
@@ -28,13 +29,32 @@ public class Recipe
     public short Duration { get; set; }
 
     public List<RecipeIngredient> RecipeIngredients { get; set; }
-
+    
     private Units _units = Units.Si;
 
-    public void ConvertNumerals(Units to)
+    public Recipe ConvertNumerals(Units to)
     {
+        // TODO: fix this
+        Recipe recipe = new()
+        {
+            Temperature = Temperature.Convert(Unit.Temperature, _units, to),
+            Name = Name,
+            ImageUri = ImageUri,
+            Servings = Servings,
+            Instruction = Instruction,
+            Difficulty = Difficulty,
+            OvenMode = OvenMode,
+            RecipeId = RecipeId,
+            RecipeIngredients = RecipeIngredients,
+            Duration = Duration,
+        };
         
+        Temperature = Temperature.Convert(Unit.Temperature, _units, to);
+        RecipeIngredients.ForEach(ri => );
         
         _units = to;
     }
+    
+    public Units GetUnits() =>
+        _units;
 }
