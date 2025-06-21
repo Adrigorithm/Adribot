@@ -14,9 +14,9 @@ public sealed class RecipeService
     public RecipeService(RecipeRepository recipeRepository) =>
         _recipes = recipeRepository.GetAllRecipes();
 
-    public ComponentBuilderV2? GetRecipe(string recipeName)
+    public ComponentBuilderV2? GetRecipe(int recipeId)
     {
-        Recipe recipe = _recipes.FirstOrDefault(r => r.Name.ToLower() == recipeName.ToLower());
+        Recipe recipe = _recipes.FirstOrDefault(r => r.RecipeId == recipeId);
 
         if (recipe is null)
             return null;
@@ -24,7 +24,9 @@ public sealed class RecipeService
         ComponentBuilderV2 components = new ComponentBuilderV2()
             .WithContainer()
             .WithTextDisplay($"# {recipe.Name}")
-            .WithMediaGallery(["https://cdn.discordapp.com/attachments/964253122547552349/1336440069892083712/7Q3S.gif?ex=67a3d04e&is=67a27ece&hm=059c9d28466f43a50c4b450ca26fc01298a2080356421d8524384bf67ea8f3ab&"])
+            .WithMediaGallery([
+                "https://cdn.discordapp.com/attachments/964253122547552349/1336440069892083712/7Q3S.gif?ex=67a3d04e&is=67a27ece&hm=059c9d28466f43a50c4b450ca26fc01298a2080356421d8524384bf67ea8f3ab&"
+            ])
             .WithActionRow([
                 new TextInputBuilder()
             ])
@@ -51,7 +53,7 @@ public sealed class RecipeService
                         new SelectMenuOptionBuilder(
                             "Imperial",
                             "2"),
-                        new  SelectMenuOptionBuilder(
+                        new SelectMenuOptionBuilder(
                             "SI",
                             "0")
                     ]
@@ -64,3 +66,4 @@ public sealed class RecipeService
 
         return components;
     }
+}
