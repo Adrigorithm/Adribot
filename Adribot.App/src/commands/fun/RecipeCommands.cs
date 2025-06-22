@@ -17,16 +17,21 @@ namespace Adribot.Commands.Fun;
 
 public class RecipeCommands(RecipeService recipeService) : InteractionModuleBase<SocketInteractionContext>
 {
-    [SlashCommand("recipe", "Gets arecipe")]
+    [SlashCommand("recipe", "Gets a recipe")]
     [RequireBotPermission(ChannelPermission.SendMessages)]
     [RequireUserPermission(ChannelPermission.SendMessages)]
-    public async Task GetAnimalAsync(RecipeName name)
+    public async Task GetRecipeAsync(RecipeName name)
     {
-        ComponentBuilderV2? embed = recipeService.GetRecipe((int)name);
-        
-        if  (embed is null)
+        MessageComponent? embed = recipeService.GetRecipeComponent((int)name)?.Build();
+
+        if (embed is null)
+        {
+            await RespondAsync($"No recipe found for this name", ephemeral: true);
+            
             return;
+        }
         
-        await RespondAsync(components: embed.Build());
+        
+        await RespondAsync(components: embed);
     }
 }

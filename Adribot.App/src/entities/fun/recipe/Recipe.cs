@@ -7,6 +7,7 @@ namespace Adribot.Entities.Fun.Recipe;
 
 public class Recipe
 {
+    private Units _units = Units.Si;
     public int RecipeId { get; set; }
 
     public string Name { get; set; }
@@ -17,24 +18,23 @@ public class Recipe
 
     // Oven
     public OvenMode OvenMode { get; set; }
+
     /// <summary>
-    /// The temperate the oven should be set to.
-    /// SI (K) in database.
+    ///     The temperate the oven should be set to.
+    ///     SI (K) in database.
     /// </summary>
     public float Temperature { get; set; }
+
     /// <summary>
-    /// How long it should be baked in the oven for.
-    /// SI (s) in database.
+    ///     How long it should be baked in the oven for.
+    ///     SI (s) in database.
     /// </summary>
     public short Duration { get; set; }
 
     public List<RecipeIngredient> RecipeIngredients { get; set; }
-    
-    private Units _units = Units.Si;
 
     public Recipe ConvertNumerals(Units to)
     {
-        // TODO: fix this
         Recipe recipe = new()
         {
             Temperature = Temperature.Convert(Unit.Temperature, _units, to),
@@ -46,15 +46,31 @@ public class Recipe
             OvenMode = OvenMode,
             RecipeId = RecipeId,
             RecipeIngredients = RecipeIngredients,
-            Duration = Duration,
+            Duration = Duration
         };
-        
+
         Temperature = Temperature.Convert(Unit.Temperature, _units, to);
-        RecipeIngredients.ForEach(ri => );
-        
         _units = to;
+
+        return recipe;
     }
-    
+
+    public void ToHumanReadable() =>
+        RecipeIngredients.ForEach(recipeIngredient => recipeIngredient.ToHumanReadable());
+
+    public void ChangeServings(short newServings, bool toHumanReadable = false)
+    {
+        RecipeIngredients.ForEach(ri =>
+        {
+            ri.Quantity *= (float)newServings / Servings;
+
+            if (toHumanReadable)
+                ri.ToHumanReadable();
+        });
+
+        Servings = newServings;
+    }
+
     public Units GetUnits() =>
         _units;
 }
