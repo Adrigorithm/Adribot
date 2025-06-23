@@ -124,6 +124,12 @@ public static class DbContextExtensions
             Name = "baking powder"
         };
 
+        var ingredient19 = new Ingredient
+        {
+            IngredientId = 19, 
+            Name = "Cupcake tin"
+        };
+
         // RecipeIngredients
 
         var recipeIngredient1 = new RecipeIngredient
@@ -352,6 +358,15 @@ public static class DbContextExtensions
             Unit = IngredientUnit.Teaspoon
         };
 
+        var recipeIngredient26 = new RecipeIngredient
+        {
+            RecipeIngredientId = 26,
+            IngredientId = 19,
+            RecipeId = 1,
+            Quantity = 12,
+            Unit = IngredientUnit.Piece
+        };
+
         // Recipes
 
         var recipe1 = new Recipe
@@ -368,9 +383,9 @@ public static class DbContextExtensions
                 "Melt the chocolate (not the pieces) combined with the coconut oil. Using a microwave, take it out every 30 seconds and stir well until done to prevent it from overheating the chocolate.",
                 "Add icing sugar and stir until homogeneous. Repeat this process with the flour.",
                 "Add the eggs one after the other, stir well in between.",
-                "Evenly distribute the mixture over about 12 cupcake tins (I have no idea what to call them, look at the picture). When this is done gently push a piece of chocolate in each cake until it is partly covered and just not hitting the bottom.",
+                "Evenly distribute the mixture over the cupcake tins (I have no idea what to call them, look at the picture). When this is done gently push a piece of chocolate in each cake.",
                 "Bake. Allow to cool for three to five minutes before eating.",
-                "They can remain in room temperature for up to three days. Heaten for fifteen seconds @ 600W in a microwave."
+                "They can remain in room temperature for up to three days. Heaten one for fifteen seconds @ 600W in a microwave."
             ]
         };
 
@@ -388,9 +403,9 @@ public static class DbContextExtensions
                 "Make sure you have all ingredients at the ready, as minimal delay should occur between all stages.",
                 "Combine all the sugar and coconut oil (melt if solid). Add the eggs, salt, baking soda and vanilla essence.",
                 "Add the oatmeal and coconut milk (if you used oatmeal, half the amount of milk will suffice) and stir until homogeneous. Lastly add the chocolate chips and combine",
-                "Put a sheet of baking paper on one oven tin (make sure it covers the whole plate). Pour the mixture on it and device evenly over the plate.",
+                "Put a sheet of baking paper on one oven tin (make sure it covers the whole plate). Pour the mixture on it and divide evenly over the plate as a thin in layer. You may need additional plates if you adjusted the serving amount.",
                 "Bake. Allow to cool for ten minutes and cut into cookies of desired size with a sharp knife or pizza cutter",
-                "They can be preserved in room temperatur for up to five days."
+                "They can be preserved in room temperature for up to five days."
             ]
         };
 
@@ -410,13 +425,13 @@ public static class DbContextExtensions
                 "Add a third of this mixture to the 'coconut oil and sugar concoction' and stir until homogeneous. Repeat this 2 times (for the remaining thirds).",
                 "Shape the mixture to a ball and put it in the refrigerator encased in plastic foil for at least half an hour (or overnight).",
                 "Roll out a chunk of dough to an even surface of three to five millimetres thick. Use cookie cutters of your choice to cut out shapes.",
-                "They do rise very little so they can almost touch eachother on the baking sheet, preserving space (use baking paper or something similar).",
+                "They do rise very little so they can almost touch each other on the baking sheet, preserving space (use baking paper or something similar).",
                 "Repeat steps until the baking sheet is full (you can bake multiple sheets at once).",
                 "Enjoy! (You may need to repeat the 3 previous tasks depending on the amount of dough you have :) ). They can be kept in room temperature for a few days but if you baked many, the freezer is preferable."
             ]
         };
-
-        using Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = await context.Database.BeginTransactionAsync();
+        
+        await using Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = await context.Database.BeginTransactionAsync();
 
         try
         {
@@ -440,7 +455,8 @@ public static class DbContextExtensions
                 ingredient15,
                 ingredient16,
                 ingredient17,
-                ingredient18
+                ingredient18,
+                ingredient19
             ]);
             await context.SaveChangesAsync();
 
@@ -484,7 +500,8 @@ public static class DbContextExtensions
                 recipeIngredient22,
                 recipeIngredient23,
                 recipeIngredient24,
-                recipeIngredient25
+                recipeIngredient25,
+                recipeIngredient26
             ]);
             await context.SaveChangesAsync();
 
