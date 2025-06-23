@@ -102,7 +102,7 @@ public class Bot
             }
             else
             {
-                HashSet<ulong> cachedMembers = guildMembers[guildCurrent.Id].ToHashSet();
+                var cachedMembers = guildMembers[guildCurrent.Id].ToHashSet();
                 List<(ulong, string)> membersToAdd = [];
 
                 foreach (SocketGuildUser newMember in guildCurrent.Users)
