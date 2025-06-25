@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/nightly/sdk:9.0-alpine-amd64 AS build
+FROM mcr.microsoft.com/dotnet/nightly/sdk:10.0-preview-alpine-amd64 AS build
 
 WORKDIR /home/adri/adribot
 
@@ -9,7 +9,7 @@ RUN dotnet tool run dotnet-ef migrations add AdribotDbScaffold
 RUN dotnet restore
 RUN dotnet publish -c Release -o release
 
-FROM mcr.microsoft.com/dotnet/nightly/runtime:9.0-alpine-amd64
+FROM mcr.microsoft.com/dotnet/nightly/runtime:10.0-preview-alpine-amd64
 
 RUN apk add icu-libs
 

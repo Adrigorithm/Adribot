@@ -509,7 +509,7 @@ public static class DbContextExtensions
 
             await transaction.CommitAsync();
         }
-        catch (Exception ex)
+        catch
         {
             await transaction.RollbackAsync();
 
