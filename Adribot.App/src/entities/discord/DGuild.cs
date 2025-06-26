@@ -44,7 +44,7 @@ public class DGuild : IComparable, IDataStructure
     {
         unchecked
         {
-            return (GuildId.GetHashCode() * 397) ^ Members.GetHashCode();
+            return GuildId.GetHashCode() * 397 ^ Members.GetHashCode();
         }
     }
 
