@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Adribot.Data;
+using Adribot.Entities.fun;
 using Adribot.Entities.Utilities;
 using Discord;
 
@@ -16,6 +17,8 @@ public class DGuild : IComparable, IDataStructure
     public Starboard Starboard { get; set; }
 
     public List<DMember> Members { get; set; } = [];
+
+    public List<WireConfig> WireConfigs { get; set; } = [];
 
     public List<DMember> GetMembersDifference(List<DMember> members)
     {

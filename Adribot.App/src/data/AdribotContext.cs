@@ -1,4 +1,5 @@
 using Adribot.Entities.Discord;
+using Adribot.Entities.fun;
 using Adribot.Entities.Fun.Recipe;
 using Adribot.Entities.Utilities;
 using Microsoft.EntityFrameworkCore;
@@ -25,4 +26,6 @@ public class AdribotContext(DbContextOptions<AdribotContext> options) : DbContex
     public DbSet<Recipe> Recipes { get; set; }
     public DbSet<RecipeIngredient> RecipeIngredients { get; set; }
     public DbSet<Ingredient> Ingredients { get; set; }
+    
+    public DbSet<WireConfig> Wire
 }
