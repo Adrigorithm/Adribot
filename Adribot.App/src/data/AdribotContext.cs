@@ -27,5 +27,5 @@ public class AdribotContext(DbContextOptions<AdribotContext> options) : DbContex
     public DbSet<RecipeIngredient> RecipeIngredients { get; set; }
     public DbSet<Ingredient> Ingredients { get; set; }
     
-    public DbSet<WireConfig> Wire
+    public DbSet<WireConfig> WireConfigs { get; set; }
 }
