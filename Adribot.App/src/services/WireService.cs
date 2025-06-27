@@ -49,7 +49,7 @@ public sealed class WireService(DiscordClientProvider provider, IHttpClientFacto
         return (true, null);
     }
 
-    public async Task<(bool, string)> CreateWireAsync(string name)
+    public async Task<(bool, string)> CreateWireAsync(string name, bool shouldReplace)
     {
         WireConfig? wireConfig = _wireConfigs.FirstOrDefault(w => w.EmoteName == name);
         
@@ -60,6 +60,15 @@ public sealed class WireService(DiscordClientProvider provider, IHttpClientFacto
         
         if (wireGuild is null)
             return (false, $"I am no longer in Guild with id {wireConfig.DGuildId}!");
+
+        if (shouldReplace)
+        {
+            GuildEmote? emote = wireGuild.Emotes.FirstOrDefault(e => e.Name == name);
+            
+            if (emote is not null)
+                await wireGuild.DeleteEmoteAsync(emote);
+        }
+            
         
         await wireGuild.CreateEmoteAsync(name, new Image(new MemoryStream(wireConfig.EmoteData)));
         
