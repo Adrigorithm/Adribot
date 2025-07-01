@@ -20,7 +20,7 @@ public sealed class RecipeService
     private const string RecipeServingsInput = "recipe-text-input-servings";
     private const int MinimumServings = 1;
     private const int MaximumServings = 999;
-    
+
     private readonly IEnumerable<Recipe> _recipes;
 
     public RecipeService(DiscordClientProvider clientProvider, RecipeRepository recipeRepository)
@@ -45,16 +45,16 @@ public sealed class RecipeService
 
                 recipe1.ToHumanReadable();
                 await component.Message.ModifyAsync(m => m.Components = BuildComponentUnsafe(recipe1).Build());
-                
+
                 break;
             case RecipeUnitInput:
                 var unitValue = int.Parse(component.Data.Value);
                 var recipeName2 = component.Message.Components.FindComponentById<TextDisplayComponent>(RecipeNameDisplay).Content;
                 Recipe recipe2 = _recipes.First(r => r.Name == recipeName2).ConvertNumerals((Units)Enum.ToObject(typeof(Units), unitValue));
-                
+
                 recipe2.ToHumanReadable();
                 await component.Message.ModifyAsync(m => m.Components = BuildComponentUnsafe(recipe2).Build());
-                
+
                 break;
             default:
                 return;
@@ -73,10 +73,10 @@ public sealed class RecipeService
             if (recipeIngredient.Optional)
                 ingredients.Append("[Optional]");
         }
-        
+
         foreach (var instruction in recipe.Instruction)
             instructions.AppendLine($"{instruction}{Environment.NewLine}");
-        
+
         return new ComponentBuilderV2()
             .WithContainer()
             .WithTextDisplay($"# {recipe.Name}", RecipeNameDisplay)
@@ -115,12 +115,12 @@ public sealed class RecipeService
             .WithTextDisplay(instructions.ToString());
     }
 
-    private static ComponentBuilderV2? BuildComponent(Recipe? recipe) => 
+    private static ComponentBuilderV2? BuildComponent(Recipe? recipe) =>
         recipe is null ? null : BuildComponentUnsafe(recipe);
 
     public ComponentBuilderV2? GetRecipeComponent(int recipeId) =>
         BuildComponent(_recipes.FirstOrDefault(r => r.RecipeId == recipeId));
-    
+
     private ComponentBuilderV2? GetRecipeComponent(string recipeName) =>
         BuildComponent(_recipes.FirstOrDefault(r => r.Name == recipeName));
 }

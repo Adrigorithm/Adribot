@@ -1,4 +1,4 @@
-﻿namespace Adribot.Constants.Enums;
+namespace Adribot.Constants.Enums;
 
 public enum Unit
 {

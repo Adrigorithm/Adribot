@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -34,10 +34,7 @@ namespace Adribot.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ingredients", x => x.IngredientId);
-                });
+                constraints: table => table.PrimaryKey("PK_Ingredients", x => x.IngredientId));
 
             migrationBuilder.CreateTable(
                 name: "Recipes",
@@ -54,10 +51,7 @@ namespace Adribot.Migrations
                     Temperature = table.Column<float>(type: "real", nullable: false),
                     Duration = table.Column<short>(type: "smallint", nullable: false)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Recipes", x => x.RecipeId);
-                });
+                constraints: table => table.PrimaryKey("PK_Recipes", x => x.RecipeId));
 
             migrationBuilder.CreateTable(
                 name: "Starboards",

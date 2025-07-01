@@ -1,5 +1,3 @@
-using System;
-using Adribot.Constants.Enums;
 using Adribot.Constants.Enums.Recipe;
 
 namespace Adribot.Entities.Fun.Recipe;
@@ -34,13 +32,13 @@ public class RecipeIngredient
         {
             recipeIngredient.Quantity = Quantity;
             recipeIngredient.Unit = Unit;
-            
+
             return recipeIngredient;
         }
-        
+
         recipeIngredient.Quantity = Quantity / 1000;
         recipeIngredient.Unit = IngredientUnit.Kilogramme;
-        
+
         return recipeIngredient;
     }
 }

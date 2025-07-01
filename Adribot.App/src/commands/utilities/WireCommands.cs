@@ -1,18 +1,19 @@
-﻿using System;
 using System.Threading.Tasks;
-using Adribot.Constants.Enums;
-using Adribot.Extensions;
 using Adribot.Services;
-using Discord;
 using Discord.Interactions;
 
 namespace Adribot.Commands.Utilities;
 
 public class WireCommands(WireService wireService) : InteractionModuleBase<SocketInteractionContext>
 {
-    [SlashCommand("register emote", "")]
-    public async Task ExecuteRemindTaskAsync([Summary("task", "What you should be reminded of")] string taskTodo, [Summary("unit", "Time unit to be muliplied by the next factor parameter")] TimeSpanType timeUnit, [Summary("factor", "Amount of instances of the specified time unit")] int factor, [Summary("channel", "Fallback for if you don't want the bot to dm you")] ITextChannel? altChannel = null)
+    [SlashCommand("register-emote", "Registers an emote for future use")]
+    public async Task ExecuteRemindTaskAsync([Summary("emote", "The emote you wish to register")] string emoteString, [Summary("guild", "The ID of the guild the on which the emote should be registered")] ulong guildId, [Summary("config", "Name of this configuration")] string name)
     {
-        
+        var (isSuccess, error) = await wireService.TryCreateWireConfigAsync(guildId, name, emoteString);
+
+        if (isSuccess)
+            await RespondAsync($"Successfully registered emoji", ephemeral: true);
+        else
+            await RespondAsync($"Could not register emote: {error}", ephemeral: true);
     }
 }

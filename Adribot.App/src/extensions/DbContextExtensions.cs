@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Adribot.Constants.Enums.Recipe;
 using Adribot.Data;
@@ -126,7 +125,7 @@ public static class DbContextExtensions
 
         var ingredient19 = new Ingredient
         {
-            IngredientId = 19, 
+            IngredientId = 19,
             Name = "Cupcake tin"
         };
 
@@ -430,7 +429,7 @@ public static class DbContextExtensions
                 "Enjoy! (You may need to repeat the 3 previous tasks depending on the amount of dough you have :) ). They can be kept in room temperature for a few days but if you baked many, the freezer is preferable."
             ]
         };
-        
+
         await using Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = await context.Database.BeginTransactionAsync();
 
         try

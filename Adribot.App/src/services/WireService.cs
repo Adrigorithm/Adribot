@@ -1,10 +1,8 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Adribot.Constants.Enums;
 using Adribot.Data.Repositories;
 using Adribot.Entities.Discord;
 using Adribot.Entities.fun;
@@ -27,13 +25,13 @@ public sealed class WireService(DiscordClientProvider provider, IHttpClientFacto
             return (false, $"I am not in Guild with id {guildId}!");
 
         var isDuplicateName = _wireConfigs.Any(w => w.EmoteName == name);
-        
+
         if (isDuplicateName)
             return (false, $"A wire config with name {name} already exists!");
-        
+
         DGuild? dGuild = guildRepository.GetGuild(guildId);
         var emoteData = await httpClientFactory.CreateClient().GetByteArrayAsync(emote.Url);
-        
+
         var wireConfig = new WireConfig
         {
             DGuild = dGuild,
@@ -41,37 +39,37 @@ public sealed class WireService(DiscordClientProvider provider, IHttpClientFacto
             EmoteData = emoteData,
             EmoteName = name
         };
-        
+
         wireRepository.AddWireConfig(wireConfig);
-        
+
         _ = _wireConfigs.Append(wireConfig);
-        
+
         return (true, null);
     }
 
     public async Task<(bool, string)> CreateWireAsync(string name, bool shouldReplace)
     {
         WireConfig? wireConfig = _wireConfigs.FirstOrDefault(w => w.EmoteName == name);
-        
+
         if (wireConfig is null)
             return (false, $"Couldn't find a wire config for name {name}!");
 
         SocketGuild? wireGuild = _client.GetGuild(wireConfig.DGuild.GuildId);
-        
+
         if (wireGuild is null)
             return (false, $"I am no longer in Guild with id {wireConfig.DGuildId}!");
 
         if (shouldReplace)
         {
             GuildEmote? emote = wireGuild.Emotes.FirstOrDefault(e => e.Name == name);
-            
+
             if (emote is not null)
                 await wireGuild.DeleteEmoteAsync(emote);
         }
-            
-        
+
+
         await wireGuild.CreateEmoteAsync(name, new Image(new MemoryStream(wireConfig.EmoteData)));
-        
+
         return (true, null);
     }
 }

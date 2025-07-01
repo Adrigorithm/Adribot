@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Adribot.Constants.Enums.Recipe;
 
 namespace Adribot.Extensions;
