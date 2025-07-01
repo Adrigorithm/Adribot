@@ -9,6 +9,7 @@ using Adribot.Entities.Fun.Recipe;
 using Adribot.Extensions;
 using Adribot.Services.Providers;
 using Discord;
+using Discord.Interactions.Builders;
 using Discord.WebSocket;
 
 namespace Adribot.Services;
@@ -76,9 +77,8 @@ public sealed class RecipeService
 
         foreach (var instruction in recipe.Instruction)
             instructions.AppendLine($"{instruction}{Environment.NewLine}");
-
+        
         return new ComponentBuilderV2()
-            .WithContainer()
             .WithTextDisplay($"# {recipe.Name}", RecipeNameDisplay)
             .WithMediaGallery([
                 "https://cdn.discordapp.com/attachments/964253122547552349/1336440069892083712/7Q3S.gif?ex=67a3d04e&is=67a27ece&hm=059c9d28466f43a50c4b450ca26fc01298a2080356421d8524384bf67ea8f3ab&"
@@ -97,7 +97,7 @@ public sealed class RecipeService
             .WithActionRow([
                 new SelectMenuBuilder(
                     RecipeUnitInput,
-                    [
+                    options:[
                         new SelectMenuOptionBuilder(
                             "Metric",
                             "1",
@@ -108,8 +108,7 @@ public sealed class RecipeService
                         new SelectMenuOptionBuilder(
                             "SI",
                             "0")
-                    ],
-                    id: 1
+                    ]
                 )
             ])
             .WithTextDisplay(instructions.ToString());
