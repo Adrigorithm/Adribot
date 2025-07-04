@@ -22,7 +22,6 @@ public class RecipeCommands(RecipeService recipeService) : InteractionModuleBase
             return;
         }
 
-
         await RespondAsync(components: embed);
     }
 }
