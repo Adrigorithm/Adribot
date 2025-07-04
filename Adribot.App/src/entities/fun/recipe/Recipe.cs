@@ -33,26 +33,10 @@ public class Recipe
 
     public List<RecipeIngredient> RecipeIngredients { get; set; }
 
-    public Recipe ConvertNumerals(Units to)
+    public void ConvertNumerals(Units to)
     {
-        Recipe recipe = new()
-        {
-            Temperature = Temperature.Convert(Unit.Temperature, _units, to),
-            Name = Name,
-            ImageUri = ImageUri,
-            Servings = Servings,
-            Instruction = Instruction,
-            Difficulty = Difficulty,
-            OvenMode = OvenMode,
-            RecipeId = RecipeId,
-            RecipeIngredients = RecipeIngredients,
-            Duration = Duration
-        };
-
         Temperature = Temperature.Convert(Unit.Temperature, _units, to);
         _units = to;
-
-        return recipe;
     }
 
     public void ToHumanReadable() =>
@@ -70,6 +54,21 @@ public class Recipe
 
         Servings = newServings;
     }
+
+    public Recipe Clone() =>
+        new Recipe
+        {
+            RecipeId = RecipeId,
+            Name = Name,
+            ImageUri = ImageUri,
+            Servings = Servings,
+            Instruction = Instruction,
+            Difficulty = Difficulty,
+            OvenMode = OvenMode,
+            Temperature = Temperature,
+            Duration = Duration,
+            RecipeIngredients = RecipeIngredients
+        };
 
     public Units GetUnits() =>
         _units;

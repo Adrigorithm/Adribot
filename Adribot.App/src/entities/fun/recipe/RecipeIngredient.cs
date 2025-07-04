@@ -16,29 +16,20 @@ public class RecipeIngredient
     public IngredientUnit Unit { get; set; }
     public bool Optional { get; set; }
 
-    public RecipeIngredient ToHumanReadable()
+    public void ToHumanReadable()
     {
-        var recipeIngredient = new RecipeIngredient
+        switch (Quantity, Unit)
         {
-            RecipeIngredientId = RecipeIngredientId,
-            IngredientId = IngredientId,
-            Optional = Optional,
-            Ingredient = Ingredient,
-            Recipe = Recipe,
-            RecipeId = RecipeId,
-        };
+            case (>= 1000, IngredientUnit.Gramme):
+                Quantity /= 1000;
+                Unit = IngredientUnit.Kilogramme;
 
-        if (Quantity < 1000)
-        {
-            recipeIngredient.Quantity = Quantity;
-            recipeIngredient.Unit = Unit;
+                break;
+            case (< 1000, IngredientUnit.Kilogramme):
+                Quantity *= 1000;
+                Unit = IngredientUnit.Gramme;
 
-            return recipeIngredient;
+                break;
         }
-
-        recipeIngredient.Quantity = Quantity / 1000;
-        recipeIngredient.Unit = IngredientUnit.Kilogramme;
-
-        return recipeIngredient;
     }
 }
