@@ -21,6 +21,8 @@ public sealed class RecipeService
     private const string RecipeUnitInput = "recipe-select-menu-unit";
     private const string RecipeServingsInput = "recipe-text-input-servings";
     private const string RecipeServingsButton = "recipe-button-servings";
+    private const string RecipeServingsModal = "recipe-modal-servings";
+    
     private const int MinimumServings = 1;
     private const int MaximumServings = 999;
 
@@ -39,8 +41,11 @@ public sealed class RecipeService
             case SocketMessageComponent component:
                 switch (component.Data.CustomId)
                 {
-                    case RecipeServingsButton:
+                    case RecipeServingsModal:
                         await component.RespondWithModalAsync(CreateServingsModal(10).Build());
+
+                        break;
+                    case RecipeServingsButton:
                         // if (!int.TryParse(component.Data.Value, out var value) || value < MinimumServings || value > MaximumServings)
                         //     return;
                         //
@@ -66,7 +71,7 @@ public sealed class RecipeService
                 
                 break;
             case SocketModal modal:
-                if (modal.Data.CustomId == RecipeServingsInput)
+                if (modal.Data.CustomId == RecipeServingsButton)
                     await modal.RespondAsync($"You set the servings to {modal.Data.Components.First().Value}");
                 
                 break;
@@ -96,16 +101,18 @@ public sealed class RecipeService
         StringBuilder ingredients = new($"## Ingredients{Environment.NewLine}");
         StringBuilder instructions = new($"## Instructions{Environment.NewLine}");
         ButtonBuilder servingsModalButton = new ButtonBuilder()
-            .WithCustomId(RecipeServingsInput)
+            .WithCustomId(RecipeServingsModal)
             .WithLabel("Set servings")
             .WithStyle(ButtonStyle.Primary);
 
         foreach (RecipeIngredient recipeIngredient in recipe.RecipeIngredients)
         {
-            ingredients.AppendLine($"{recipeIngredient.Quantity}{recipeIngredient.Unit.ToSymbol()} {recipeIngredient.Ingredient.Name} ");
+            ingredients.Append($"{recipeIngredient.Quantity}{recipeIngredient.Unit.ToSymbol()} {recipeIngredient.Ingredient.Name} ");
 
             if (recipeIngredient.Optional)
-                ingredients.Append("[Optional]");
+                ingredients.AppendLine("[Optional]");
+            else
+                ingredients.Append(Environment.NewLine);
         }
 
         foreach (var instruction in recipe.Instruction)
