@@ -13,7 +13,7 @@ public class RecipeIngredient
     public Recipe Recipe { get; set; }
 
     public float Quantity { get; set; }
-    public IngredientUnit Unit { get; set; }
+    public IngredientUnit Unit { get; set; } = IngredientUnit.Gramme;
     public bool Optional { get; set; }
 
     public void ToHumanReadable()

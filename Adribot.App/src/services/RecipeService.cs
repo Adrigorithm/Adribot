@@ -18,13 +18,12 @@ namespace Adribot.Services;
 public sealed class RecipeService
 {
     private const int RecipeNameDisplay = 1;
+    private const int RecipeServingsDisplay = 2;
+    private const int RecipeUnitSelectMenu = 3;
     private const string RecipeUnitInput = "recipe-select-menu-unit";
     private const string RecipeServingsInput = "recipe-text-input-servings";
     private const string RecipeServingsButton = "recipe-button-servings";
     private const string RecipeServingsModal = "recipe-modal-servings";
-    
-    private const int MinimumServings = 1;
-    private const int MaximumServings = 999;
 
     private readonly IEnumerable<Recipe> _recipes;
 
@@ -42,27 +41,25 @@ public sealed class RecipeService
                 switch (component.Data.CustomId)
                 {
                     case RecipeServingsModal:
-                        await component.RespondWithModalAsync(CreateServingsModal(10).Build());
+                        var servings = short.Parse(component.Message.Components.FindComponentById<TextDisplayComponent>(RecipeServingsDisplay).Content.Split(' ')[1]);
+                        
+                        await component.RespondWithModalAsync(CreateServingsModal(servings).Build());
 
                         break;
-                    case RecipeServingsButton:
-                        // if (!int.TryParse(component.Data.Value, out var value) || value < MinimumServings || value > MaximumServings)
-                        //     return;
-                        //
-                        // var recipeName1 = component.Message.Components.FindComponentById<TextDisplayComponent>(RecipeNameDisplay).Content;
-                        // Recipe recipe1 = _recipes.First(r => r.Name == recipeName1);
-                        //
-                        // recipe1.ToHumanReadable();
-                        // await component.Message.ModifyAsync(m => m.Components = BuildComponentUnsafe(recipe1).Build());
 
-                        break;
                     case RecipeUnitInput:
-                        var unitValue = int.Parse(component.Data.Value);
-                        var recipeName2 = component.Message.Components.FindComponentById<TextDisplayComponent>(RecipeNameDisplay).Content;
-                        Recipe recipe2 = _recipes.First(r => r.Name == recipeName2).ConvertNumerals((Units)Enum.ToObject(typeof(Units), unitValue));
+                        SelectMenuComponent selectedItem = component.Message.Components.FindComponentById<SelectMenuComponent>(RecipeUnitSelectMenu);
+                        var unitValue = short.Parse(component.Data.Values.First());
+                        var recipeName = component.Message.Components.FindComponentById<TextDisplayComponent>(RecipeNameDisplay).Content[2..];
+                        Recipe recipe = _recipes.First(r => r.Name == recipeName);
+                        recipe = recipe.Clone();
+                        var unit = (Units)Enum.ToObject(typeof(Units), unitValue);
 
-                        recipe2.ToHumanReadable();
-                        await component.Message.ModifyAsync(m => m.Components = BuildComponentUnsafe(recipe2).Build());
+                        recipe.ConvertNumerals(unit);
+
+                        ComponentBuilderV2 newComponentContainer = BuildComponentUnsafe(recipe, unit);
+                    
+                        await component.UpdateAsync(m => m.Components = newComponentContainer.Build());
 
                         break;
                     default:
@@ -72,7 +69,21 @@ public sealed class RecipeService
                 break;
             case SocketModal modal:
                 if (modal.Data.CustomId == RecipeServingsButton)
-                    await modal.RespondAsync($"You set the servings to {modal.Data.Components.First().Value}");
+                {
+                    var success = short.TryParse(modal.Data.Components.First(c => c.CustomId == RecipeServingsInput).Value, out var servings);
+                    
+                    if (!success || servings <= 0)
+                        break;
+                    
+                    Recipe recipe = _recipes.First(r => r.Name == modal.Message.Components.FindComponentById<TextDisplayComponent>(RecipeNameDisplay).Content[2..]);
+                    recipe = recipe.Clone();
+                    
+                    recipe.ChangeServings(servings, true);
+                    
+                    ComponentBuilderV2 newComponentContainer = BuildComponentUnsafe(recipe);
+                    
+                    await modal.UpdateAsync(m => m.Components = newComponentContainer.Build());
+                }
                 
                 break;
             default:
@@ -80,7 +91,7 @@ public sealed class RecipeService
         }
     }
 
-    private static ModalBuilder CreateServingsModal(int servings)
+    private static ModalBuilder CreateServingsModal(short servings)
     {
         TextInputBuilder? textInput = new TextInputBuilder()
             .WithCustomId(RecipeServingsInput)
@@ -96,7 +107,7 @@ public sealed class RecipeService
             .AddTextInput(textInput);
     }
 
-    private static ComponentBuilderV2 BuildComponentUnsafe(Recipe recipe)
+    private static ComponentBuilderV2 BuildComponentUnsafe(Recipe recipe, Units units = Units.Metric)
     {
         StringBuilder ingredients = new($"## Ingredients{Environment.NewLine}");
         StringBuilder instructions = new($"## Instructions{Environment.NewLine}");
@@ -107,8 +118,8 @@ public sealed class RecipeService
 
         foreach (RecipeIngredient recipeIngredient in recipe.RecipeIngredients)
         {
-            ingredients.Append($"{recipeIngredient.Quantity}{recipeIngredient.Unit.ToSymbol()} {recipeIngredient.Ingredient.Name} ");
-
+            ingredients.Append($"{recipeIngredient.Quantity} {recipeIngredient.Unit.ToSymbol()} {recipeIngredient.Ingredient.Name} ");
+ 
             if (recipeIngredient.Optional)
                 ingredients.AppendLine("[Optional]");
             else
@@ -120,11 +131,17 @@ public sealed class RecipeService
         
         return new ComponentBuilderV2()
             .WithTextDisplay($"# {recipe.Name}", RecipeNameDisplay)
+            .WithTextDisplay($"-# {recipe.Servings} servings", RecipeServingsDisplay)
             .WithMediaGallery([
                 "https://cdn.discordapp.com/attachments/964253122547552349/1336440069892083712/7Q3S.gif?ex=67a3d04e&is=67a27ece&hm=059c9d28466f43a50c4b450ca26fc01298a2080356421d8524384bf67ea8f3ab&"
             ])
             .WithActionRow([servingsModalButton])
             .WithTextDisplay(ingredients.ToString())
+            .WithTextDisplay($"""
+                              ## Oven Settings
+                              Mode: `{recipe.OvenMode.ToHumanReadable()}`
+                              Temperature: `{recipe.Temperature.Convert(Unit.Temperature, Units.Si, units)} {units.ToSymbol()}`
+                              """)
             .WithActionRow([
                 new SelectMenuBuilder(
                     RecipeUnitInput,
@@ -139,7 +156,8 @@ public sealed class RecipeService
                         new SelectMenuOptionBuilder(
                             "SI",
                             "0")
-                    ]
+                    ],
+                    id: RecipeUnitSelectMenu
                 )
             ])
             .WithTextDisplay(instructions.ToString());
