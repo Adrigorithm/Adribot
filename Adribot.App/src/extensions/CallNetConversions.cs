@@ -1,3 +1,4 @@
+using System;
 using Adribot.Entities.Utilities;
 using Ical.Net.CalendarComponents;
 
@@ -8,13 +9,13 @@ public static class CallNetConversions
     public static Event ToEvent(this CalendarEvent cEvent) =>
         new()
         {
-            End = cEvent.End.AsDateTimeOffset,
+            End = new DateTimeOffset(cEvent.End?.AsUtc ?? DateTime.MaxValue, TimeSpan.Zero),
             IsAllDay = cEvent.IsAllDay,
             Location = string.IsNullOrEmpty(cEvent.Location) ? "Unknown" : cEvent.Location,
-            Start = cEvent.Start.AsDateTimeOffset,
+            Start = new DateTimeOffset(cEvent.Start?.AsUtc ?? DateTime.MinValue, TimeSpan.Zero),
             Description = string.IsNullOrEmpty(cEvent.Description) ? "No description found" : cEvent.Description,
             Name = string.IsNullOrEmpty(cEvent.Name) ? "Unnamed" : cEvent.Name,
-            Organiser = cEvent.Organizer?.CommonName is null ? "Unknown" : cEvent.Organizer.CommonName,
+            Organiser = cEvent.Organizer?.CommonName ?? "Unknown",
             Summary = string.IsNullOrEmpty(cEvent.Summary) ? "No summary found" : cEvent.Summary,
         };
 }
