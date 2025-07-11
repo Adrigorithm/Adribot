@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Adribot.Constants.Enums;
 using Adribot.Constants.Enums.Recipe;
 using Adribot.Extensions;
@@ -67,9 +68,6 @@ public class Recipe
             OvenMode = OvenMode,
             Temperature = Temperature,
             Duration = Duration,
-            RecipeIngredients = RecipeIngredients
+            RecipeIngredients = RecipeIngredients.Select(ri => ri.Clone()).ToList()
         };
-
-    public Units GetUnits() =>
-        _units;
 }

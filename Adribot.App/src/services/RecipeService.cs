@@ -52,12 +52,10 @@ public sealed class RecipeService
                         var unitValue = short.Parse(component.Data.Values.First());
                         var recipeName = component.Message.Components.FindComponentById<TextDisplayComponent>(RecipeNameDisplay).Content[2..];
                         Recipe recipe = _recipes.First(r => r.Name == recipeName);
-                        recipe = recipe.Clone();
+                        Recipe recipe0 = recipe.Clone();
                         var unit = (Units)Enum.ToObject(typeof(Units), unitValue);
 
-                        recipe.ConvertNumerals(unit);
-
-                        ComponentBuilderV2 newComponentContainer = BuildComponentUnsafe(recipe, unit);
+                        ComponentBuilderV2 newComponentContainer = BuildComponentUnsafe(recipe0, unit);
                     
                         await component.UpdateAsync(m => m.Components = newComponentContainer.Build());
 
@@ -76,11 +74,11 @@ public sealed class RecipeService
                         break;
                     
                     Recipe recipe = _recipes.First(r => r.Name == modal.Message.Components.FindComponentById<TextDisplayComponent>(RecipeNameDisplay).Content[2..]);
-                    recipe = recipe.Clone();
+                    Recipe? recipe0 = recipe.Clone();
                     
-                    recipe.ChangeServings(servings, true);
+                    recipe0.ChangeServings(servings, true);
                     
-                    ComponentBuilderV2 newComponentContainer = BuildComponentUnsafe(recipe);
+                    ComponentBuilderV2 newComponentContainer = BuildComponentUnsafe(recipe0);
                     
                     await modal.UpdateAsync(m => m.Components = newComponentContainer.Build());
                 }
@@ -107,7 +105,7 @@ public sealed class RecipeService
             .AddTextInput(textInput);
     }
 
-    private static ComponentBuilderV2 BuildComponentUnsafe(Recipe recipe, Units units = Units.Metric)
+    private static ComponentBuilderV2 BuildComponentUnsafe(Recipe recipe, Units units = Units.Si)
     {
         StringBuilder ingredients = new($"## Ingredients{Environment.NewLine}");
         StringBuilder instructions = new($"## Instructions{Environment.NewLine}");
@@ -118,7 +116,7 @@ public sealed class RecipeService
 
         foreach (RecipeIngredient recipeIngredient in recipe.RecipeIngredients)
         {
-            ingredients.Append($"{recipeIngredient.Quantity} {recipeIngredient.Unit.ToSymbol()} {recipeIngredient.Ingredient.Name} ");
+            ingredients.Append($"`{recipeIngredient.Quantity} {recipeIngredient.Unit.ToSymbol()}` {recipeIngredient.Ingredient.Name} ");
  
             if (recipeIngredient.Optional)
                 ingredients.AppendLine("[Optional]");
@@ -126,8 +124,8 @@ public sealed class RecipeService
                 ingredients.Append(Environment.NewLine);
         }
 
-        foreach (var instruction in recipe.Instruction)
-            instructions.AppendLine($"{instruction}{Environment.NewLine}");
+        for (var i = 0; i < recipe.Instruction.Length; i++)
+            instructions.AppendLine($"`{i + 1}.` {recipe.Instruction[i]}{Environment.NewLine}");
         
         return new ComponentBuilderV2()
             .WithTextDisplay($"# {recipe.Name}", RecipeNameDisplay)
@@ -149,13 +147,15 @@ public sealed class RecipeService
                         new SelectMenuOptionBuilder(
                             "Metric",
                             "1",
-                            isDefault: true),
+                            isDefault: units == Units.Metric),
                         new SelectMenuOptionBuilder(
                             "Imperial",
-                            "2"),
+                            "2",
+                            isDefault: units == Units.Imperial),
                         new SelectMenuOptionBuilder(
-                            "SI",
-                            "0")
+                            "Kelvin",
+                            "0",
+                            isDefault: units == Units.Si)
                     ],
                     id: RecipeUnitSelectMenu
                 )

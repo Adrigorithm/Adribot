@@ -32,4 +32,16 @@ public class RecipeIngredient
                 break;
         }
     }
+
+    public RecipeIngredient Clone() =>
+        new RecipeIngredient
+        {
+            RecipeIngredientId = RecipeIngredientId,
+            IngredientId = IngredientId,
+            Ingredient = Ingredient,
+            RecipeId = RecipeId,
+            Quantity = Quantity,
+            Unit = Unit,
+            Optional = Optional
+        };
 }
