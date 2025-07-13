@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Adribot.Constants.Enums;
@@ -24,13 +25,18 @@ public sealed class RecipeService
     private const string RecipeServingsInput = "recipe-text-input-servings";
     private const string RecipeServingsButton = "recipe-button-servings";
     private const string RecipeServingsModal = "recipe-modal-servings";
+    
+    private const string RecipesLookInsideButton = "recipes-show-me-button";
 
+    private readonly DiscordClientProvider _clientProvider;
     private readonly IEnumerable<Recipe> _recipes;
 
     public RecipeService(DiscordClientProvider clientProvider, RecipeRepository recipeRepository)
     {
         _recipes = recipeRepository.GetAllRecipes();
-        clientProvider.Client.InteractionCreated += ClientOnInteractionCreatedAsync;
+        _clientProvider = clientProvider;
+        
+        _clientProvider.Client.InteractionCreated += ClientOnInteractionCreatedAsync;
     }
 
     private async Task ClientOnInteractionCreatedAsync(SocketInteraction arg)
@@ -162,13 +168,49 @@ public sealed class RecipeService
             ])
             .WithTextDisplay(instructions.ToString());
     }
+    
+    private async Task<ComponentBuilderV2> BuildComponentsUnsafeAsync()
+    {
+        if (!_recipes.Any())
+        {
+            return new ComponentBuilderV2()
+                .WithTextDisplay(
+                    """
+                    # No recipes found
+                    You should consider adding some.
+                    """);
+        }
 
-    private static ComponentBuilderV2? BuildComponent(Recipe? recipe) =>
-        recipe is null ? null : BuildComponentUnsafe(recipe);
+        var builder = new ComponentBuilderV2();
+        Emote? emote = await _clientProvider.Client.GetApplicationEmoteAsync(1393996479357517925);
 
-    public ComponentBuilderV2? GetRecipeComponent(int recipeId) =>
-        BuildComponent(_recipes.FirstOrDefault(r => r.RecipeId == recipeId));
+        foreach (Recipe recipe in _recipes)
+        {
+            var buttonBuilder = new ButtonBuilder("Look inside", RecipesLookInsideButton);
+            
+            if (emote is not null)
+                buttonBuilder.WithEmote(emote);
 
-    private ComponentBuilderV2? GetRecipeComponent(string recipeName) =>
-        BuildComponent(_recipes.FirstOrDefault(r => r.Name == recipeName));
+            builder
+                .WithTextDisplay($"# {recipe.Name}")
+                .WithMediaGallery(["https://cdn.discordapp.com/attachments/964253122547552349/1336440069892083712/7Q3S.gif?ex=67a3d04e&is=67a27ece&hm=059c9d28466f43a50c4b450ca26fc01298a2080356421d8524384bf67ea8f3ab&"])
+                .WithActionRow([
+                    buttonBuilder
+                ]);
+        }
+        
+        return builder;
+    }
+
+    private async Task<ComponentBuilderV2?> BuildComponentAsync(Recipe? recipe) =>
+        recipe is null ? await BuildComponentsUnsafeAsync() : BuildComponentUnsafe(recipe);
+
+    public async Task<ComponentBuilderV2?> GetRecipeComponentAsync(int recipeId) =>
+        await BuildComponentAsync(_recipes.FirstOrDefault(r => r.RecipeId == recipeId));
+
+    private async Task<ComponentBuilderV2?> GetRecipeComponentAsync(string recipeName) =>
+        await BuildComponentAsync(_recipes.FirstOrDefault(r => r.Name == recipeName));
+
+    public async Task<ComponentBuilderV2?> GetRecipesComponentAsync() =>
+        await BuildComponentAsync(null);
 }
