@@ -186,7 +186,7 @@ public sealed class RecipeService
 
         foreach (Recipe recipe in _recipes)
         {
-            var buttonBuilder = new ButtonBuilder("Look inside", RecipesLookInsideButton);
+            var buttonBuilder = new ButtonBuilder("Look inside", $"{RecipesLookInsideButton}-{recipe.RecipeId}");
             
             if (emote is not null)
                 buttonBuilder.WithEmote(emote);
