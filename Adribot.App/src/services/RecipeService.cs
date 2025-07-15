@@ -67,7 +67,16 @@ public sealed class RecipeService
 
                         break;
                     default:
-                        return;
+                        var customId = component.Data.CustomId;
+                        var lastPartStartIndex = customId.LastIndexOf('-');
+                        
+                        if (lastPartStartIndex == -1)
+                            return;
+
+                        if (customId[..lastPartStartIndex] == RecipesLookInsideButton)
+                            await component.UpdateAsync(m => m.Components = BuildComponentUnsafe(_recipes.First(r => r.RecipeId == int.Parse(customId[(lastPartStartIndex + 1)..]))).Build());
+
+                        break;
                 }
                 
                 break;
