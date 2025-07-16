@@ -25,6 +25,7 @@ public sealed class RecipeService
     private const string RecipeUnitInput = "recipe-select-menu-unit";
     private const string RecipeServingsInput = "recipe-text-input-servings";
     private const string RecipeServingsButton = "recipe-button-servings";
+    private const string RecipeRecipesButton = "recipe-button-recipes";
     private const string RecipeServingsModal = "recipe-modal-servings";
     
     private const string RecipesLookInsideButton = "recipes-show-me-button";
@@ -65,9 +66,15 @@ public sealed class RecipeService
 
                         recipe0.ChangeServings(servings0, true);
                         
-                        ComponentBuilderV2 newComponentContainer = BuildComponentUnsafe(recipe0, unit);
+                        ComponentBuilderV2 newComponentContainer = await BuildComponentUnsafeAsync(recipe0, unit);
                         
                         await component.UpdateAsync(m => m.Components = newComponentContainer.Build());
+
+                        break;
+                    case RecipeRecipesButton:
+                        ComponentBuilderV2? componentContainer = await GetRecipesComponentAsync();
+                        
+                        await component.UpdateAsync(m => m.Components = componentContainer!.Build());
 
                         break;
                     default:
@@ -77,8 +84,14 @@ public sealed class RecipeService
                         if (lastPartStartIndex == -1)
                             return;
 
+                        ComponentBuilderV2 componentContainer0;
+
                         if (customId[..lastPartStartIndex] == RecipesLookInsideButton)
-                            await component.UpdateAsync(m => m.Components = BuildComponentUnsafe(_recipes.First(r => r.RecipeId == int.Parse(customId[(lastPartStartIndex + 1)..]))).Build());
+                            componentContainer0 = await BuildComponentUnsafeAsync(_recipes.First(r => r.RecipeId == int.Parse(customId[(lastPartStartIndex + 1)..])));
+                        else
+                            componentContainer0 = await BuildComponentUnsafeAsync(_recipes.First(r => r.RecipeId == int.Parse(customId[(lastPartStartIndex + 1)..])));
+
+                        await component.UpdateAsync(m => m.Components = componentContainer0.Build());
 
                         break;
                 }
@@ -98,7 +111,7 @@ public sealed class RecipeService
                     
                     recipe0.ChangeServings(servings, true);
                     
-                    ComponentBuilderV2 newComponentContainer = BuildComponentUnsafe(recipe0, units);
+                    ComponentBuilderV2 newComponentContainer = await BuildComponentUnsafeAsync(recipe0, units);
                     
                     await modal.UpdateAsync(m => m.Components = newComponentContainer.Build());
                 }
@@ -125,8 +138,9 @@ public sealed class RecipeService
             .AddTextInput(textInput);
     }
 
-    private static ComponentBuilderV2 BuildComponentUnsafe(Recipe recipe, Units units = Units.Si)
+    private async Task<ComponentBuilderV2> BuildComponentUnsafeAsync(Recipe recipe, Units units = Units.Si)
     {
+        Emote? emote = await _clientProvider.Client.GetApplicationEmoteAsync(1394933475848749056);
         StringBuilder ingredients = new($"## Ingredients{Environment.NewLine}");
         StringBuilder instructions = new($"## Instructions{Environment.NewLine}");
         ButtonBuilder servingsModalButton = new ButtonBuilder()
@@ -146,7 +160,7 @@ public sealed class RecipeService
 
         for (var i = 0; i < recipe.Instruction.Length; i++)
             instructions.AppendLine($"`{i + 1}.` {recipe.Instruction[i]}{Environment.NewLine}");
-        
+
         return new ComponentBuilderV2()
             .WithTextDisplay($"# {recipe.Name}", RecipeNameDisplay)
             .WithTextDisplay($"-# {recipe.Servings} servings", RecipeServingsDisplay)
@@ -164,7 +178,8 @@ public sealed class RecipeService
             .WithActionRow([
                 new SelectMenuBuilder(
                     RecipeUnitInput,
-                    options:[
+                    options:
+                    [
                         new SelectMenuOptionBuilder(
                             "Metric",
                             "1",
@@ -181,7 +196,14 @@ public sealed class RecipeService
                     id: RecipeUnitSelectMenu
                 )
             ])
-            .WithTextDisplay(instructions.ToString());
+            .WithTextDisplay(instructions.ToString())
+            .WithActionRow([
+                new ButtonBuilder()
+                    .WithCustomId(RecipeRecipesButton)
+                    .WithLabel("All Recipes")
+                    .WithStyle(ButtonStyle.Primary)
+                    .WithEmote(emote)
+            ]);
     }
     
     private async Task<ComponentBuilderV2> BuildComponentsUnsafeAsync()
@@ -218,7 +240,7 @@ public sealed class RecipeService
     }
 
     private async Task<ComponentBuilderV2?> BuildComponentAsync(Recipe? recipe) =>
-        recipe is null ? await BuildComponentsUnsafeAsync() : BuildComponentUnsafe(recipe);
+        recipe is null ? await BuildComponentsUnsafeAsync() : await BuildComponentUnsafeAsync(recipe);
 
     public async Task<ComponentBuilderV2?> GetRecipeComponentAsync(int recipeId) =>
         await BuildComponentAsync(_recipes.FirstOrDefault(r => r.RecipeId == recipeId));
