@@ -21,6 +21,7 @@ public sealed class RecipeService
     private const int RecipeNameDisplay = 1;
     private const int RecipeServingsDisplay = 2;
     private const int RecipeUnitSelectMenu = 3;
+    private const int RecipeOvenSettingsDisplay = 6;
     private const string RecipeUnitInput = "recipe-select-menu-unit";
     private const string RecipeServingsInput = "recipe-text-input-servings";
     private const string RecipeServingsButton = "recipe-button-servings";
@@ -57,12 +58,15 @@ public sealed class RecipeService
                         SelectMenuComponent selectedItem = component.Message.Components.FindComponentById<SelectMenuComponent>(RecipeUnitSelectMenu);
                         var unitValue = short.Parse(component.Data.Values.First());
                         var recipeName = component.Message.Components.FindComponentById<TextDisplayComponent>(RecipeNameDisplay).Content[2..];
+                        var servings0 = short.Parse(component.Message.Components.FindComponentById<TextDisplayComponent>(RecipeServingsDisplay).Content.Split(' ')[1]);
                         Recipe recipe = _recipes.First(r => r.Name == recipeName);
                         Recipe recipe0 = recipe.Clone();
                         var unit = (Units)Enum.ToObject(typeof(Units), unitValue);
 
+                        recipe0.ChangeServings(servings0, true);
+                        
                         ComponentBuilderV2 newComponentContainer = BuildComponentUnsafe(recipe0, unit);
-                    
+                        
                         await component.UpdateAsync(m => m.Components = newComponentContainer.Build());
 
                         break;
@@ -87,13 +91,14 @@ public sealed class RecipeService
                     
                     if (!success || servings <= 0)
                         break;
-                    
+
+                    var units = modal.Message.Components.FindComponentById<TextDisplayComponent>(RecipeOvenSettingsDisplay).Content.Split(Environment.NewLine)[^1].Split(' ')[^1][..^1].ToUnits(); // [..^1] to exclude the ` character from the text content
                     Recipe recipe = _recipes.First(r => r.Name == modal.Message.Components.FindComponentById<TextDisplayComponent>(RecipeNameDisplay).Content[2..]);
                     Recipe? recipe0 = recipe.Clone();
                     
                     recipe0.ChangeServings(servings, true);
                     
-                    ComponentBuilderV2 newComponentContainer = BuildComponentUnsafe(recipe0);
+                    ComponentBuilderV2 newComponentContainer = BuildComponentUnsafe(recipe0, units);
                     
                     await modal.UpdateAsync(m => m.Components = newComponentContainer.Build());
                 }
@@ -154,7 +159,8 @@ public sealed class RecipeService
                               ## Oven Settings
                               Mode: `{recipe.OvenMode.ToHumanReadable()}`
                               Temperature: `{recipe.Temperature.Convert(Unit.Temperature, Units.Si, units)} {units.ToSymbol()}`
-                              """)
+                              """,
+                RecipeOvenSettingsDisplay)
             .WithActionRow([
                 new SelectMenuBuilder(
                     RecipeUnitInput,

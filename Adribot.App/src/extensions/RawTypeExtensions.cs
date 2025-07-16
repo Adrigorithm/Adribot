@@ -30,4 +30,13 @@ public static class RawTypeExtensions
                 throw new NotImplementedException();
         }
     }
+
+    public static Units ToUnits(this string value) =>
+        value switch
+        {
+            "°F" => Units.Imperial,
+            "°C" => Units.Metric,
+            "K" => Units.Si,
+            _ => throw new NotImplementedException()
+        };
 }
