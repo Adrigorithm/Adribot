@@ -52,7 +52,7 @@ public sealed class RecipeService
                         var servings = short.Parse(component.Message.Components.FindComponentById<TextDisplayComponent>(RecipeServingsDisplay).Content.Split(' ')[1]);
                         
                         await component.RespondWithModalAsync(CreateServingsModal(servings).Build());
-
+                        
                         break;
 
                     case RecipeUnitInput:
@@ -160,7 +160,7 @@ public sealed class RecipeService
 
         for (var i = 0; i < recipe.Instruction.Length; i++)
             instructions.AppendLine($"`{i + 1}.` {recipe.Instruction[i]}{Environment.NewLine}");
-
+        
         return new ComponentBuilderV2()
             .WithTextDisplay($"# {recipe.Name}", RecipeNameDisplay)
             .WithTextDisplay($"-# {recipe.Servings} servings", RecipeServingsDisplay)

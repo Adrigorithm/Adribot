@@ -17,12 +17,15 @@ public sealed class WireService(DiscordClientProvider provider, IHttpClientFacto
     private readonly DiscordSocketClient _client = provider.Client;
     private readonly IEnumerable<WireConfig> _wireConfigs = wireRepository.GetAllWireConfigs();
 
-    public async Task<(bool, string)> TryCreateWireConfigAsync(ulong guildId, string name, Emote emote)
+    public async Task<(bool, string)> TryCreateWireConfigAsync(ulong guildId, ulong userId, string name, Emote emote)
     {
         SocketGuild? guild = _client.GetGuild(guildId);
 
         if (guild is null)
             return (false, $"I am not in Guild with id {guildId}!");
+
+        if (!HasManageEmojiAndStickersPermission(guild, userId))
+            return (false, $"User does not exist in guild {guildId} or has insufficient permissions!");
 
         var isDuplicateName = _wireConfigs.Any(w => w.EmoteName == name);
 
@@ -47,7 +50,7 @@ public sealed class WireService(DiscordClientProvider provider, IHttpClientFacto
         return (true, null);
     }
 
-    public async Task<(bool, string)> CreateWireAsync(string name, bool shouldReplace)
+    public async Task<(bool, string)> CreateWireAsync(ulong userId, string name, bool shouldReplace)
     {
         WireConfig? wireConfig = _wireConfigs.FirstOrDefault(w => w.EmoteName == name);
 
@@ -59,6 +62,9 @@ public sealed class WireService(DiscordClientProvider provider, IHttpClientFacto
         if (wireGuild is null)
             return (false, $"I am no longer in Guild with id {wireConfig.DGuildId}!");
 
+        if (!HasManageEmojiAndStickersPermission(wireGuild, userId))
+            return (false, $"User does not exist in guild {wireGuild.Id} or has insufficient permissions!");
+        
         if (shouldReplace)
         {
             GuildEmote? emote = wireGuild.Emotes.FirstOrDefault(e => e.Name == name);
@@ -66,10 +72,16 @@ public sealed class WireService(DiscordClientProvider provider, IHttpClientFacto
             if (emote is not null)
                 await wireGuild.DeleteEmoteAsync(emote);
         }
-
-
+        
         await wireGuild.CreateEmoteAsync(name, new Image(new MemoryStream(wireConfig.EmoteData)));
 
         return (true, null);
+    }
+
+    private bool HasManageEmojiAndStickersPermission(SocketGuild guild, ulong userId)
+    {
+        SocketGuildUser? user = guild.Users.FirstOrDefault(x => x.Id == userId);
+
+        return user is not null && user.GuildPermissions.ManageEmojisAndStickers;
     }
 }
