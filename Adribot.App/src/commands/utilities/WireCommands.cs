@@ -7,9 +7,11 @@ namespace Adribot.Commands.Utilities;
 public class WireCommands(WireService wireService) : InteractionModuleBase<SocketInteractionContext>
 {
     [SlashCommand("register-emote", "Registers an emote for future use")]
-    public async Task ExecuteRemindTaskAsync([Summary("emote", "The emote you wish to register")] string emoteString, [Summary("guild", "The ID of the guild the on which the emote should be registered")] ulong guildId, [Summary("config", "Name of this configuration")] string name)
+    public async Task ExecuteRemindTaskAsync([Summary("emote", "The emote you wish to register")] string emoteString, [Summary("guild", "The ID of the guild the on which the emote should be registered")] string guildId, [Summary("config", "Name of this configuration")] string name)
     {
-        var (isSuccess, error) = await wireService.TryCreateWireConfigAsync(guildId, Context.User.Id, name, emoteString);
+        _ = ulong.TryParse(guildId, out var guildIdParsed);
+        
+        var (isSuccess, error) = await wireService.TryCreateWireConfigAsync(guildIdParsed, Context.User.Id, name, emoteString);
 
         if (isSuccess)
             await RespondAsync($"Successfully registered emote", ephemeral: true);

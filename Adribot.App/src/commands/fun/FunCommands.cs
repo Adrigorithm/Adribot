@@ -77,6 +77,6 @@ public class FunCommands(IHttpClientFactory httpClientFactory, SecretsProvider s
         if (unit == DistanceUnit.Inch)
             ppSize = (short)(ppSize / 2.5);
 
-        await RespondAsync($"${user?.Mention ?? Context.User.Mention}, Your pp size is {Convert.ToString(ppSize)} {(unit == DistanceUnit.Inch ? " inch" : " cm")}");
+        await RespondAsync($"{user?.Mention ?? Context.User.Mention}, Your pp size is {Convert.ToString(ppSize)} {(unit == DistanceUnit.Inch ? " inch" : " cm")}");
     }
 }

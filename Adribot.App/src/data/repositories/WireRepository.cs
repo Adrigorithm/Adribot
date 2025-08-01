@@ -8,7 +8,7 @@ namespace Adribot.Data.Repositories;
 public sealed class WireRepository(IDbContextFactory<AdribotContext> botContextFactory)
     : BaseRepository(botContextFactory)
 {
-    public IEnumerable<WireConfig> GetAllWireConfigs()
+    public List<WireConfig> GetAllWireConfigs()
     {
         using AdribotContext botContext = CreateDbContext();
 

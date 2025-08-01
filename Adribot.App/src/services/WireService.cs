@@ -15,37 +15,35 @@ namespace Adribot.Services;
 public sealed class WireService(DiscordClientProvider provider, IHttpClientFactory httpClientFactory, DGuildRepository guildRepository, WireRepository wireRepository)
 {
     private readonly DiscordSocketClient _client = provider.Client;
-    private readonly IEnumerable<WireConfig> _wireConfigs = wireRepository.GetAllWireConfigs();
+    private readonly List<WireConfig> _wireConfigs = wireRepository.GetAllWireConfigs();
 
     public async Task<(bool, string)> TryCreateWireConfigAsync(ulong guildId, ulong userId, string name, Emote emote)
     {
         SocketGuild? guild = _client.GetGuild(guildId);
 
         if (guild is null)
-            return (false, $"I am not in Guild with id {guildId}!");
+            return (false, $"I am not in Guild with id `{guildId}`!");
 
         if (!HasManageEmojiAndStickersPermission(guild, userId))
-            return (false, $"User does not exist in guild {guildId} or has insufficient permissions!");
+            return (false, $"User does not exist in guild `{guildId}` or has insufficient permissions!");
 
         var isDuplicateName = _wireConfigs.Any(w => w.EmoteName == name);
 
         if (isDuplicateName)
-            return (false, $"A wire config with name {name} already exists!");
+            return (false, $"A wire config with name `{name}` already exists!");
 
         DGuild? dGuild = guildRepository.GetGuild(guildId);
         var emoteData = await httpClientFactory.CreateClient().GetByteArrayAsync(emote.Url);
 
         var wireConfig = new WireConfig
         {
-            DGuild = dGuild,
             DGuildId = dGuild.DGuildId,
             EmoteData = emoteData,
             EmoteName = name
         };
 
         wireRepository.AddWireConfig(wireConfig);
-
-        _ = _wireConfigs.Append(wireConfig);
+        _wireConfigs.Add(wireConfig);
 
         return (true, null);
     }
@@ -55,15 +53,15 @@ public sealed class WireService(DiscordClientProvider provider, IHttpClientFacto
         WireConfig? wireConfig = _wireConfigs.FirstOrDefault(w => w.EmoteName == name);
 
         if (wireConfig is null)
-            return (false, $"Couldn't find a wire config for name {name}!");
+            return (false, $"Couldn't find a wire config for name `{name}`!");
 
         SocketGuild? wireGuild = _client.GetGuild(wireConfig.DGuild.GuildId);
 
         if (wireGuild is null)
-            return (false, $"I am no longer in Guild with id {wireConfig.DGuildId}!");
+            return (false, $"I am no longer in Guild with id `{wireConfig.DGuildId}`!");
 
         if (!HasManageEmojiAndStickersPermission(wireGuild, userId))
-            return (false, $"User does not exist in guild {wireGuild.Id} or has insufficient permissions!");
+            return (false, $"User does not exist in guild `{wireGuild.Id}` or has insufficient permissions!");
         
         if (shouldReplace)
         {
