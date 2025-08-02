@@ -124,6 +124,7 @@ Yes.
 - [ ] Provide clearer error messages / feedback for end user (in progress)
 - [ ] Add NMBS data access
 - [ ] ~~Add DeLijn data access~~ (impossible without scraping)
+- [ ] Pokémons! (in progress)
 
 ## Support
 
