@@ -22,7 +22,7 @@ public record Pokemon(
     
     [property: JsonPropertyName("abilities")] List<PokemonAbility> Abilities,
     
-    [property: JsonPropertyName("forms")] List<NamedAPIResource> Forms,
+    [property: JsonPropertyName("forms")] List<NamedApiResource> Forms,
     
     // A list of game indices relevant to Pokémon item by generation.
     [property: JsonPropertyName("game_indices")] List<VersionGameIndex> GameIndices,
@@ -39,7 +39,7 @@ public record Pokemon(
     // A set of cries used to depict this Pokémon in the game. A visual representation of the various cries can be found at PokeAPI/cries
     [property: JsonPropertyName("cries")] PokemonCries Cries,
     
-    [property: JsonPropertyName("species")] List<NamedAPIResource> Species,
+    [property: JsonPropertyName("species")] List<NamedApiResource> Species,
     [property: JsonPropertyName("stats")] List<PokemonStat> Stats,
     [property: JsonPropertyName("types")] List<PokemonType> Types
 );

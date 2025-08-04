@@ -8,5 +8,5 @@ public record PokemonAbility(
     // The slot this ability occupies in this Pokémon species.
     [property: JsonPropertyName("slot")] int Slot,
 
-    [property: JsonPropertyName("ability")] NamedAPIResource Ability
+    [property: JsonPropertyName("ability")] NamedApiResource Ability
 );
