@@ -11,7 +11,7 @@ public class WireCommands(WireService wireService) : InteractionModuleBase<Socke
     {
         _ = ulong.TryParse(guildId, out var guildIdParsed);
 
-        (bool isSuccess, string error) = await wireService.TryCreateWireConfigAsync(guildIdParsed, Context.User.Id, name, emoteString);
+        var (isSuccess, error) = await wireService.TryCreateWireConfigAsync(guildIdParsed, Context.User.Id, name, emoteString);
 
         if (isSuccess)
             await RespondAsync($"Successfully registered emote", ephemeral: true);
