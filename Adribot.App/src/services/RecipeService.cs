@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Adribot.Constants.Enums;
@@ -10,7 +9,6 @@ using Adribot.Entities.Fun.Recipe;
 using Adribot.Extensions;
 using Adribot.Services.Providers;
 using Discord;
-using Discord.Interactions.Builders;
 using Discord.WebSocket;
 using ModalBuilder = Discord.ModalBuilder;
 
@@ -27,7 +25,7 @@ public sealed class RecipeService
     private const string RecipeServingsButton = "recipe-button-servings";
     private const string RecipeRecipesButton = "recipe-button-recipes";
     private const string RecipeServingsModal = "recipe-modal-servings";
-    
+
     private const string RecipesLookInsideButton = "recipes-show-me-button";
 
     private readonly DiscordClientProvider _clientProvider;
@@ -37,7 +35,7 @@ public sealed class RecipeService
     {
         _recipes = recipeRepository.GetAllRecipes();
         _clientProvider = clientProvider;
-        
+
         _clientProvider.Client.InteractionCreated += ClientOnInteractionCreatedAsync;
     }
 
@@ -50,9 +48,9 @@ public sealed class RecipeService
                 {
                     case RecipeServingsModal:
                         var servings = short.Parse(component.Message.Components.FindComponentById<TextDisplayComponent>(RecipeServingsDisplay).Content.Split(' ')[1]);
-                        
+
                         await component.RespondWithModalAsync(CreateServingsModal(servings).Build());
-                        
+
                         break;
 
                     case RecipeUnitInput:
@@ -65,57 +63,56 @@ public sealed class RecipeService
                         var unit = (Units)Enum.ToObject(typeof(Units), unitValue);
 
                         recipe0.ChangeServings(servings0, true);
-                        
+
                         ComponentBuilderV2 newComponentContainer = await BuildComponentUnsafeAsync(recipe0, unit);
-                        
+
                         await component.UpdateAsync(m => m.Components = newComponentContainer.Build());
 
                         break;
                     case RecipeRecipesButton:
                         ComponentBuilderV2? componentContainer = await GetRecipesComponentAsync();
-                        
+
                         await component.UpdateAsync(m => m.Components = componentContainer!.Build());
 
                         break;
                     default:
                         var customId = component.Data.CustomId;
                         var lastPartStartIndex = customId.LastIndexOf('-');
-                        
+
                         if (lastPartStartIndex == -1)
                             return;
 
                         ComponentBuilderV2 componentContainer0;
 
-                        if (customId[..lastPartStartIndex] == RecipesLookInsideButton)
-                            componentContainer0 = await BuildComponentUnsafeAsync(_recipes.First(r => r.RecipeId == int.Parse(customId[(lastPartStartIndex + 1)..])));
-                        else
-                            componentContainer0 = await BuildComponentUnsafeAsync(_recipes.First(r => r.RecipeId == int.Parse(customId[(lastPartStartIndex + 1)..])));
+                        componentContainer0 = customId[..lastPartStartIndex] == RecipesLookInsideButton
+                            ? await BuildComponentUnsafeAsync(_recipes.First(r => r.RecipeId == int.Parse(customId[(lastPartStartIndex + 1)..])))
+                            : await BuildComponentUnsafeAsync(_recipes.First(r => r.RecipeId == int.Parse(customId[(lastPartStartIndex + 1)..])));
 
                         await component.UpdateAsync(m => m.Components = componentContainer0.Build());
 
                         break;
                 }
-                
+
                 break;
             case SocketModal modal:
                 if (modal.Data.CustomId == RecipeServingsButton)
                 {
                     var success = short.TryParse(modal.Data.Components.First(c => c.CustomId == RecipeServingsInput).Value, out var servings);
-                    
+
                     if (!success || servings <= 0)
                         break;
 
                     var units = modal.Message.Components.FindComponentById<TextDisplayComponent>(RecipeOvenSettingsDisplay).Content.Split(Environment.NewLine)[^1].Split(' ')[^1][..^1].ToUnits(); // [..^1] to exclude the ` character from the text content
                     Recipe recipe = _recipes.First(r => r.Name == modal.Message.Components.FindComponentById<TextDisplayComponent>(RecipeNameDisplay).Content[2..]);
                     Recipe? recipe0 = recipe.Clone();
-                    
+
                     recipe0.ChangeServings(servings, true);
-                    
+
                     ComponentBuilderV2 newComponentContainer = await BuildComponentUnsafeAsync(recipe0, units);
-                    
+
                     await modal.UpdateAsync(m => m.Components = newComponentContainer.Build());
                 }
-                
+
                 break;
             default:
                 return;
@@ -151,7 +148,7 @@ public sealed class RecipeService
         foreach (RecipeIngredient recipeIngredient in recipe.RecipeIngredients)
         {
             ingredients.Append($"`{recipeIngredient.Quantity} {recipeIngredient.Unit.ToSymbol()}` {recipeIngredient.Ingredient.Name} ");
- 
+
             if (recipeIngredient.Optional)
                 ingredients.AppendLine("[Optional]");
             else
@@ -160,7 +157,7 @@ public sealed class RecipeService
 
         for (var i = 0; i < recipe.Instruction.Length; i++)
             instructions.AppendLine($"`{i + 1}.` {recipe.Instruction[i]}{Environment.NewLine}");
-        
+
         return new ComponentBuilderV2()
             .WithTextDisplay($"# {recipe.Name}", RecipeNameDisplay)
             .WithTextDisplay($"-# {recipe.Servings} servings", RecipeServingsDisplay)
@@ -205,7 +202,7 @@ public sealed class RecipeService
                     .WithEmote(emote)
             ]);
     }
-    
+
     private async Task<ComponentBuilderV2> BuildComponentsUnsafeAsync()
     {
         if (!_recipes.Any())
@@ -224,7 +221,7 @@ public sealed class RecipeService
         foreach (Recipe recipe in _recipes)
         {
             var buttonBuilder = new ButtonBuilder("Look inside", $"{RecipesLookInsideButton}-{recipe.RecipeId}");
-            
+
             if (emote is not null)
                 buttonBuilder.WithEmote(emote);
 
@@ -235,7 +232,7 @@ public sealed class RecipeService
                     buttonBuilder
                 ]);
         }
-        
+
         return builder;
     }
 

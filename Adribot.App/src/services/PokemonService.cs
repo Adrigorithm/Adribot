@@ -1,6 +1,6 @@
-﻿namespace Adribot.Services;
+namespace Adribot.Services;
 
 public class PokemonService
 {
-    
+
 }

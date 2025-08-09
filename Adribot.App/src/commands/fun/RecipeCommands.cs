@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Adribot.Constants.Enums;
 using Adribot.Services;
@@ -23,10 +21,10 @@ public class RecipeCommands(RecipeService recipeService) : InteractionModuleBase
 
             return;
         }
-        
+
         await RespondAsync(components: embed);
     }
-    
+
     [SlashCommand("recipes", "Gets all recipes")]
     [RequireBotPermission(ChannelPermission.SendMessages)]
     [RequireUserPermission(ChannelPermission.SendMessages)]

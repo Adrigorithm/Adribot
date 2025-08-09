@@ -62,7 +62,7 @@ public sealed class WireService(DiscordClientProvider provider, IHttpClientFacto
 
         if (!HasManageEmojiAndStickersPermission(wireGuild, userId))
             return (false, $"User does not exist in guild `{wireGuild.Id}` or has insufficient permissions!");
-        
+
         if (shouldReplace)
         {
             GuildEmote? emote = wireGuild.Emotes.FirstOrDefault(e => e.Name == name);
@@ -70,7 +70,7 @@ public sealed class WireService(DiscordClientProvider provider, IHttpClientFacto
             if (emote is not null)
                 await wireGuild.DeleteEmoteAsync(emote);
         }
-        
+
         await wireGuild.CreateEmoteAsync(name, new Image(new MemoryStream(wireConfig.EmoteData)));
 
         return (true, null);

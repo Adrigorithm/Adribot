@@ -1,6 +1,6 @@
-﻿namespace Adribot.Data.Repositories;
+namespace Adribot.Data.Repositories;
 
 public class PokemonRepository
 {
-    
+
 }
