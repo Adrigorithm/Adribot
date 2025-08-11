@@ -10,5 +10,5 @@ public record ItemFlingEffect(
     // The result of this fling effect listed in different languages.
     [property: JsonPropertyName("effect_entries")] List<Effect> EffectEntries,
     
-    [property: JsonPropertyName("items")] List<NamedApiResource> Items,
+    [property: JsonPropertyName("items")] List<NamedApiResource> Items
 );
