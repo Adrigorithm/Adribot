@@ -20,7 +20,7 @@ public record Ability(
     // The list of previous effects this ability has had across version groups.
     [property: JsonPropertyName("effect_changes")] List<AbilityEffectChange> EffectChanges,
 
-    // The flavor text of this ability listed in different languages.
+    // The flavour text of this ability listed in different languages.
     [property: JsonPropertyName("flavor_text_entries")] List<AbilityFlavourText> FlavourTextEntries,
 
     [property: JsonPropertyName("pokemon")] List<AbilityPokemon> Pokemon

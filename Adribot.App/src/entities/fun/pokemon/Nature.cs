@@ -9,7 +9,7 @@ public record Nature(
     [property: JsonPropertyName("decreased_stat")] NamedApiResource DecreasedStat,
     [property: JsonPropertyName("increased_stat")] NamedApiResource IncreasedStat,
     [property: JsonPropertyName("hates_flavor")] NamedApiResource HatesFlavour,
-    [property: JsonPropertyName("likes_flavor")] NamedApiResource LikesFlavor,
+    [property: JsonPropertyName("likes_flavor")] NamedApiResource LikesFlavour,
 
     // A list of Pokéathlon stats this nature effects and how much it effects them
     [property: JsonPropertyName("pokeathlon_stat_changes")] List<NatureStatChange> PokeathlonStatChanges,

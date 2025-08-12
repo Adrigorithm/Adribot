@@ -15,7 +15,7 @@ public record Item(
     // The effect of this ability listed in different languages.
     [property: JsonPropertyName("effect_entries")] List<VerboseEffect> EffectEntries,
     
-    // The flavor text of this ability listed in different languages.
+    // The flavour text of this ability listed in different languages.
     [property: JsonPropertyName("flavor_text_entries")] List<VersionGroupFlavourText> FlavourTextEntries,
     
     [property: JsonPropertyName("game_indices")] List<GenerationGameIndex> GameIndices,
