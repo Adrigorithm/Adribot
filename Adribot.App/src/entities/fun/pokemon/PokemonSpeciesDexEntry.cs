@@ -1,0 +1,12 @@
+﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
+
+namespace Adribot.Entities.fun.pokemon;
+
+public record PokemonSpeciesDexEntry(
+    // The index number within the Pokédex.
+    [property: JsonPropertyName("entry_number")] int EntryNumber,
+    
+    // The Pokédex the referenced Pokémon species can be found in.
+    [property: JsonPropertyName("pokedex")] NamedApiResource Pokedex
+);
