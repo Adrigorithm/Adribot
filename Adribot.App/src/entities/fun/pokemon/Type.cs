@@ -29,5 +29,5 @@ public record Type(
     [property: JsonPropertyName("pokemon")] List<TypePokemon> Pokemon,
 
     // A list of moves that have this type.
-    [property: JsonPropertyName("moves")] List<NamedApiResource> Moves,
+    [property: JsonPropertyName("moves")] List<NamedApiResource> Moves
 );
