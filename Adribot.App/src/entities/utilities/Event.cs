@@ -30,10 +30,16 @@ public class Event : IDataStructure
     public EmbedBuilder GenerateEmbedBuilder() =>
         new()
         {
-            Author = new EmbedAuthorBuilder { Name = Organiser },
+            Author = new EmbedAuthorBuilder
+            {
+                Name = Organiser
+            },
             Title = $"{Name}\n[{Start:HH:mm} - {End:HH:mm}]",
             Description = Summary,
-            Footer = new EmbedFooterBuilder { Text = Location }
+            Footer = new EmbedFooterBuilder
+            {
+                Text = Location
+            }
         };
 
     // ReSharper disable once InconsistentNaming
@@ -43,7 +49,10 @@ public class Event : IDataStructure
 
         return new EmbedBuilder
         {
-            Author = new EmbedAuthorBuilder { Name = descriptionLines[3].Substring(descriptionLines[3].IndexOf(':') + 2) },
+            Author = new EmbedAuthorBuilder
+            {
+                Name = descriptionLines[3].Substring(descriptionLines[3].IndexOf(':') + 2)
+            },
             Title = $"{descriptionLines[5].Substring(descriptionLines[5].IndexOf(':') + 2)}\n{Location} - [{Start:HH:mm} -> {End:HH:mm}]",
             Description = Summary
         };

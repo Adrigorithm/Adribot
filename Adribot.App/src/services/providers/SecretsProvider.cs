@@ -36,7 +36,7 @@ public class SecretsProvider(ConfigValueType config)
     }
 
     /// <summary>
-    /// Loads config values from system level environment variables
+    ///     Loads config values from system level environment variables
     /// </summary>
     /// <param name="config">optionally load from a specific configuration provider</param>
     /// <param name="envVarsAreFiles">whether the environment values will have file paths instead of the raw values</param>
@@ -71,7 +71,7 @@ public class SecretsProvider(ConfigValueType config)
     }
 
     public static SecretsProvider LoadFromValues(string? botToken, string? catToken, ulong? devUserId, string? embedColour, string? sqlConnectionString) =>
-        new(new()
+        new(new ConfigValueType
         {
             BotToken = string.IsNullOrWhiteSpace(botToken)
                 ? throw new ArgumentNullException(nameof(botToken), "Environment variable not found: Adribot_botToken")

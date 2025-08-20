@@ -17,9 +17,7 @@ public class UtilityCommands(RemindMeService remindMeService) : InteractionModul
         DateTimeOffset endDate = timeUnit.ToEndDate(factor, now);
 
         if (endDate - now < TimeSpan.FromMinutes(1))
-        {
-            await RespondAsync($"Remind me's should be set at least 1 minute ahead in time.", ephemeral: true);
-        }
+            await RespondAsync("Remind me's should be set at least 1 minute ahead in time.", ephemeral: true);
         else
         {
             remindMeService.AddRemindMe(Context.Guild.Id, Context.User.Id, altChannel?.Id, taskTodo, endDate);

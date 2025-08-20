@@ -13,7 +13,6 @@ public record Generation(
 
     // The main region travelled in this generation.
     [property: JsonPropertyName("main_region")] NamedApiResource MainRegion,
-
     [property: JsonPropertyName("moves")] List<NamedApiResource> Moves,
     [property: JsonPropertyName("pokemon_species")] List<NamedApiResource> PokemonSpecies,
     [property: JsonPropertyName("types")] List<NamedApiResource> Types,

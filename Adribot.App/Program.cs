@@ -23,7 +23,7 @@ internal static class Program
         _serviceProvider = new ServiceCollection()
             .AddSingleton(secrets)
             .AddDbContextFactory<AdribotContext>(
-                optionsAction: (options) => options.UseSqlServer(secrets.Config.SqlConnectionString)
+                optionsAction: options => options.UseSqlServer(secrets.Config.SqlConnectionString)
             )
             .AddHttpClient()
             .AddSingleton<DGuildRepository>()

@@ -21,10 +21,13 @@ public class Infraction : IDataStructure
     public EmbedBuilder GenerateEmbedBuilder() =>
         new()
         {
-            Author = new EmbedAuthorBuilder { Name = "<@608275633218519060>" },
+            Author = new EmbedAuthorBuilder
+            {
+                Name = "<@608275633218519060>"
+            },
             Title = $"{Type}",
             Description = $"This infraction belongs to {DMember.Mention}.\n" +
-                $"It lastst from {Date:g} to {EndDate:g}\n" +
-                $"It was issued because `{Reason}`"
+                          $"It lastst from {Date:g} to {EndDate:g}\n" +
+                          $"It was issued because `{Reason}`"
         };
 }

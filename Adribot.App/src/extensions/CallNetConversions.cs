@@ -16,6 +16,6 @@ public static class CallNetConversions
             Description = string.IsNullOrEmpty(cEvent.Description) ? "No description found" : cEvent.Description,
             Name = string.IsNullOrEmpty(cEvent.Name) ? "Unnamed" : cEvent.Name,
             Organiser = cEvent.Organizer?.CommonName ?? "Unknown",
-            Summary = string.IsNullOrEmpty(cEvent.Summary) ? "No summary found" : cEvent.Summary,
+            Summary = string.IsNullOrEmpty(cEvent.Summary) ? "No summary found" : cEvent.Summary
         };
 }

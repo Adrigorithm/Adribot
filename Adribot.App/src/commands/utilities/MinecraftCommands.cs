@@ -13,7 +13,15 @@ namespace Adribot.Commands.Utilities;
 
 public class MinecraftCommands : InteractionModuleBase<SocketInteractionContext>
 {
-    private readonly Dictionary<MinecraftVersion, string> _versionMapper = new() { { MinecraftVersion.Legacy, "Temp/datapack/data/emojiful/recipes/" }, { MinecraftVersion.Modern, "Temp/datapack/data/emojiful/recipe/" } };
+    private readonly Dictionary<MinecraftVersion, string> _versionMapper = new()
+    {
+        {
+            MinecraftVersion.Legacy, "Temp/datapack/data/emojiful/recipes/"
+        },
+        {
+            MinecraftVersion.Modern, "Temp/datapack/data/emojiful/recipe/"
+        }
+    };
 
     public MinecraftCommands()
     {
@@ -35,9 +43,7 @@ public class MinecraftCommands : InteractionModuleBase<SocketInteractionContext>
         if (emojiMatches.Count > 0)
         {
             foreach (var filePath in Directory.GetFiles(datapackParent, "*?.zip"))
-            {
                 File.Delete(filePath);
-            }
 
             Directory.Delete(datapackParent + "datapack/data/emojiful", true);
             Directory.CreateDirectory(_versionMapper[mcVersion]);
@@ -46,10 +52,7 @@ public class MinecraftCommands : InteractionModuleBase<SocketInteractionContext>
             {
                 var emoji = new EmojifulEmoji
                 {
-                    Category = category,
-                    Name = emojiMatches[i].Groups[2].Value,
-                    Url = emojiMatches[i].Groups[1].Value.Contains('a') ? "https://cdn.discordapp.com/emojis/" + emojiMatches[i].Groups[3].Value + ".gif" : "https://cdn.discordapp.com/emojis/" + emojiMatches[i].Groups[3].Value + ".png",
-                    Type = "emojiful:emoji_recipe"
+                    Category = category, Name = emojiMatches[i].Groups[2].Value, Url = emojiMatches[i].Groups[1].Value.Contains('a') ? "https://cdn.discordapp.com/emojis/" + emojiMatches[i].Groups[3].Value + ".gif" : "https://cdn.discordapp.com/emojis/" + emojiMatches[i].Groups[3].Value + ".png", Type = "emojiful:emoji_recipe"
                 };
 
                 FileStream fs = File.Create($"{_versionMapper[mcVersion]}{emojiMatches[i].Groups[2].Value.ToLower()}.json");

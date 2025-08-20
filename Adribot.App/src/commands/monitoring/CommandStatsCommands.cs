@@ -80,7 +80,8 @@ public class CommandStatsCommands(ApplicationCommandService commandService) : In
     }
 
     /// <summary>
-    /// Create a string representation of a list of commands. This is a shortened list intended to send through discord or terminal.
+    ///     Create a string representation of a list of commands. This is a shortened list intended to send through discord or
+    ///     terminal.
     /// </summary>
     /// <param name="commands"></param>
     /// <param name="isGlobal"></param>

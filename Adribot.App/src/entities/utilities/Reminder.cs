@@ -20,7 +20,10 @@ public class Reminder : IDataStructure
     public EmbedBuilder GenerateEmbedBuilder() =>
         new()
         {
-            Author = new EmbedAuthorBuilder { Name = $"{DMember.Mention}" },
+            Author = new EmbedAuthorBuilder
+            {
+                Name = $"{DMember.Mention}"
+            },
             Title = "",
             Description = $"A reminder set on `{Date:g}` to trigger on {EndDate:g}\n\nwith content `{Content}`"
         };

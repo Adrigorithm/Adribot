@@ -35,10 +35,7 @@ public sealed class RemindMeService(
 
         var embed = new EmbedBuilder
         {
-            Color = Config.EmbedColour,
-            Description = reminder.Content,
-            Timestamp = reminder.Date,
-            Title = "You wanted to be reminded of the following:"
+            Color = Config.EmbedColour, Description = reminder.Content, Timestamp = reminder.Date, Title = "You wanted to be reminded of the following:"
         };
 
         SocketGuild guild = Client.Guilds.First(g => g.Id == reminder.DMember.DGuild.GuildId);

@@ -8,8 +8,8 @@ namespace Adribot.Helpers;
 
 public class RequirePermissionOrUserAttribute : PreconditionAttribute
 {
-    private readonly ChannelPermission _permission;
     private readonly ulong _devUserId;
+    private readonly ChannelPermission _permission;
 
     public RequirePermissionOrUserAttribute(ulong devUserId, ChannelPermission permission) =>
         (_permission, _devUserId) = (permission, devUserId);

@@ -13,8 +13,8 @@ namespace Adribot.Services;
 
 public class StarboardService
 {
-    private readonly StarboardRepository _starboardRepository;
     private readonly DGuildRepository _dGuildRepository;
+    private readonly StarboardRepository _starboardRepository;
 
     public StarboardService(DiscordClientProvider clientProvider, StarboardRepository starboardRepository, DGuildRepository guildRepository)
     {
@@ -168,9 +168,7 @@ public class StarboardService
 
             _starboardRepository.AddMessageLink(new MessageLink
             {
-                OriginalMessageId = arg1.Id,
-                Starboard = starboard,
-                ReferenceMessageId = message.Id
+                OriginalMessageId = arg1.Id, Starboard = starboard, ReferenceMessageId = message.Id
             });
 
             return;
@@ -191,12 +189,18 @@ public class StarboardService
         foreach (var key in emoteStrings.Keys)
             emoteValues.AppendLine($"{key} x {emoteStrings[key]}");
 
-        return new EmbedBuilder()
+        return new EmbedBuilder
         {
-            Author = new EmbedAuthorBuilder { Name = "Adrialgorithm" },
+            Author = new EmbedAuthorBuilder
+            {
+                Name = "Adrialgorithm"
+            },
             Fields =
             [
-                new EmbedFieldBuilder { Name = "Reactions:", IsInline = false, Value = emoteValues.ToString() }
+                new EmbedFieldBuilder
+                {
+                    Name = "Reactions:", IsInline = false, Value = emoteValues.ToString()
+                }
             ],
             Title = ""
         };
@@ -220,7 +224,7 @@ public class StarboardService
             }, false);
         }
         else
-        //TODO: Add a way to remove/update messages made using previous starboard configuration
+            //TODO: Add a way to remove/update messages made using previous starboard configuration
         {
             starboard.Threshold = amount;
             starboard.EmojiStrings = emojisList;

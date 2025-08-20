@@ -19,14 +19,11 @@ public record Pokemon(
 
     // The weight of this Pokémon in hectograms.
     [property: JsonPropertyName("weight")] int Weight,
-
     [property: JsonPropertyName("abilities")] List<PokemonAbility> Abilities,
-
     [property: JsonPropertyName("forms")] List<NamedApiResource> Forms,
 
     // A list of game indices relevant to Pokémon item by generation.
     [property: JsonPropertyName("game_indices")] List<VersionGameIndex> GameIndices,
-
     [property: JsonPropertyName("held_items")] List<PokemonHeldItem> HeldItems,
     [property: JsonPropertyName("location_area_encounters")] string LocationAreaEncounters,
     [property: JsonPropertyName("moves")] List<PokemonMove> Moves,
@@ -38,7 +35,6 @@ public record Pokemon(
 
     // A set of cries used to depict this Pokémon in the game. A visual representation of the various cries can be found at PokeAPI/cries
     [property: JsonPropertyName("cries")] PokemonCries Cries,
-
     [property: JsonPropertyName("species")] List<NamedApiResource> Species,
     [property: JsonPropertyName("stats")] List<PokemonStat> Stats,
     [property: JsonPropertyName("types")] List<PokemonType> Types

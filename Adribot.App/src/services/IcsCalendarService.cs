@@ -34,10 +34,13 @@ public sealed class IcsCalendarService(IcsCalendarRepository calendarRepository,
     }
 
     /// <summary>
-    /// Should be be called separately when events concern multiple guilds.
+    ///     Should be be called separately when events concern multiple guilds.
     /// </summary>
     /// <param name="cEvents">A collection of events</param>
-    /// <param name="calendarId">The Id of the calendar to change its state to 'posted'. Set to null if the state shouldn't change.</param>
+    /// <param name="calendarId">
+    ///     The Id of the calendar to change its state to 'posted'. Set to null if the state shouldn't
+    ///     change.
+    /// </param>
     /// <param name="guildId">The guild the events are to be posted to</param>
     /// <param name="channelId">The channel in the event should be posted in</param>
     /// <returns></returns>
@@ -91,12 +94,10 @@ public sealed class IcsCalendarService(IcsCalendarRepository calendarRepository,
                 using var httpClient = new HttpClient();
                 return await httpClient.GetStreamAsync(uri);
             }
-            else
-            {
-                return uri.Scheme == Uri.UriSchemeFile
-                    ? (Stream)new FileStream(uri.LocalPath, FileMode.Open, FileAccess.Read)
-                    : throw new NotSupportedException("Unsupported Uri scheme");
-            }
+
+            return uri.Scheme == Uri.UriSchemeFile
+                ? (Stream)new FileStream(uri.LocalPath, FileMode.Open, FileAccess.Read)
+                : throw new NotSupportedException("Unsupported Uri scheme");
         }
     }
 
@@ -110,5 +111,4 @@ public sealed class IcsCalendarService(IcsCalendarRepository calendarRepository,
 
         return true;
     }
-
 }

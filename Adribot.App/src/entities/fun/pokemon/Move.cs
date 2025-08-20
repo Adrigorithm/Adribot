@@ -10,12 +10,10 @@ public record Move(
 
     // The percent value of how likely it is this moves effect will happen.
     [property: JsonPropertyName("effect_chance")] int EffectChance,
-
     [property: JsonPropertyName("pp")] int Pp,
 
     // A value between -8 and 8. Sets the order in which moves are executed during battle. See Bulbapedia for greater detail.
     [property: JsonPropertyName("priority")] int Priority,
-
     [property: JsonPropertyName("power")] int Power,
 
     // A detail of normal and super contest combos that require this move.
@@ -35,7 +33,6 @@ public record Move(
 
     // The list of previous effects this move has had across version groups of the games.
     [property: JsonPropertyName("effect_changes")] List<AbilityEffectChange> EffectChanges,
-
     [property: JsonPropertyName("learned_by_pokemon")] List<NamedApiResource> LearnedByPokemon,
 
     // The flavour text of this move listed in different languages.

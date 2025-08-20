@@ -16,7 +16,7 @@ public class AdminCommands(InfractionService infractionService) : InteractionMod
     [SlashCommand("clear", "Deletes given amount of messages")]
     [RequireUserPermission(ChannelPermission.ManageMessages)]
     [RequireBotPermission(ChannelPermission.ManageMessages)]
-    public async Task DeleteMessagesAsync([Summary("Amount", "Amount of messages to delete"), MinValue(1), MaxValue(100)] short amount)
+    public async Task DeleteMessagesAsync([Summary("Amount", "Amount of messages to delete")] [MinValue(1)] [MaxValue(100)] short amount)
     {
         IAsyncEnumerable<IReadOnlyCollection<IMessage>> messages = Context.Channel.GetMessagesAsync(amount);
         IEnumerable<IMessage> messagesFlattened = await messages.FlattenAsync();
@@ -29,13 +29,13 @@ public class AdminCommands(InfractionService infractionService) : InteractionMod
             ? $"Ink too dry! `{oldMessages}` of `{messagesFlattened.Count()}` message{(amount > 1 ? "s" : "")} could not be deleted."
             : $"Deleted {amount} Message{(amount > 1 ? "s" : "")}.";
 
-        await RespondAsync(confirmMessage.ToString(), ephemeral: true);
+        await RespondAsync(confirmMessage, ephemeral: true);
     }
 
     [SlashCommand("mute", "Mutes member using a Timeout")]
     [RequireUserPermission(GuildPermission.MuteMembers)]
     [RequireContext(ContextType.Guild)]
-    public async Task MuteMemberAsync([Summary("Member", "Member to mute")] SocketGuildUser member, [Summary("Unit", "The duration multiplied by the factor parameter")] TimeSpanType type = TimeSpanType.Minutes, [Summary("Factor", "The amound of specified time units."), MinValue(1)] int factor = 3, [Summary("Reason", "The reason for this infraction")] string? reason = null)
+    public async Task MuteMemberAsync([Summary("Member", "Member to mute")] SocketGuildUser member, [Summary("Unit", "The duration multiplied by the factor parameter")] TimeSpanType type = TimeSpanType.Minutes, [Summary("Factor", "The amound of specified time units.")] [MinValue(1)] int factor = 3, [Summary("Reason", "The reason for this infraction")] string? reason = null)
     {
         DateTimeOffset now = DateTimeOffset.UtcNow;
         DateTimeOffset endDate = type.ToEndDate(factor, now);
@@ -48,7 +48,7 @@ public class AdminCommands(InfractionService infractionService) : InteractionMod
     [SlashCommand("ban", "Bans members")]
     [RequireUserPermission(GuildPermission.BanMembers)]
     [RequireContext(ContextType.Guild)]
-    public async Task BanMemberAsync([Summary("Member", "Member to ban")] SocketGuildUser member, [Summary("Unit", "The duration multiplied by the factor parameter")] TimeSpanType type = TimeSpanType.Months, [Summary("Factor", "The amound of specified time units."), MinValue(1)] int factor = 1, [Summary("Messages", "Anount of messages by this user to delete")] int deleteMessages = 0, [Summary("Reason", "The reason for this infraction")] string? reason = null)
+    public async Task BanMemberAsync([Summary("Member", "Member to ban")] SocketGuildUser member, [Summary("Unit", "The duration multiplied by the factor parameter")] TimeSpanType type = TimeSpanType.Months, [Summary("Factor", "The amound of specified time units.")] [MinValue(1)] int factor = 1, [Summary("Messages", "Anount of messages by this user to delete")] int deleteMessages = 0, [Summary("Reason", "The reason for this infraction")] string? reason = null)
     {
         DateTimeOffset now = DateTimeOffset.UtcNow;
         DateTimeOffset endDate = type.ToEndDate(factor, now);

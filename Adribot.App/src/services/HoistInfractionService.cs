@@ -30,7 +30,7 @@ public sealed partial class InfractionService : BaseTimerService
             {
                 await user.ModifyAsync(m => m.Nickname = "💩");
                 await user.SendMessageAsync("You were trying to hoist, stop trying to hoist.\n" +
-                    "I have therefore changed your name to 💩 for 24 hours.");
+                                            "I have therefore changed your name to 💩 for 24 hours.");
             }
         }
     }

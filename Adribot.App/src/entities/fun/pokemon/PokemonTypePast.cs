@@ -5,6 +5,5 @@ namespace Adribot.Entities.fun.pokemon;
 
 public record PokemonTypePast(
     [property: JsonPropertyName("generation")] NamedApiResource Generation,
-
     [property: JsonPropertyName("types")] List<PokemonType> Types
 );

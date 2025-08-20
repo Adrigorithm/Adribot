@@ -15,8 +15,8 @@ namespace Adribot.Entities;
 
 public class Bot
 {
-    private readonly DGuildRepository _dGuildRepository;
     private readonly DiscordClientProvider _clientProvider;
+    private readonly DGuildRepository _dGuildRepository;
     private readonly InteractionService _interactionService;
     private IServiceProvider _serviceProvider;
 
@@ -24,7 +24,7 @@ public class Bot
     {
         _clientProvider = clientProvider;
         _dGuildRepository = dGuildRepository;
-        _interactionService = new(_clientProvider.Client);
+        _interactionService = new InteractionService(_clientProvider.Client);
 
         clientProvider.Client.Ready += ReadyAsync;
         clientProvider.Client.MessageReceived += MessageReceivedAsync;
@@ -64,17 +64,17 @@ public class Bot
                 ? false
                 : user.GuildPermissions.Administrator;
         }))
-        {
             await message.AddReactionAsync(Emoji.Parse("💢"));
-        }
 
-        IGuildUser? GetGuildUserOrDefault(SocketUser socketUser) =>
-            socketUser switch
+        IGuildUser? GetGuildUserOrDefault(SocketUser socketUser)
+        {
+            return socketUser switch
             {
                 IThreadUser threadUser => threadUser.GuildUser,
                 IGuildUser guildUser => guildUser,
                 _ => null
             };
+        }
     }
 
     private async Task ReadyAsync()

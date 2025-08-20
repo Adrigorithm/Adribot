@@ -13,7 +13,6 @@ public record EvolutionDetail(
 
     // The evolving Pokémon species must know a move with this type during the evolution trigger event in order to evolve into this Pokémon species.
     [property: JsonPropertyName("known_move_type")] NamedApiResource KnownMoveType,
-
     [property: JsonPropertyName("location")] NamedApiResource Location,
     [property: JsonPropertyName("min_level")] int MinLevel,
     [property: JsonPropertyName("min_happiness")] int MinHappiness,
@@ -29,7 +28,6 @@ public record EvolutionDetail(
 
     // The required relation between the Pokémon's Attack and Defense stats. 1 means Attack > Defense. 0 means Attack = Defense. -1 means Attack < Defense.
     [property: JsonPropertyName("relative_physical_stats")] int RelativePhysicalStats,
-
     [property: JsonPropertyName("time_of_day")] string TimeOfDay,
 
     // Pokémon species for which this one must be traded.

@@ -34,18 +34,21 @@ public class DMember : IComparable, IDataStructure
         throw new ArgumentException($"Instances of type {typeName} are not supported.\n" +
                                     $"Make sure your instance is of type {GetType().Name}");
     }
-
-    public override bool Equals(object? obj) =>
-        obj is DMember member && member.MemberId == MemberId && member.DGuildId == DGuildId;
     public EmbedBuilder GenerateEmbedBuilder() =>
         new()
         {
-            Author = new EmbedAuthorBuilder { Name = "<@608275633218519060>" },
+            Author = new EmbedAuthorBuilder
+            {
+                Name = "<@608275633218519060>"
+            },
             Title = MemberId.ToString(),
             Description = $"This member has set {Reminders.Count} reminders and {Tags.Count} tags.\n" +
-                $"They have {Infractions.Count} infractions of which {Infractions.Count(i => !i.IsExpired)} are still pending.\n" +
-                $"They have registered {Calendars.Count} calendars in total."
+                          $"They have {Infractions.Count} infractions of which {Infractions.Count(i => !i.IsExpired)} are still pending.\n" +
+                          $"They have registered {Calendars.Count} calendars in total."
         };
+
+    public override bool Equals(object? obj) =>
+        obj is DMember member && member.MemberId == MemberId && member.DGuildId == DGuildId;
 
     public override int GetHashCode() => MemberId.GetHashCode();
 }

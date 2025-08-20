@@ -16,7 +16,10 @@ public class MessageLink : IDataStructure
     public EmbedBuilder GenerateEmbedBuilder() =>
         new()
         {
-            Author = new EmbedAuthorBuilder { Name = "Adrigorithm" },
+            Author = new EmbedAuthorBuilder
+            {
+                Name = "Adrigorithm"
+            },
             Title = "",
             Description = $"Message with id `{OriginalMessageId}` is referenced by Message with id `{ReferenceMessageId}`"
         };

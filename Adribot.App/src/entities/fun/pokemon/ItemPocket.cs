@@ -9,7 +9,7 @@ public record ItemPocket(
 
     // A list of item categories that are relevant to this item pocket.
     [property: JsonPropertyName("categories")] List<NamedApiResource> Categories,
-    
+
     // The name of this resource listed in different languages.
     [property: JsonPropertyName("names")] List<Name> Names
 );

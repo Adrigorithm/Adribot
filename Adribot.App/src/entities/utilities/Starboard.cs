@@ -25,9 +25,12 @@ public class Starboard : IDataStructure
             ? $"Guild with database id `{DGuildId}` has a starboard config for `{EmojiStrings.Count}` emojis and `{EmoteStrings.Count}` emotes triggered when reaction count `{Threshold}` is reached."
             : $"Guild with id `{DGuild.GuildId}` has a starboard config for `{EmojiStrings.Count}` emojis and `{EmoteStrings.Count}` emotes triggered when reaction count `{Threshold}` is reached.";
 
-        return new()
+        return new EmbedBuilder
         {
-            Author = new EmbedAuthorBuilder { Name = "Adrigorithm" },
+            Author = new EmbedAuthorBuilder
+            {
+                Name = "Adrigorithm"
+            },
             Title = "Starboard",
             Description = description
         };

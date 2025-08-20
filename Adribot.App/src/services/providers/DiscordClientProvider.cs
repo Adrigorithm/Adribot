@@ -7,7 +7,6 @@ namespace Adribot.Services.Providers;
 
 public class DiscordClientProvider
 {
-    public DiscordSocketClient Client { get; init; }
 
     public DiscordClientProvider()
     {
@@ -18,6 +17,7 @@ public class DiscordClientProvider
 
         Client.Log += Log;
     }
+    public DiscordSocketClient Client { get; init; }
 
     private static Task Log(LogMessage message)
     {

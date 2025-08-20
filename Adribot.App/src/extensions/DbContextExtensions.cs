@@ -3,6 +3,7 @@ using Adribot.Constants.Enums.Recipe;
 using Adribot.Data;
 using Adribot.Entities.Fun.Recipe;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Adribot.Extensions;
 
@@ -12,134 +13,105 @@ public static class DbContextExtensions
     {
         if (!await context.Recipes.AnyAsync())
             await SeedRecipesAsync(context);
-        
-        // Probably do an API call to generations or versions... idk yet
-        if (!await context.Pokemons.AnyAsync())
-            await SeedPokemonAsync(context);
-        
     }
 
-    private static async Task SeedPokemonAsync(AdribotContext context)
-    {
-        
-    }
-    
     private static async Task SeedRecipesAsync(AdribotContext context)
     {
         // Ingredients
 
         var ingredient1 = new Ingredient
         {
-            IngredientId = 1,
-            Name = "dark chocolate"
+            IngredientId = 1, Name = "dark chocolate"
         };
 
         var ingredient2 = new Ingredient
         {
-            IngredientId = 2,
-            Name = "coconut oil"
+            IngredientId = 2, Name = "coconut oil"
         };
 
         var ingredient3 = new Ingredient
         {
-            IngredientId = 3,
-            Name = "icing sugar"
+            IngredientId = 3, Name = "icing sugar"
         };
 
         var ingredient4 = new Ingredient
         {
-            IngredientId = 4,
-            Name = "all-purpose flour"
+            IngredientId = 4, Name = "all-purpose flour"
         };
 
         var ingredient5 = new Ingredient
         {
-            IngredientId = 5,
-            Name = "eggs"
+            IngredientId = 5, Name = "eggs"
         };
 
         var ingredient6 = new Ingredient
         {
-            IngredientId = 6,
-            Name = "dark chocolate chips"
+            IngredientId = 6, Name = "dark chocolate chips"
         };
 
         var ingredient7 = new Ingredient
         {
-            IngredientId = 7,
-            Name = "cane sugar"
+            IngredientId = 7, Name = "cane sugar"
         };
 
         var ingredient8 = new Ingredient
         {
-            IngredientId = 8,
-            Name = "rock sugar"
+            IngredientId = 8, Name = "rock sugar"
         };
 
         var ingredient9 = new Ingredient
         {
-            IngredientId = 9,
-            Name = "oatmeal (fine)"
+            IngredientId = 9, Name = "oatmeal (fine)"
         };
 
         var ingredient10 = new Ingredient
         {
-            IngredientId = 10,
-            Name = "coconut milk"
+            IngredientId = 10, Name = "coconut milk"
         };
 
         var ingredient11 = new Ingredient
         {
-            IngredientId = 11,
-            Name = "baking soda"
+            IngredientId = 11, Name = "baking soda"
         };
 
         var ingredient12 = new Ingredient
         {
-            IngredientId = 12,
-            Name = "salt"
+            IngredientId = 12, Name = "salt"
         };
 
         var ingredient13 = new Ingredient
         {
-            IngredientId = 13,
-            Name = "vanilla essence"
+            IngredientId = 13, Name = "vanilla essence"
         };
 
         var ingredient14 = new Ingredient
         {
-            IngredientId = 14,
-            Name = "cinnamon ground"
+            IngredientId = 14, Name = "cinnamon ground"
         };
 
         var ingredient15 = new Ingredient
         {
-            IngredientId = 15,
-            Name = "ginger ground"
+            IngredientId = 15, Name = "ginger ground"
         };
 
         var ingredient16 = new Ingredient
         {
-            IngredientId = 16,
-            Name = "nutmeg ground"
+            IngredientId = 16, Name = "nutmeg ground"
         };
 
         var ingredient17 = new Ingredient
         {
-            IngredientId = 17,
-            Name = "ground cloves"
+            IngredientId = 17, Name = "ground cloves"
         };
 
         var ingredient18 = new Ingredient
         {
-            IngredientId = 18,
-            Name = "baking powder"
+            IngredientId = 18, Name = "baking powder"
         };
 
         var ingredient19 = new Ingredient
         {
-            IngredientId = 19,
-            Name = "Cupcake tin"
+            IngredientId = 19, Name = "Cupcake tin"
         };
 
         // RecipeIngredients
@@ -391,7 +363,8 @@ public static class DbContextExtensions
             OvenMode = OvenMode.Fan,
             RecipeId = 1,
             Temperature = 453.15F,
-            Instruction = [
+            Instruction =
+            [
                 "Melt the chocolate (not the pieces) combined with the coconut oil. Using a microwave, take it out every 30 seconds and stir well until done to prevent it from overheating the chocolate.",
                 "Add icing sugar and stir until homogeneous. Repeat this process with the flour.",
                 "Add the eggs one after the other, stir well in between.",
@@ -411,7 +384,8 @@ public static class DbContextExtensions
             OvenMode = OvenMode.Fan,
             RecipeId = 2,
             Temperature = 443.15F,
-            Instruction = [
+            Instruction =
+            [
                 "Make sure you have all ingredients at the ready, as minimal delay should occur between all stages.",
                 "Combine all the sugar and coconut oil (melt if solid). Add the eggs, salt, baking soda and vanilla essence.",
                 "Add the oatmeal and coconut milk (if you used oatmeal, half the amount of milk will suffice) and stir until homogeneous. Lastly add the chocolate chips and combine",
@@ -431,7 +405,8 @@ public static class DbContextExtensions
             OvenMode = OvenMode.Fan,
             RecipeId = 3,
             Temperature = 443.15F,
-            Instruction = [
+            Instruction =
+            [
                 "Melt the coconut oil and stir it with the sugar until combined. Add the eggs one after the other, stir well in between.",
                 "In another bowl, combine the flour, baking powder and all spices.",
                 "Add a third of this mixture to the 'coconut oil and sugar concoction' and stir until homogeneous. Repeat this 2 times (for the remaining thirds).",
@@ -443,78 +418,28 @@ public static class DbContextExtensions
             ]
         };
 
-        await using Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = await context.Database.BeginTransactionAsync();
+        await using IDbContextTransaction transaction = await context.Database.BeginTransactionAsync();
 
         try
         {
             await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.Ingredients ON");
 
-            context.Ingredients.AddRange([
-                ingredient1,
-                ingredient2,
-                ingredient3,
-                ingredient4,
-                ingredient5,
-                ingredient6,
-                ingredient7,
-                ingredient8,
-                ingredient9,
-                ingredient10,
-                ingredient11,
-                ingredient12,
-                ingredient13,
-                ingredient14,
-                ingredient15,
-                ingredient16,
-                ingredient17,
-                ingredient18,
-                ingredient19
-            ]);
+            context.Ingredients.AddRange(ingredient1, ingredient2, ingredient3, ingredient4, ingredient5, ingredient6, ingredient7, ingredient8, ingredient9, ingredient10, ingredient11, ingredient12, ingredient13, ingredient14, ingredient15, ingredient16, ingredient17, ingredient18, ingredient19);
             await context.SaveChangesAsync();
 
             await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.Ingredients OFF");
 
             await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.Recipes ON");
 
-            context.Recipes.AddRange([
-                recipe1,
-                recipe2,
-                recipe3
-            ]);
+            context.Recipes.AddRange(recipe1, recipe2, recipe3);
             await context.SaveChangesAsync();
 
             await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.Recipes OFF");
 
             await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.RecipeIngredients ON");
 
-            context.RecipeIngredients.AddRange([
-                recipeIngredient1,
-                recipeIngredient2,
-                recipeIngredient3,
-                recipeIngredient4,
-                recipeIngredient5,
-                recipeIngredient6,
-                recipeIngredient7,
-                recipeIngredient8,
-                recipeIngredient9,
-                recipeIngredient10,
-                recipeIngredient11,
-                recipeIngredient12,
-                recipeIngredient13,
-                recipeIngredient14,
-                recipeIngredient15,
-                recipeIngredient16,
-                recipeIngredient17,
-                recipeIngredient18,
-                recipeIngredient19,
-                recipeIngredient20,
-                recipeIngredient21,
-                recipeIngredient22,
-                recipeIngredient23,
-                recipeIngredient24,
-                recipeIngredient25,
-                recipeIngredient26
-            ]);
+            context.RecipeIngredients.AddRange(recipeIngredient1, recipeIngredient2, recipeIngredient3, recipeIngredient4, recipeIngredient5, recipeIngredient6, recipeIngredient7, recipeIngredient8, recipeIngredient9, recipeIngredient10, recipeIngredient11, recipeIngredient12, recipeIngredient13, recipeIngredient14, recipeIngredient15, recipeIngredient16, recipeIngredient17, recipeIngredient18, recipeIngredient19, recipeIngredient20, recipeIngredient21, recipeIngredient22, recipeIngredient23, recipeIngredient24, recipeIngredient25,
+                recipeIngredient26);
             await context.SaveChangesAsync();
 
             await context.Database.ExecuteSqlRawAsync("SET IDENTITY_INSERT dbo.RecipeIngredients OFF");

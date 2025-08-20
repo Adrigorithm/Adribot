@@ -20,7 +20,10 @@ public class IcsCalendar : IDataStructure
     public EmbedBuilder GenerateEmbedBuilder() =>
         new()
         {
-            Author = new EmbedAuthorBuilder { Name = "Adrigorithm" },
+            Author = new EmbedAuthorBuilder
+            {
+                Name = "Adrigorithm"
+            },
             Title = Name,
             Description = $"A cached calendar `{Name}` containing {Events.Count} events. You probably want to see an individual event instead."
         };

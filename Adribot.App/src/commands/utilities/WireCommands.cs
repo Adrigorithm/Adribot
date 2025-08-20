@@ -14,7 +14,7 @@ public class WireCommands(WireService wireService) : InteractionModuleBase<Socke
         var (isSuccess, error) = await wireService.TryCreateWireConfigAsync(guildIdParsed, Context.User.Id, name, emoteString);
 
         if (isSuccess)
-            await RespondAsync($"Successfully registered emote", ephemeral: true);
+            await RespondAsync("Successfully registered emote", ephemeral: true);
         else
             await RespondAsync($"Could not register emote: {error}", ephemeral: true);
     }

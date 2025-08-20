@@ -17,7 +17,7 @@ public class RecipeCommands(RecipeService recipeService) : InteractionModuleBase
 
         if (embed is null)
         {
-            await RespondAsync($"No recipe found for this name", ephemeral: true);
+            await RespondAsync("No recipe found for this name", ephemeral: true);
 
             return;
         }
@@ -34,7 +34,7 @@ public class RecipeCommands(RecipeService recipeService) : InteractionModuleBase
 
         if (embed is null)
         {
-            await RespondAsync($"No recipes found.", ephemeral: true);
+            await RespondAsync("No recipes found.", ephemeral: true);
 
             return;
         }

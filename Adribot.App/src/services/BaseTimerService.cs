@@ -8,13 +8,11 @@ namespace Adribot.Services;
 
 public abstract class BaseTimerService : ITimerService
 {
-    protected DiscordSocketClient Client { get; init; }
-    protected ConfigValueType? Config { get; init; }
 
     private Timer _timer;
 
     /// <summary>
-    /// Initiates service dependencies.
+    ///     Initiates service dependencies.
     /// </summary>
     /// <param name="client">The client on which the service should operate</param>
     /// <param name="timerInterval">Time in seconds between each timer tick.</param>
@@ -25,9 +23,8 @@ public abstract class BaseTimerService : ITimerService
 
         Start(timerInterval);
     }
-
-    private async void CallbackAsync(object? state) =>
-        await Work();
+    protected DiscordSocketClient Client { get; init; }
+    protected ConfigValueType? Config { get; init; }
 
     public void Start(int timerInterval) =>
         _timer = new Timer(CallbackAsync, null, 0, timerInterval * 1000);
@@ -37,4 +34,7 @@ public abstract class BaseTimerService : ITimerService
 
     public virtual async Task Work() =>
         await Task.CompletedTask;
+
+    private async void CallbackAsync(object? state) =>
+        await Work();
 }

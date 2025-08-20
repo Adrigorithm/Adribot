@@ -57,7 +57,7 @@ public class Recipe
     }
 
     public Recipe Clone() =>
-        new Recipe
+        new()
         {
             RecipeId = RecipeId,
             Name = Name,

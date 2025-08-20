@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Adribot.Data.Repositories;
 
 public sealed class RecipeRepository(IDbContextFactory<AdribotContext> botContextFactory)
-: BaseRepository(botContextFactory)
+    : BaseRepository(botContextFactory)
 {
     public IEnumerable<Recipe> GetAllRecipes()
     {

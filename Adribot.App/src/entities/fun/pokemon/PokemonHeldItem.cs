@@ -5,6 +5,5 @@ namespace Adribot.Entities.fun.pokemon;
 
 public record PokemonHeldItem(
     [property: JsonPropertyName("item")] NamedApiResource Item,
-
     [property: JsonPropertyName("version_details")] List<PokemonHeldItemVersion> VersionDetails
 );

@@ -35,10 +35,7 @@ public sealed class IcsCalendarRepository(IDbContextFactory<AdribotContext> botC
 
         var calendar = new IcsCalendar
         {
-            ChannelId = channelId,
-            Name = calendarName,
-            DMember = botContext.DMembers.Include(dm => dm.DGuild).First(dm => dm.MemberId == memberId && dm.DGuild.GuildId == guildId),
-            Events = events.ToList()
+            ChannelId = channelId, Name = calendarName, DMember = botContext.DMembers.Include(dm => dm.DGuild).First(dm => dm.MemberId == memberId && dm.DGuild.GuildId == guildId), Events = events.ToList()
         };
 
         botContext.IcsCalendars.Add(calendar);

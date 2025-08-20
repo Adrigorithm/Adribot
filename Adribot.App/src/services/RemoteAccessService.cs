@@ -55,10 +55,10 @@ public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
                 return (true, $"Disconnected from guild **{_guildId}**!");
             case RemoteAccessActionType.Message:
                 if (channelId is null or 0)
-                    return (false, $"Please provide a valid channel ID.");
+                    return (false, "Please provide a valid channel ID.");
 
                 if (string.IsNullOrEmpty(message))
-                    return (false, $"Please provide a valid message string.");
+                    return (false, "Please provide a valid message string.");
 
                 SocketGuild guild1 = clientProvider.Client.GetGuild(_guildId);
                 SocketGuildChannel? channel = guild1.Channels.FirstOrDefault(c => c.Id == (ulong)channelId);

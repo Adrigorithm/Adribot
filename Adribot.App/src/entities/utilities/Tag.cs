@@ -24,7 +24,10 @@ public class Tag : IDataStructure
 
         return new EmbedBuilder
         {
-            Author = new EmbedAuthorBuilder { Name = $"{DMember.Mention}" },
+            Author = new EmbedAuthorBuilder
+            {
+                Name = $"{DMember.Mention}"
+            },
             Title = $"{Name}",
             Description = $"{tagContent}"
         };

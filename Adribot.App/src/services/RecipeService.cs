@@ -175,7 +175,6 @@ public sealed class RecipeService
             .WithActionRow([
                 new SelectMenuBuilder(
                     RecipeUnitInput,
-                    options:
                     [
                         new SelectMenuOptionBuilder(
                             "Metric",

@@ -9,7 +9,6 @@ public record Ability(
 
     // Whether this ability originated in the main series of the video games.
     [property: JsonPropertyName("is_main_series")] bool IsMainSeries,
-
     [property: JsonPropertyName("generation")] NamedApiResource Generation,
     [property: JsonPropertyName("language")] NamedApiResource Language,
     [property: JsonPropertyName("names")] List<Name> Names,
@@ -22,6 +21,5 @@ public record Ability(
 
     // The flavour text of this ability listed in different languages.
     [property: JsonPropertyName("flavor_text_entries")] List<AbilityFlavourText> FlavourTextEntries,
-
     [property: JsonPropertyName("pokemon")] List<AbilityPokemon> Pokemon
 );

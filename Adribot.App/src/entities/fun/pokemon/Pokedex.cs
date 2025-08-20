@@ -15,7 +15,6 @@ public record Pokedex(
 
     // The name of this resource listed in different languages.
     [property: JsonPropertyName("names")] List<Name> Names,
-
     [property: JsonPropertyName("pokemon_entries")] List<PokemonEntry> PokemonEntries,
     [property: JsonPropertyName("region")] NamedApiResource Region,
 

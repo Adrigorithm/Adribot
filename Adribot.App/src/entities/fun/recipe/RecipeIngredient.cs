@@ -20,12 +20,12 @@ public class RecipeIngredient
     {
         switch (Quantity, Unit)
         {
-            case ( >= 1000, IngredientUnit.Gramme):
+            case (>= 1000, IngredientUnit.Gramme):
                 Quantity /= 1000;
                 Unit = IngredientUnit.Kilogramme;
 
                 break;
-            case ( < 1000, IngredientUnit.Kilogramme):
+            case (< 1000, IngredientUnit.Kilogramme):
                 Quantity *= 1000;
                 Unit = IngredientUnit.Gramme;
 
@@ -34,7 +34,7 @@ public class RecipeIngredient
     }
 
     public RecipeIngredient Clone() =>
-        new RecipeIngredient
+        new()
         {
             RecipeIngredientId = RecipeIngredientId,
             IngredientId = IngredientId,
