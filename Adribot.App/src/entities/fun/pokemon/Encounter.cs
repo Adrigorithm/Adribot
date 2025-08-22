@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Adribot.Entities.fun.pokemon;
+namespace Adribot.entities.fun.pokemon;
 
 public record Encounter(
     // The lowest level the Pokémon could be encountered at.

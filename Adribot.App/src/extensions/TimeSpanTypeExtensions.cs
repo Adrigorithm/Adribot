@@ -1,7 +1,7 @@
 using System;
-using Adribot.Constants.Enums;
+using Adribot.constants.enums;
 
-namespace Adribot.Extensions;
+namespace Adribot.extensions;
 
 public static class TimeSpanTypeExtensions
 {

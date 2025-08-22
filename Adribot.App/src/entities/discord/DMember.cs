@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Adribot.Data;
-using Adribot.Entities.Utilities;
+using Adribot.data;
+using Adribot.entities.utilities;
 using Discord;
 
-namespace Adribot.Entities.Discord;
+namespace Adribot.entities.discord;
 
 public class DMember : IComparable, IDataStructure
 {

@@ -1,13 +1,13 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Adribot.Constants.Enums;
-using Adribot.Helpers;
-using Adribot.Services.Providers;
+using Adribot.constants.enums;
+using Adribot.helpers;
+using Adribot.services.providers;
 using Discord;
 using Discord.WebSocket;
 
-namespace Adribot.Services;
+namespace Adribot.services;
 
 public sealed class RemoteAccessService(DiscordClientProvider clientProvider)
 {

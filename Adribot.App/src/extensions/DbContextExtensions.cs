@@ -1,11 +1,11 @@
 using System.Threading.Tasks;
-using Adribot.Constants.Enums.Recipe;
-using Adribot.Data;
-using Adribot.Entities.Fun.Recipe;
+using Adribot.constants.enums.recipe;
+using Adribot.data;
+using Adribot.entities.fun.recipe;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace Adribot.Extensions;
+namespace Adribot.extensions;
 
 public static class DbContextExtensions
 {

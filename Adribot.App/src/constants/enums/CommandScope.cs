@@ -1,4 +1,4 @@
-namespace Adribot.Constants.Enums;
+namespace Adribot.constants.enums;
 
 public enum CommandScope
 {

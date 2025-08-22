@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Adribot.Entities.fun.pokemon;
+namespace Adribot.entities.fun.pokemon;
 
 public record VersionGameIndex(
     [property: JsonPropertyName("game_index")] int GameIndex,

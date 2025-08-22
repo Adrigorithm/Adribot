@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Adribot.Entities.fun.pokemon;
+namespace Adribot.entities.fun.pokemon;
 
 public record MoveBattleStylePreference(
     [property: JsonPropertyName("low_hp_preference")] int LowHpPreference,

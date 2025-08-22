@@ -1,4 +1,4 @@
-namespace Adribot.Helpers;
+namespace Adribot.helpers;
 
 public static class OrdinalNumberalStringifier
 {

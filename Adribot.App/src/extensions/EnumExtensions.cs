@@ -1,8 +1,8 @@
 using System;
-using Adribot.Constants.Enums;
-using Adribot.Constants.Enums.Recipe;
+using Adribot.constants.enums;
+using Adribot.constants.enums.recipe;
 
-namespace Adribot.Extensions;
+namespace Adribot.extensions;
 
 public static class EnumExtensions
 {

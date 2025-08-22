@@ -1,9 +1,9 @@
 using System;
-using Adribot.Constants.Enums;
-using Adribot.Data;
+using Adribot.constants.enums;
+using Adribot.data;
 using Discord;
 
-namespace Adribot.Entities.Discord;
+namespace Adribot.entities.discord;
 
 public class Infraction : IDataStructure
 {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Adribot.Entities.Fun.Recipe;
+namespace Adribot.entities.fun.recipe;
 
 public class Ingredient
 {

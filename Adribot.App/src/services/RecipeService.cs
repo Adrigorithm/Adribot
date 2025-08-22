@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Adribot.Constants.Enums;
-using Adribot.Data.Repositories;
-using Adribot.Entities.Fun.Recipe;
-using Adribot.Extensions;
-using Adribot.Services.Providers;
+using Adribot.constants.enums;
+using Adribot.data.repositories;
+using Adribot.entities.fun.recipe;
+using Adribot.extensions;
+using Adribot.services.providers;
 using Discord;
 using Discord.WebSocket;
 using ModalBuilder = Discord.ModalBuilder;
 
-namespace Adribot.Services;
+namespace Adribot.services;
 
 public sealed class RecipeService
 {

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Adribot.Data;
-using Adribot.Entities.Discord;
+using Adribot.data;
+using Adribot.entities.discord;
 using Discord;
 
-namespace Adribot.Entities.Utilities;
+namespace Adribot.entities.utilities;
 
 public class Starboard : IDataStructure
 {

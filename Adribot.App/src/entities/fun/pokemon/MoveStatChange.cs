@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Adribot.Entities.fun.pokemon;
+namespace Adribot.entities.fun.pokemon;
 
 public record MoveStatChange(
     [property: JsonPropertyName("change")] int Change,

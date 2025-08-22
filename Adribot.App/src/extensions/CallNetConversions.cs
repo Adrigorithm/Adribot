@@ -1,8 +1,8 @@
 using System;
-using Adribot.Entities.Utilities;
+using Adribot.entities.utilities;
 using Ical.Net.CalendarComponents;
 
-namespace Adribot.Extensions;
+namespace Adribot.extensions;
 
 public static class CallNetConversions
 {

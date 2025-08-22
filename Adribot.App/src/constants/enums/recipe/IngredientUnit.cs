@@ -1,4 +1,4 @@
-namespace Adribot.Constants.Enums.Recipe;
+namespace Adribot.constants.enums.recipe;
 
 public enum IngredientUnit
 {

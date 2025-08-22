@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Discord;
 
-namespace Adribot.Helpers.validators;
+namespace Adribot.helpers.validators;
 
 public static class EmoteValidator
 {

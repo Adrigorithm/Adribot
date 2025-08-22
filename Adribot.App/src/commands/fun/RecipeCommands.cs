@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
-using Adribot.Constants.Enums;
-using Adribot.Services;
+using Adribot.constants.enums;
+using Adribot.services;
 using Discord;
 using Discord.Interactions;
 
-namespace Adribot.Commands.Fun;
+namespace Adribot.commands.fun;
 
 public class RecipeCommands(RecipeService recipeService) : InteractionModuleBase<SocketInteractionContext>
 {

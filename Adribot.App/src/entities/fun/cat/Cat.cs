@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Adribot.Entities.Fun.Cat;
+namespace Adribot.entities.fun.cat;
 
 public record Cat(
     [property: JsonPropertyName("breeds")] IReadOnlyList<Breed> Breeds,

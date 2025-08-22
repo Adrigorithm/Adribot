@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
-using Adribot.Constants.Enums;
-using Adribot.Services;
+using Adribot.constants.enums;
+using Adribot.services;
 using Discord.Interactions;
 
-namespace Adribot.Commands.Owner;
+namespace Adribot.commands.owner;
 
 public class DangerCommands(ApplicationCommandService commandService) : InteractionModuleBase<SocketInteractionContext>
 {

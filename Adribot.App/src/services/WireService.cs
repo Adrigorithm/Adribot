@@ -3,14 +3,14 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Adribot.Data.Repositories;
-using Adribot.Entities.Discord;
-using Adribot.Entities.fun;
-using Adribot.Services.Providers;
+using Adribot.data.repositories;
+using Adribot.entities.discord;
+using Adribot.entities.fun;
+using Adribot.services.providers;
 using Discord;
 using Discord.WebSocket;
 
-namespace Adribot.Services;
+namespace Adribot.services;
 
 public sealed class WireService(DiscordClientProvider provider, IHttpClientFactory httpClientFactory, DGuildRepository guildRepository, WireRepository wireRepository)
 {

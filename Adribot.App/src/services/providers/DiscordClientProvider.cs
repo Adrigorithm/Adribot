@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 
-namespace Adribot.Services.Providers;
+namespace Adribot.services.providers;
 
 public class DiscordClientProvider
 {

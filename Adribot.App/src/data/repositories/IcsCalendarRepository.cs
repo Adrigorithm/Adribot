@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Adribot.Entities.Utilities;
+using Adribot.entities.utilities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Adribot.Data.Repositories;
+namespace Adribot.data.repositories;
 
 public sealed class IcsCalendarRepository(IDbContextFactory<AdribotContext> botContextFactory)
     : BaseRepository(botContextFactory)

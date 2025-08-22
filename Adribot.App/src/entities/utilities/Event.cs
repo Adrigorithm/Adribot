@@ -1,9 +1,9 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using Adribot.Data;
+using Adribot.data;
 using Discord;
 
-namespace Adribot.Entities.Utilities;
+namespace Adribot.entities.utilities;
 
 public class Event : IDataStructure
 {

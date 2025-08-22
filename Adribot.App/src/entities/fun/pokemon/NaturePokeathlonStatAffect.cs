@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Adribot.Entities.fun.pokemon;
+namespace Adribot.entities.fun.pokemon;
 
 public record NaturePokeathlonStatAffect(
     // The maximum amount of change to the referenced Pokéathlon stat.

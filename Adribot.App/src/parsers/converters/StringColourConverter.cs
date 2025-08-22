@@ -1,10 +1,10 @@
 using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Adribot.Extensions;
+using Adribot.extensions;
 using Discord;
 
-namespace Adribot.Parsers.Converters;
+namespace Adribot.parsers.converters;
 
 internal class StringColourConverter : JsonConverter<Color>
 {

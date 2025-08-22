@@ -1,11 +1,11 @@
 using System;
 using System.IO;
 using System.Text.Json;
-using Adribot.Config;
-using Adribot.Extensions;
+using Adribot.config;
+using Adribot.extensions;
 using Microsoft.Extensions.Configuration;
 
-namespace Adribot.Services.Providers;
+namespace Adribot.services.providers;
 
 public class SecretsProvider(ConfigValueType config)
 {

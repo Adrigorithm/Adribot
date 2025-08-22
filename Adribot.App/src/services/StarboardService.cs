@@ -2,14 +2,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Adribot.Data.Repositories;
-using Adribot.Entities.Discord;
-using Adribot.Entities.Utilities;
-using Adribot.Services.Providers;
+using Adribot.data.repositories;
+using Adribot.entities.discord;
+using Adribot.entities.utilities;
+using Adribot.services.providers;
 using Discord;
 using Discord.WebSocket;
 
-namespace Adribot.Services;
+namespace Adribot.services;
 
 public class StarboardService
 {

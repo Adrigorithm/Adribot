@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Adribot.Entities.fun.pokemon;
+namespace Adribot.entities.fun.pokemon;
 
 public record AwesomeName(
     [property: JsonPropertyName("awesome_name")] string LocalisedAwesomeName,

@@ -1,7 +1,7 @@
-using Adribot.Data;
+using Adribot.data;
 using Discord;
 
-namespace Adribot.Entities.Utilities;
+namespace Adribot.entities.utilities;
 
 public class MessageLink : IDataStructure
 {

@@ -1,10 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
-using Adribot.Entities.Discord;
+using Adribot.entities.discord;
 using Discord;
 using Discord.WebSocket;
 
-namespace Adribot.Services;
+namespace Adribot.services;
 
 public sealed partial class InfractionService : BaseTimerService
 {

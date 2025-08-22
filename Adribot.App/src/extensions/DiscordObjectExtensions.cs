@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
-using Adribot.Entities.Discord;
+using Adribot.entities.discord;
 using Discord;
 using Discord.WebSocket;
 
-namespace Adribot.Extensions;
+namespace Adribot.extensions;
 
 public static class DiscordObjectExtensions
 {

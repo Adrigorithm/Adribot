@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
-using Adribot.Services;
+using Adribot.services;
 using Discord.Interactions;
 
-namespace Adribot.Commands.Utilities;
+namespace Adribot.commands.utilities;
 
 public class WireCommands(WireService wireService) : InteractionModuleBase<SocketInteractionContext>
 {

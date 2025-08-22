@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using Adribot.Entities.fun;
+using Adribot.entities.fun;
 using Microsoft.EntityFrameworkCore;
 
-namespace Adribot.Data.Repositories;
+namespace Adribot.data.repositories;
 
 public sealed class WireRepository(IDbContextFactory<AdribotContext> botContextFactory)
     : BaseRepository(botContextFactory)

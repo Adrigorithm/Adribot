@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Adribot.Entities.fun.pokemon;
+namespace Adribot.entities.fun.pokemon;
 
 public record TypeRelations(
     [property: JsonPropertyName("no_damage_to")] List<NamedApiResource> NoDamageTo,

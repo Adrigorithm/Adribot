@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Adribot.Services.Providers;
+using Adribot.services.providers;
 using Discord.WebSocket;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Adribot.Services;
+namespace Adribot.services;
 
 public class ApplicationCommandService(DiscordClientProvider clientProvider)
 {

@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using Adribot.Constants.Enums;
-using Adribot.Constants.Enums.Recipe;
-using Adribot.Extensions;
+using Adribot.constants.enums;
+using Adribot.constants.enums.recipe;
+using Adribot.extensions;
 
-namespace Adribot.Entities.Fun.Recipe;
+namespace Adribot.entities.fun.recipe;
 
 public class Recipe
 {

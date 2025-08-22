@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Adribot.Entities.fun.pokemon;
+namespace Adribot.entities.fun.pokemon;
 
 public record PokemonMoveVersion(
     [property: JsonPropertyName("move_learn_method")] NamedApiResource MoveLearnMethod,

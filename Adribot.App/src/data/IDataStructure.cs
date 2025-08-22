@@ -1,6 +1,6 @@
 using Discord;
 
-namespace Adribot.Data;
+namespace Adribot.data;
 
 public interface IDataStructure
 {

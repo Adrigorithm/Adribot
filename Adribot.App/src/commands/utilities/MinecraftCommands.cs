@@ -4,12 +4,12 @@ using System.IO.Compression;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Adribot.Constants.Enums;
-using Adribot.Constants.Strings;
-using Adribot.Entities.Minecraft;
+using Adribot.constants.enums;
+using Adribot.constants.strings;
+using Adribot.entities.minecraft;
 using Discord.Interactions;
 
-namespace Adribot.Commands.Utilities;
+namespace Adribot.commands.utilities;
 
 public class MinecraftCommands : InteractionModuleBase<SocketInteractionContext>
 {

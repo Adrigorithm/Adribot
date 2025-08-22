@@ -4,13 +4,13 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Adribot.Constants.Enums;
-using Adribot.Services;
+using Adribot.constants.enums;
+using Adribot.services;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 
-namespace Adribot.Commands.Monitoring;
+namespace Adribot.commands.monitoring;
 
 public class CommandStatsCommands(ApplicationCommandService commandService) : InteractionModuleBase<SocketInteractionContext>
 {

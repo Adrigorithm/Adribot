@@ -1,6 +1,6 @@
-using Adribot.Constants.Enums.Recipe;
+using Adribot.constants.enums.recipe;
 
-namespace Adribot.Entities.Fun.Recipe;
+namespace Adribot.entities.fun.recipe;
 
 public class RecipeIngredient
 {

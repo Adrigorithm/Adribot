@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using Adribot.Data.Repositories;
-using Adribot.Entities.Utilities;
-using Adribot.Helpers;
+using Adribot.data.repositories;
+using Adribot.entities.utilities;
+using Adribot.helpers;
 
-namespace Adribot.Services;
+namespace Adribot.services;
 
 public sealed class TagService(TagRepository tagRepository)
 {

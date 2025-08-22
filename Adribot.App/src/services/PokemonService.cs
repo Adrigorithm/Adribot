@@ -1,4 +1,4 @@
-namespace Adribot.Services;
+namespace Adribot.services;
 
 public class PokemonService
 {

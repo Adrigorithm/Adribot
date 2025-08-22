@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Adribot.Services;
+namespace Adribot.services;
 
 public interface ITimerService
 {

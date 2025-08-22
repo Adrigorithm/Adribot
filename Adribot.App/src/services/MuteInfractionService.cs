@@ -1,4 +1,4 @@
-namespace Adribot.Services;
+namespace Adribot.services;
 
 public sealed partial class InfractionService : BaseTimerService
 {

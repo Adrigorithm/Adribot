@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Adribot.Constants.Enums;
-using Adribot.Constants.Strings;
-using Adribot.Entities.Fun.Cat;
-using Adribot.Entities.Fun.Dog;
-using Adribot.Entities.Fun.Fox;
-using Adribot.Services.Providers;
+using Adribot.constants.enums;
+using Adribot.constants.strings;
+using Adribot.entities.fun.cat;
+using Adribot.entities.fun.dog;
+using Adribot.entities.fun.fox;
+using Adribot.services.providers;
 using Discord;
 using Discord.Interactions;
 
-namespace Adribot.Commands.Fun;
+namespace Adribot.commands.fun;
 
 public class FunCommands(IHttpClientFactory httpClientFactory, SecretsProvider secretsProvider) : InteractionModuleBase<SocketInteractionContext>
 {
@@ -27,17 +27,17 @@ public class FunCommands(IHttpClientFactory httpClientFactory, SecretsProvider s
         switch (animal)
         {
             case AnimalType.Dog:
-                List<Dog> dogApiObject = await JsonSerializer.DeserializeAsync<List<Dog>>(await httpClient.GetStreamAsync($"{ConstantStrings.DogBaseUri}?api_key={secretsProvider.Config.CatToken}"));
+                List<Dog> dogApiObject = await JsonSerializer.DeserializeAsync<List<Dog>>(await httpClient.GetStreamAsync($"{ConstantStrings.DogRandomEndpoint}?api_key={secretsProvider.Config.CatToken}"));
                 embed.ImageUrl = dogApiObject[0].Url;
 
                 break;
             case AnimalType.Fox:
-                Fox foxApiObject = await JsonSerializer.DeserializeAsync<Fox>(await httpClient.GetStreamAsync(ConstantStrings.FoxUri));
+                Fox foxApiObject = await JsonSerializer.DeserializeAsync<Fox>(await httpClient.GetStreamAsync(ConstantStrings.FoxRandomEndpoint));
                 embed.ImageUrl = foxApiObject.Image;
 
                 break;
             default: // Cat
-                List<Cat> catApiObject = await JsonSerializer.DeserializeAsync<List<Cat>>(await httpClient.GetStreamAsync($"{ConstantStrings.CatBaseUri}?api_key={secretsProvider.Config.CatToken}"));
+                List<Cat> catApiObject = await JsonSerializer.DeserializeAsync<List<Cat>>(await httpClient.GetStreamAsync($"{ConstantStrings.CatRandomEndpoint}?api_key={secretsProvider.Config.CatToken}"));
                 embed.ImageUrl = catApiObject[0].Url;
 
                 break;

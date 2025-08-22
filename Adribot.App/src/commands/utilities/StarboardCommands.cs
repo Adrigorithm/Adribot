@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Adribot.Helpers.validators;
-using Adribot.Services;
+using Adribot.helpers.validators;
+using Adribot.services;
 using Discord;
 using Discord.Interactions;
 
-namespace Adribot.Commands.Utilities;
+namespace Adribot.commands.utilities;
 
 public class StarboardCommands(StarboardService starboardService) : InteractionModuleBase<SocketInteractionContext>
 {

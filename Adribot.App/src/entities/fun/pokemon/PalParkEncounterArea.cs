@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Adribot.Entities.fun.pokemon;
+namespace Adribot.entities.fun.pokemon;
 
 public record PalParkEncounterArea(
     // The base score given to the player when the referenced Pokémon is caught during a pal park run.

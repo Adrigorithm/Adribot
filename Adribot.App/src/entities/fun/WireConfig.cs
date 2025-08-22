@@ -1,6 +1,6 @@
-using Adribot.Entities.Discord;
+using Adribot.entities.discord;
 
-namespace Adribot.Entities.fun;
+namespace Adribot.entities.fun;
 
 public class WireConfig
 {

@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Adribot.Entities.Fun.Cat;
+namespace Adribot.entities.fun.cat;
 
 public record Breed(
     [property: JsonPropertyName("weight")] Weight Weight,

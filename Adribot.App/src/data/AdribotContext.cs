@@ -1,11 +1,11 @@
-using Adribot.Entities.Discord;
-using Adribot.Entities.fun;
-using Adribot.Entities.fun.pokemon;
-using Adribot.Entities.Fun.Recipe;
-using Adribot.Entities.Utilities;
+using Adribot.entities.discord;
+using Adribot.entities.fun;
+using Adribot.entities.fun.pokemon;
+using Adribot.entities.fun.recipe;
+using Adribot.entities.utilities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Adribot.Data;
+namespace Adribot.data;
 
 public class AdribotContext(DbContextOptions<AdribotContext> options) : DbContext(options)
 {
