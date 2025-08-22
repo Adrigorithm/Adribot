@@ -1,3 +1,5 @@
+using System;
+
 namespace Adribot.constants.strings;
 
 public static class ConstantStrings
@@ -6,6 +8,4 @@ public static class ConstantStrings
     public const string CatRandomEndpoint = "https://api.thecatapi.com/v1/images/search";
     public const string DogRandomEndpoint = "https://api.thedogapi.com/v1/images/search";
     public const string FoxRandomEndpoint = "https://randomfox.ca/floof";
-
-    public const string PokemonListEndpoint = "https://pokeapi.co/api/v2/pokemon";
 }
