@@ -85,7 +85,7 @@ public sealed class TagService(TagRepository tagRepository)
 
         return FakeExtensions.AreAllNullOrWhiteSpace(tagName, tagContent)
             ? (null, $"The {nameof(tagName)} and {nameof(tagContent)} cannot be empty.")
-            : !Tags.ContainsKey(guildId) || !Tags[guildId].TryGetValue(tagName, out Tag tag) || allowOverride && tag.DMember.MemberId == memberId
+            : !Tags.ContainsKey(guildId) || !Tags[guildId].TryGetValue(tagName, out Tag tag) || (allowOverride && tag.DMember.MemberId == memberId)
                 ? (new Tag
                 {
                     Content = tagContent, Date = createdAt, Name = tagName
