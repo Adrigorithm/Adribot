@@ -64,7 +64,9 @@ public class Bot
                 ? false
                 : user.GuildPermissions.Administrator;
         }))
+        {
             await message.AddReactionAsync(Emoji.Parse("💢"));
+        }
 
         IGuildUser? GetGuildUserOrDefault(SocketUser socketUser)
         {

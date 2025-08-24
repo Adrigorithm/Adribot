@@ -88,7 +88,9 @@ public sealed class TagService(TagRepository tagRepository)
             : !Tags.ContainsKey(guildId) || !Tags[guildId].TryGetValue(tagName, out Tag tag) || (allowOverride && tag.DMember.MemberId == memberId)
                 ? (new Tag
                 {
-                    Content = tagContent, Date = createdAt, Name = tagName
+                    Content = tagContent,
+                    Date = createdAt,
+                    Name = tagName
                 }, null)
                 : (null, "Tag name already taken!");
     }

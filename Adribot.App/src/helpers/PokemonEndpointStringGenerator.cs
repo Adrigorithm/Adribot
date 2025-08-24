@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Adribot.constants.enums;
 
 namespace Adribot.helpers;
@@ -62,7 +62,7 @@ public static class PokemonEndpointStringGenerator
             PokemonEndpoint.Stat => "stat",
             PokemonEndpoint.Type => "type",
             PokemonEndpoint.Language => "language",
-            
+
             _ => throw new ArgumentOutOfRangeException(nameof(config.Endpoint), config.Endpoint, null)
         };
 }

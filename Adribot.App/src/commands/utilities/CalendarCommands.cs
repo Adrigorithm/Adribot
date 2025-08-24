@@ -22,9 +22,13 @@ public class CalendarCommands(IcsCalendarService icsCalendarService) : Interacti
         {
             case CalendarCrudOperation.New:
                 if (string.IsNullOrEmpty(calendarName))
+                {
                     await RespondAsync("Your new calendar needs a name. Try again.", ephemeral: true);
+                }
                 else if (GetIcsCalendar(Context.Guild.Id, calendarName) is not null)
+                {
                     await RespondAsync($"A calendar with name `{calendarName}` already exists for this guild. Overwrite the old calendar or chose another name.", ephemeral: true);
+                }
                 else
                 {
                     var conversionSucceeded = ulong.TryParse(channelId, out var channelIdParsed);
@@ -42,7 +46,9 @@ public class CalendarCommands(IcsCalendarService icsCalendarService) : Interacti
                 }
 
                 if (GetIcsCalendar(Context.Guild.Id, calendarName) is null)
+                {
                     await RespondAsync($"Calendar `{calendarName}` for guild [{Context.Guild.Id}] cannot be deleted because it does not exist.", ephemeral: true);
+                }
                 else
                 {
                     var isDeleted = icsCalendarService.TryDeleteCalendar(Context.User as SocketGuildUser, GetIcsCalendar(Context.Guild.Id, calendarName));
@@ -75,7 +81,9 @@ public class CalendarCommands(IcsCalendarService icsCalendarService) : Interacti
                 IcsCalendar? calendar0 = GetIcsCalendar(Context.Guild.Id, calendarName);
 
                 if (calendar0 is null)
+                {
                     await RespondAsync($"Calendar `{calendarName}` for guild [{Context.Guild.Id}] does not exist.", ephemeral: true);
+                }
                 else
                 {
                     Event? cEvent = calendar0.Events.FirstOrDefault(e => e.Start > DateTimeOffset.UtcNow);

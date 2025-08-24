@@ -1,4 +1,4 @@
-﻿namespace Adribot.constants.enums;
+namespace Adribot.constants.enums;
 
 public enum PokemonEndpoint
 {
@@ -42,12 +42,12 @@ public enum PokemonEndpoint
     Nature,
     PokeathlonStat,
     Pokemon,
-    
+
     /**
      * \pokemon\{id or name}\encounters
      */
     PokemonLocationArea,
-    
+
     PokemonColour,
     PokemonForm,
     PokemonHabitat,

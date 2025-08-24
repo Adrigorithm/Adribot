@@ -168,7 +168,9 @@ public class StarboardService
 
             _starboardRepository.AddMessageLink(new MessageLink
             {
-                OriginalMessageId = arg1.Id, Starboard = starboard, ReferenceMessageId = message.Id
+                OriginalMessageId = arg1.Id,
+                Starboard = starboard,
+                ReferenceMessageId = message.Id
             });
 
             return;
@@ -224,7 +226,7 @@ public class StarboardService
             }, false);
         }
         else
-            //TODO: Add a way to remove/update messages made using previous starboard configuration
+        //TODO: Add a way to remove/update messages made using previous starboard configuration
         {
             starboard.Threshold = amount;
             starboard.EmojiStrings = emojisList;

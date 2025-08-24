@@ -50,7 +50,9 @@ public sealed class DGuildRepository : BaseRepository
         {
             guild.Members.Add(new DMember
             {
-                DGuild = guild, MemberId = member.Item1, Mention = member.Item2
+                DGuild = guild,
+                MemberId = member.Item1,
+                Mention = member.Item2
             });
         }
 

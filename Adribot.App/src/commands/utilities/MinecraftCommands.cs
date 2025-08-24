@@ -52,7 +52,10 @@ public class MinecraftCommands : InteractionModuleBase<SocketInteractionContext>
             {
                 var emoji = new EmojifulEmoji
                 {
-                    Category = category, Name = emojiMatches[i].Groups[2].Value, Url = emojiMatches[i].Groups[1].Value.Contains('a') ? "https://cdn.discordapp.com/emojis/" + emojiMatches[i].Groups[3].Value + ".gif" : "https://cdn.discordapp.com/emojis/" + emojiMatches[i].Groups[3].Value + ".png", Type = "emojiful:emoji_recipe"
+                    Category = category,
+                    Name = emojiMatches[i].Groups[2].Value,
+                    Url = emojiMatches[i].Groups[1].Value.Contains('a') ? "https://cdn.discordapp.com/emojis/" + emojiMatches[i].Groups[3].Value + ".gif" : "https://cdn.discordapp.com/emojis/" + emojiMatches[i].Groups[3].Value + ".png",
+                    Type = "emojiful:emoji_recipe"
                 };
 
                 FileStream fs = File.Create($"{_versionMapper[mcVersion]}{emojiMatches[i].Groups[2].Value.ToLower()}.json");

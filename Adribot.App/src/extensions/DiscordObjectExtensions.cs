@@ -29,7 +29,9 @@ public static class DiscordObjectExtensions
     public static DMember ToDMember(this SocketGuildUser member, int dGuildId) =>
         new()
         {
-            MemberId = member.Id, DGuildId = dGuildId, Mention = member.Mention
+            MemberId = member.Id,
+            DGuildId = dGuildId,
+            Mention = member.Mention
         };
 
     public static Color ToDiscordColour(this string colourString, int baseFormat = 16) =>

@@ -21,97 +21,116 @@ public static class DbContextExtensions
 
         var ingredient1 = new Ingredient
         {
-            IngredientId = 1, Name = "dark chocolate"
+            IngredientId = 1,
+            Name = "dark chocolate"
         };
 
         var ingredient2 = new Ingredient
         {
-            IngredientId = 2, Name = "coconut oil"
+            IngredientId = 2,
+            Name = "coconut oil"
         };
 
         var ingredient3 = new Ingredient
         {
-            IngredientId = 3, Name = "icing sugar"
+            IngredientId = 3,
+            Name = "icing sugar"
         };
 
         var ingredient4 = new Ingredient
         {
-            IngredientId = 4, Name = "all-purpose flour"
+            IngredientId = 4,
+            Name = "all-purpose flour"
         };
 
         var ingredient5 = new Ingredient
         {
-            IngredientId = 5, Name = "eggs"
+            IngredientId = 5,
+            Name = "eggs"
         };
 
         var ingredient6 = new Ingredient
         {
-            IngredientId = 6, Name = "dark chocolate chips"
+            IngredientId = 6,
+            Name = "dark chocolate chips"
         };
 
         var ingredient7 = new Ingredient
         {
-            IngredientId = 7, Name = "cane sugar"
+            IngredientId = 7,
+            Name = "cane sugar"
         };
 
         var ingredient8 = new Ingredient
         {
-            IngredientId = 8, Name = "rock sugar"
+            IngredientId = 8,
+            Name = "rock sugar"
         };
 
         var ingredient9 = new Ingredient
         {
-            IngredientId = 9, Name = "oatmeal (fine)"
+            IngredientId = 9,
+            Name = "oatmeal (fine)"
         };
 
         var ingredient10 = new Ingredient
         {
-            IngredientId = 10, Name = "coconut milk"
+            IngredientId = 10,
+            Name = "coconut milk"
         };
 
         var ingredient11 = new Ingredient
         {
-            IngredientId = 11, Name = "baking soda"
+            IngredientId = 11,
+            Name = "baking soda"
         };
 
         var ingredient12 = new Ingredient
         {
-            IngredientId = 12, Name = "salt"
+            IngredientId = 12,
+            Name = "salt"
         };
 
         var ingredient13 = new Ingredient
         {
-            IngredientId = 13, Name = "vanilla essence"
+            IngredientId = 13,
+            Name = "vanilla essence"
         };
 
         var ingredient14 = new Ingredient
         {
-            IngredientId = 14, Name = "cinnamon ground"
+            IngredientId = 14,
+            Name = "cinnamon ground"
         };
 
         var ingredient15 = new Ingredient
         {
-            IngredientId = 15, Name = "ginger ground"
+            IngredientId = 15,
+            Name = "ginger ground"
         };
 
         var ingredient16 = new Ingredient
         {
-            IngredientId = 16, Name = "nutmeg ground"
+            IngredientId = 16,
+            Name = "nutmeg ground"
         };
 
         var ingredient17 = new Ingredient
         {
-            IngredientId = 17, Name = "ground cloves"
+            IngredientId = 17,
+            Name = "ground cloves"
         };
 
         var ingredient18 = new Ingredient
         {
-            IngredientId = 18, Name = "baking powder"
+            IngredientId = 18,
+            Name = "baking powder"
         };
 
         var ingredient19 = new Ingredient
         {
-            IngredientId = 19, Name = "Cupcake tin"
+            IngredientId = 19,
+            Name = "Cupcake tin"
         };
 
         // RecipeIngredients

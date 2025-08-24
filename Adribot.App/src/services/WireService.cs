@@ -37,7 +37,9 @@ public sealed class WireService(DiscordClientProvider provider, IHttpClientFacto
 
         var wireConfig = new WireConfig
         {
-            DGuildId = dGuild.DGuildId, EmoteData = emoteData, EmoteName = name
+            DGuildId = dGuild.DGuildId,
+            EmoteData = emoteData,
+            EmoteName = name
         };
 
         wireRepository.AddWireConfig(wireConfig);

@@ -28,7 +28,9 @@ public class TagCommands(TagService tagService) : InteractionModuleBase<SocketIn
                 Tag? tag = tagService.TryGetTag(tagName, Context.Guild.Id);
 
                 if (tag is null)
+                {
                     await RespondAsync($"Tag `{tagName}` could not be found", ephemeral: true);
+                }
                 else
                 {
                     if (operation == CrudOperation.Get)
@@ -43,7 +45,9 @@ public class TagCommands(TagService tagService) : InteractionModuleBase<SocketIn
                 (Tag?, string?) tempTag = tagService.CreateTempTag(Context.Guild.Id, Context.User.Id, tagName, newContent, Context.Interaction.CreatedAt, operation == CrudOperation.Set);
 
                 if (tempTag.Item1 is null)
+                {
                     await RespondAsync(tempTag.Item2, ephemeral: true);
+                }
                 else
                 {
                     tagService.SetTag(Context.Guild.Id, Context.User.Id, tempTag.Item1);
@@ -62,7 +66,9 @@ public class TagCommands(TagService tagService) : InteractionModuleBase<SocketIn
             case CrudOperation.List:
                 IEnumerable<Tag> tags = tagService.GetAllTags(Context.Guild.Id);
                 if (tags.Count() == 0)
+                {
                     await RespondAsync("No tags could be found.", ephemeral: true);
+                }
                 else
                 {
                     var tagStringBuilder = new StringBuilder();

@@ -1,5 +1,3 @@
-using System;
-
 namespace Adribot.constants.strings;
 
 public static class ConstantStrings

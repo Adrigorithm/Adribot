@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Adribot.constants.enums;
 
 namespace Adribot.extensions;

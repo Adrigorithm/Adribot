@@ -1,4 +1,4 @@
-﻿using Adribot.constants.enums;
+using Adribot.constants.enums;
 
 namespace Adribot.helpers;
 
