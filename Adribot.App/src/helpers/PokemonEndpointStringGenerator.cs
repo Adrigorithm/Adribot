@@ -1,5 +1,3 @@
-using System;
-using System.Text;
 using Adribot.constants.enums;
 
 namespace Adribot.helpers;
@@ -7,9 +5,13 @@ namespace Adribot.helpers;
 public static class PokemonEndpointStringGenerator
 {
     private const string PokApiBaseUrl = "https://pokeapi.co/api/v2";
+    private const int Limit = int.MaxValue;
 
     public static (string endpoint, string error) GetEndpointString(EndpointStringConfiguration config) =>
         GetString(config);
+
+    private static string CreateRealUrl(string endpoint, bool fetchAll = false) =>
+        $"{PokApiBaseUrl}{endpoint}{(fetchAll ? $"?limit={Limit}" : "")}";
     
     /// <summary>
     /// Creates the string used to connect to the PokéAPI and fetch the requested resource,
@@ -254,6 +256,9 @@ public static class PokemonEndpointStringGenerator
 
                 break;
         }
+
+        if (endpoint is not null)
+            endpoint = CreateRealUrl(endpoint);
         
         return (endpoint, error);
     }
