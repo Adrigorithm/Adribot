@@ -12,7 +12,7 @@ namespace Adribot.helpers;
  */
 public record EndpointStringConfiguration(
     PokemonEndpoint Endpoint,
-    bool ShouldFetchAll,
-    int Id,
-    string Name
+    bool? ShouldFetchAll,
+    int? Id,
+    string? Name
 );
