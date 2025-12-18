@@ -369,4 +369,4 @@ Adribot.App/temp/*.zip
 Secrets/
 
 # Plain text password in here lol
-Adribot.App/nuget.config
+nuget.config
