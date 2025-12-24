@@ -5,7 +5,12 @@ let
 in
 
 pkgs.mkShell {
-  nativeBuildInputs = with pkgs.buildPackages; [ dotnet dotnet-ef sqlcmd ];
+  nativeBuildInputs = with pkgs.buildPackages; [ dotnet dotnet-ef sqlcmd nixd nil ];
   DOTNET_ROOT="${dotnet}/share/dotnet/";
+
+  shellHook = 
+  ''
+    dotnet restore ./Adribot.App/Adribot.csproj 
+  '';
 }
 
