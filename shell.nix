@@ -5,7 +5,7 @@ let
 in
 
 pkgs.mkShell {
-  nativeBuildInputs = with pkgs.buildPackages; [ dotnet dotnet-ef sqlcmd nixd nil ];
+  nativeBuildInputs = with pkgs.buildPackages; [ dotnet dotnet-ef sqlcmd podman-compose nixd nil ];
   DOTNET_ROOT="${dotnet}/share/dotnet/";
 
   shellHook = 
