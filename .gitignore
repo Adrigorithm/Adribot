@@ -366,7 +366,5 @@ FodyWeavers.xsd
 Adribot.App/secret/
 Adribot.App/temp/*.zip
 
-Secrets/
-
 # Plain text password in here lol
 nuget.config
