@@ -2,9 +2,15 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record AbilityFlavourText(
+public class AbilityFlavourText
+{
     // The localized name for an API resource in a specific language.
-    [property: JsonPropertyName("flavor_text")] string FlavourText,
-    [property: JsonPropertyName("language")] NamedApiResource Language,
-    [property: JsonPropertyName("version_group")] NamedApiResource VersionGroup
-);
+    [JsonPropertyName("flavor_text")]
+    public string FlavourText { get; set; }
+
+    [JsonPropertyName("language")]
+    public NamedApiResource Language { get; set; }
+
+    [JsonPropertyName("version_group")]
+    public NamedApiResource VersionGroup { get; set; }
+}

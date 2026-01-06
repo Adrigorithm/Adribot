@@ -3,8 +3,12 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record AbilityEffectChange(
+public class AbilityEffectChange
+{
     // The previous effect of this ability listed in different languages.
-    [property: JsonPropertyName("effect_entries")] List<Effect> EffectEntries,
-    [property: JsonPropertyName("version_group")] NamedApiResource VersionGroup
-);
+    [JsonPropertyName("effect_entries")]
+    public List<Effect> EffectEntries { get; set; }
+
+    [JsonPropertyName("version_group")]
+    public NamedApiResource VersionGroup { get; set; }
+}

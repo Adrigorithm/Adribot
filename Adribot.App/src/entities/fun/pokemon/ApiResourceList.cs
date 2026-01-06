@@ -3,14 +3,19 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record ApiResourceList(
-    [property: JsonPropertyName("count")] int Count,
+public class ApiResourceList
+{
+    [JsonPropertyName("count")]
+    public int Count { get; set; }
 
     // The URL for the next page in the list.
-    [property: JsonPropertyName("next")] string Next,
+    [JsonPropertyName("next")]
+    public string Next { get; set; }
 
     // The URL for the previous page in the list.
-    [property: JsonPropertyName("previous")] string Previous,
+    [JsonPropertyName("previous")]
+    public string Previous { get; set; }
 
-    [property: JsonPropertyName("results")] List<ApiResource> Results
-);
+    [JsonPropertyName("results")]
+    public List<ApiResource> Results { get; set; }
+}

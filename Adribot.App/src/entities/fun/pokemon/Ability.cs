@@ -3,23 +3,37 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record Ability(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name,
+public class Ability
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
 
     // Whether this ability originated in the main series of the video games.
-    [property: JsonPropertyName("is_main_series")] bool IsMainSeries,
-    [property: JsonPropertyName("generation")] NamedApiResource Generation,
-    [property: JsonPropertyName("language")] NamedApiResource Language,
-    [property: JsonPropertyName("names")] List<Name> Names,
+    [JsonPropertyName("is_main_series")]
+    public bool IsMainSeries { get; set; }
+
+    [JsonPropertyName("generation")]
+    public NamedApiResource Generation { get; set; }
+    [JsonPropertyName("language")]
+    public NamedApiResource Language { get; set; }
+    [JsonPropertyName("names")]
+    public List<Name> Names { get; set; }
 
     // The effect of this ability listed in different languages.
-    [property: JsonPropertyName("effect_entries")] List<VerboseEffect> EffectEntries,
+    [JsonPropertyName("effect_entries")]
+    public List<VerboseEffect> EffectEntries { get; set; }
 
     // The list of previous effects this ability has had across version groups.
-    [property: JsonPropertyName("effect_changes")] List<AbilityEffectChange> EffectChanges,
+    [JsonPropertyName("effect_changes")]
+    public List<AbilityEffectChange> EffectChanges { get; set; }
 
     // The flavour text of this ability listed in different languages.
-    [property: JsonPropertyName("flavor_text_entries")] List<AbilityFlavourText> FlavourTextEntries,
-    [property: JsonPropertyName("pokemon")] List<AbilityPokemon> Pokemon
-);
+    [JsonPropertyName("flavor_text_entries")]
+    public List<AbilityFlavourText> FlavourTextEntries { get; set; }
+
+    [JsonPropertyName("pokemon")]
+    public List<AbilityPokemon> Pokemon { get; set; }
+}
