@@ -3,10 +3,13 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record ContestComboDetail(
+public class ContestComboDetail
+{
     // A list of moves to use before this move.
-    [property: JsonPropertyName("use_before")] List<NamedApiResource> UseBefore,
+    [JsonPropertyName("use_before")]
+    public List<NamedApiResource> UseBefore { get; set; }
 
     // A list of moves to use after this move.
-    [property: JsonPropertyName("use_after")] List<NamedApiResource> UseAfter
-);
+    [JsonPropertyName("use_after")]
+    public List<NamedApiResource> UseAfter { get; set; }
+}

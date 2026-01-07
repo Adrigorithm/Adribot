@@ -3,13 +3,19 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record ContestType(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name,
+public class ContestType
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
 
     // The berry flavour that correlates with this contest type.
-    [property: JsonPropertyName("berry_flavor")] NamedApiResource BerryFlavour,
+    [JsonPropertyName("berry_flavor")]
+    public NamedApiResource BerryFlavour { get; set; }
 
     // The name of this resource listed in different languages.
-    [property: JsonPropertyName("names")] List<Name> Names
-);
+    [JsonPropertyName("names")]
+    public List<Name> Names { get; set; }
+}

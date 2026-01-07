@@ -2,8 +2,14 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record ContestName(
-    [property: JsonPropertyName("name")] string Name,
-    [property: JsonPropertyName("color")] string Colour,
-    [property: JsonPropertyName("language")] NamedApiResource Language
-);
+public class ContestName
+{
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+
+    [JsonPropertyName("color")]
+    public string Colour { get; set; }
+
+    [JsonPropertyName("language")]
+    public NamedApiResource Language { get; set; }
+}

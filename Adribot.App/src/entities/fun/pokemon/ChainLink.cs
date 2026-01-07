@@ -3,9 +3,17 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record ChainLink(
-    [property: JsonPropertyName("is_baby")] bool IsBaby,
-    [property: JsonPropertyName("species")] NamedApiResource Species,
-    [property: JsonPropertyName("evolution_details")] List<EvolutionDetail> EvolutionDetails,
-    [property: JsonPropertyName("evolves_to")] List<ChainLink> EvolvesTo
-);
+public class ChainLink
+{
+    [JsonPropertyName("is_baby")]
+    public bool IsBaby { get; set; }
+
+    [JsonPropertyName("species")]
+    public NamedApiResource Species { get; set; }
+
+    [JsonPropertyName("evolution_details")]
+    public List<EvolutionDetail> EvolutionDetails { get; set; }
+
+    [JsonPropertyName("evolves_to")]
+    public List<ChainLink> EvolvesTo { get; set; }
+}

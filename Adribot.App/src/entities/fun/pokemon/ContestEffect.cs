@@ -3,18 +3,24 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record ContestEffect(
-    [property: JsonPropertyName("id")] int Id,
+public class ContestEffect
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
 
     // The base number of hearts the user of this move gets.
-    [property: JsonPropertyName("appeal")] int Appeal,
+    [JsonPropertyName("appeal")]
+    public int Appeal { get; set; }
 
     // The base number of hearts the user's opponent loses.
-    [property: JsonPropertyName("jam")] int Jam,
+    [JsonPropertyName("jam")]
+    public int Jam { get; set; }
 
     // The result of this contest effect listed in different languages.
-    [property: JsonPropertyName("effect_entries")] List<Effect> EffectEntries,
+    [JsonPropertyName("effect_entries")]
+    public List<Effect> EffectEntries { get; set; }
 
     // The flavour text of this contest effect listed in different languages.
-    [property: JsonPropertyName("flavor_text_entries")] List<FlavourText> FlavourTextEntries
-);
+    [JsonPropertyName("flavor_text_entries")]
+    public List<FlavourText> FlavourTextEntries { get; set; }
+}

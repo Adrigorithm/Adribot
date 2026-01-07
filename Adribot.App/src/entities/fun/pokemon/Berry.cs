@@ -3,27 +3,46 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record Berry(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name,
-    [property: JsonPropertyName("growth_time")] int GrowthTime,
+public class Berry
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+
+    [JsonPropertyName("growth_time")]
+    public int GrowthTime { get; set; }
 
     // The maximum number of these berries that can grow on one tree in Generation IV.
-    [property: JsonPropertyName("max_harvest")] int MaxHarvest,
+    [JsonPropertyName("max_harvest")]
+    public int MaxHarvest { get; set; }
 
     // The power of the move "Natural Gift" when used with this Berry.
-    [property: JsonPropertyName("natural_gift_power")] int NaturalGiftPower,
-    [property: JsonPropertyName("size")] int Size,
-    [property: JsonPropertyName("smoothness")] int Smoothness,
+    [JsonPropertyName("natural_gift_power")]
+    public int NaturalGiftPower { get; set; }
+
+    [JsonPropertyName("size")]
+    public int Size { get; set; }
+
+    [JsonPropertyName("smoothness")]
+    public int Smoothness { get; set; }
 
     // The speed at which this Berry dries out the soil as it grows. A higher rate means the soil dries more quickly.
-    [property: JsonPropertyName("soil_dryness")] int SoilDryness,
-    [property: JsonPropertyName("firmness")] NamedApiResource Firmness,
-    [property: JsonPropertyName("flavours")] List<BerryFlavourMap> Flavours,
+    [JsonPropertyName("soil_dryness")]
+    public int SoilDryness { get; set; }
+
+    [JsonPropertyName("firmness")]
+    public NamedApiResource Firmness { get; set; }
+
+    [JsonPropertyName("flavours")]
+    public List<BerryFlavourMap> Flavours { get; set; }
 
     // Berries are actually items. This is a reference to the item specific data for this berry.
-    [property: JsonPropertyName("item")] NamedApiResource Item,
+    [JsonPropertyName("item")]
+    public NamedApiResource Item { get; set; }
 
     // The type inherited by "Natural Gift" when used with this Berry.
-    [property: JsonPropertyName("natural_gift_type")] NamedApiResource NaturalGiftType
-);
+    [JsonPropertyName("natural_gift_type")]
+    public NamedApiResource NaturalGiftType { get; set; }
+}
