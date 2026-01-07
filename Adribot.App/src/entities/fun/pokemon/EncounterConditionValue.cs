@@ -3,11 +3,18 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record EncounterConditionValue(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name,
-    [property: JsonPropertyName("condition")] NamedApiResource Condition,
+public class EncounterConditionValue
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+
+    [JsonPropertyName("condition")]
+    public NamedApiResource Condition { get; set; }
 
     // The name of this resource listed in different languages.
-    [property: JsonPropertyName("names")] List<Name> Names
-);
+    [JsonPropertyName("names")]
+    public List<Name> Names { get; set; }
+}

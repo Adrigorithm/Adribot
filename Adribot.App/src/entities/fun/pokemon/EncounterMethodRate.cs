@@ -3,9 +3,12 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record EncounterMethodRate(
-    [property: JsonPropertyName("encounter_method")] NamedApiResource EncounterMethod,
+public class EncounterMethodRate
+{
+    [JsonPropertyName("encounter_method")]
+    public NamedApiResource EncounterMethod { get; set; }
 
     // The chance of the encounter to occur on a version of the game.
-    [property: JsonPropertyName("version_details")] List<EncounterVersionDetails> VersionDetails
-);
+    [JsonPropertyName("version_details")]
+    public List<EncounterVersionDetails> VersionDetails { get; set; }
+}

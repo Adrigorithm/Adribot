@@ -3,19 +3,25 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record Encounter(
+public class Encounter
+{
     // The lowest level the Pokémon could be encountered at.
-    [property: JsonPropertyName("min_level")] int MinLevel,
+    [JsonPropertyName("min_level")]
+    public int MinLevel { get; set; }
 
     // The highest level the Pokémon could be encountered at.
-    [property: JsonPropertyName("max_level")] int MaxLevel,
+    [JsonPropertyName("max_level")]
+    public int MaxLevel { get; set; }
 
     // A list of condition values that must be in effect for this encounter to occur.
-    [property: JsonPropertyName("condition_values")] List<NamedApiResource> ConditionValues,
+    [JsonPropertyName("condition_values")]
+    public List<NamedApiResource> ConditionValues { get; set; }
 
     // Percent chance that this encounter will occur.
-    [property: JsonPropertyName("chance")] int Chance,
+    [JsonPropertyName("chance")]
+    public int Chance { get; set; }
 
     // The method by which this encounter happens.
-    [property: JsonPropertyName("method")] NamedApiResource Method
-);
+    [JsonPropertyName("method")]
+    public NamedApiResource Method { get; set; }
+}
