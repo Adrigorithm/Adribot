@@ -3,19 +3,27 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record GrowthRate(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name,
+public class GrowthRate
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
 
     // The formula used to calculate the rate at which the Pokémon species gains level.
-    [property: JsonPropertyName("formula")] string Formula,
+    [JsonPropertyName("formula")]
+    public string Formula { get; set; }
 
     // The descriptions of this characteristic listed in different languages.
-    [property: JsonPropertyName("descriptions")] List<Description> Descriptions,
+    [JsonPropertyName("descriptions")]
+    public List<Description> Descriptions { get; set; }
 
-    // A list of levels and the amount of experienced needed to atain them based on this growth rate.
-    [property: JsonPropertyName("levels")] List<GrowthRateExperienceLevel> Levels,
+    // A list of levels and the amount of experience needed to attain them based on this growth rate.
+    [JsonPropertyName("levels")]
+    public List<GrowthRateExperienceLevel> Levels { get; set; }
 
     // A list of Pokémon species that gain levels at this growth rate.
-    [property: JsonPropertyName("pokemon_species")] List<NamedApiResource> PokemonSpecies
-);
+    [JsonPropertyName("pokemon_species")]
+    public List<NamedApiResource> PokemonSpecies { get; set; }
+}

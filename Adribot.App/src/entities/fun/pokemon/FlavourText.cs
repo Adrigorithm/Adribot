@@ -2,10 +2,15 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record FlavourText(
-    [property: JsonPropertyName("flavor_text")] string LocalisedFlavourText,
-    [property: JsonPropertyName("language")] NamedApiResource Language,
+public class FlavourText
+{
+    [JsonPropertyName("flavor_text")]
+    public string LocalisedFlavourText { get; set; }
+
+    [JsonPropertyName("language")]
+    public NamedApiResource Language { get; set; }
 
     // The game version this flavour text is extracted from.
-    [property: JsonPropertyName("version")] NamedApiResource Version
-);
+    [JsonPropertyName("version")]
+    public NamedApiResource Version { get; set; }
+}

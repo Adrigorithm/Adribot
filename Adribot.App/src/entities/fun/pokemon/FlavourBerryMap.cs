@@ -2,8 +2,12 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record FlavourBerryMap(
+public class FlavourBerryMap
+{
     // How powerful the referenced flavour is for this berry.
-    [property: JsonPropertyName("potency")] int Potency,
-    [property: JsonPropertyName("berry")] NamedApiResource Berry
-);
+    [JsonPropertyName("potency")]
+    public int Potency { get; set; }
+
+    [JsonPropertyName("berry")]
+    public NamedApiResource Berry { get; set; }
+}

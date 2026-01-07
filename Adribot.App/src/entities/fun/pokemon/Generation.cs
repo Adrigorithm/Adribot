@@ -3,20 +3,35 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record Generation(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name,
-    [property: JsonPropertyName("abilities")] List<NamedApiResource> Abilities,
+public class Generation
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+
+    [JsonPropertyName("abilities")]
+    public List<NamedApiResource> Abilities { get; set; }
 
     // The name of this resource listed in different languages.
-    [property: JsonPropertyName("names")] List<Name> Names,
+    [JsonPropertyName("names")]
+    public List<Name> Names { get; set; }
 
     // The main region travelled in this generation.
-    [property: JsonPropertyName("main_region")] NamedApiResource MainRegion,
-    [property: JsonPropertyName("moves")] List<NamedApiResource> Moves,
-    [property: JsonPropertyName("pokemon_species")] List<NamedApiResource> PokemonSpecies,
-    [property: JsonPropertyName("types")] List<NamedApiResource> Types,
+    [JsonPropertyName("main_region")]
+    public NamedApiResource MainRegion { get; set; }
+
+    [JsonPropertyName("moves")]
+    public List<NamedApiResource> Moves { get; set; }
+
+    [JsonPropertyName("pokemon_species")]
+    public List<NamedApiResource> PokemonSpecies { get; set; }
+
+    [JsonPropertyName("types")]
+    public List<NamedApiResource> Types { get; set; }
 
     // A list of version groups that were introduced in this generation.
-    [property: JsonPropertyName("version_groups")] List<NamedApiResource> VersionGroups
-);
+    [JsonPropertyName("version_groups")]
+    public List<NamedApiResource> VersionGroups { get; set; }
+}
