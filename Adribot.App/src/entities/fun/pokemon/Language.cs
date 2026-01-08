@@ -3,19 +3,27 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record Language(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name,
+public class Language
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
 
     // Whether or not the games are published in this language.
-    [property: JsonPropertyName("official")] bool Official,
+    [JsonPropertyName("official")]
+    public bool Official { get; set; }
 
     // The two-letter code of the country where this language is spoken. Note that it is not unique.
-    [property: JsonPropertyName("iso639")] string Iso639,
+    [JsonPropertyName("iso639")]
+    public string Iso639 { get; set; }
 
     // The two-letter code of the language. Note that it is not unique.
-    [property: JsonPropertyName("iso3166")] string Iso3166,
+    [JsonPropertyName("iso3166")]
+    public string Iso3166 { get; set; }
 
     // The name of this resource listed in different languages.
-    [property: JsonPropertyName("names")] List<Name> Names
-);
+    [JsonPropertyName("names")]
+    public List<Name> Names { get; set; }
+}

@@ -3,30 +3,55 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record Item(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name,
-    [property: JsonPropertyName("cost")] int Cost,
-    [property: JsonPropertyName("fling_power")] int FlingPower,
-    [property: JsonPropertyName("fling_effect")] NamedApiResource FlingEffect,
-    [property: JsonPropertyName("attributes")] List<NamedApiResource> Attributes,
-    [property: JsonPropertyName("category")] NamedApiResource Category,
+public class Item
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+
+    [JsonPropertyName("cost")]
+    public int Cost { get; set; }
+
+    [JsonPropertyName("fling_power")]
+    public int FlingPower { get; set; }
+
+    [JsonPropertyName("fling_effect")]
+    public NamedApiResource FlingEffect { get; set; }
+
+    [JsonPropertyName("attributes")]
+    public List<NamedApiResource> Attributes { get; set; }
+
+    [JsonPropertyName("category")]
+    public NamedApiResource Category { get; set; }
 
     // The effect of this ability listed in different languages.
-    [property: JsonPropertyName("effect_entries")] List<VerboseEffect> EffectEntries,
+    [JsonPropertyName("effect_entries")]
+    public List<VerboseEffect> EffectEntries { get; set; }
 
     // The flavour text of this ability listed in different languages.
-    [property: JsonPropertyName("flavor_text_entries")] List<VersionGroupFlavourText> FlavourTextEntries,
-    [property: JsonPropertyName("game_indices")] List<GenerationGameIndex> GameIndices,
+    [JsonPropertyName("flavor_text_entries")]
+    public List<VersionGroupFlavourText> FlavourTextEntries { get; set; }
+
+    [JsonPropertyName("game_indices")]
+    public List<GenerationGameIndex> GameIndices { get; set; }
 
     // The name of this item listed in different languages.
-    [property: JsonPropertyName("names")] List<Name> Names,
-    [property: JsonPropertyName("sprites")] ItemSprites ItemSprites,
+    [JsonPropertyName("names")]
+    public List<Name> Names { get; set; }
+
+    [JsonPropertyName("sprites")]
+    public ItemSprites ItemSprites { get; set; }
 
     // A list of Pokémon that might be found in the wild holding this item.
-    [property: JsonPropertyName("held_by_pokemon")] List<ItemHolderPokemon> HeldByPokemon,
-    [property: JsonPropertyName("baby_trigger_for")] ApiResource BabyTriggerFor,
+    [JsonPropertyName("held_by_pokemon")]
+    public List<ItemHolderPokemon> HeldByPokemon { get; set; }
+
+    [JsonPropertyName("baby_trigger_for")]
+    public ApiResource BabyTriggerFor { get; set; }
 
     // A list of the machines related to this item.
-    [property: JsonPropertyName("machines")] List<MachineVersionDetail> Machines
-);
+    [JsonPropertyName("machines")]
+    public List<MachineVersionDetail> Machines { get; set; }
+}

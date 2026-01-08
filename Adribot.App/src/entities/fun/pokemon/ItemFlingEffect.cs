@@ -3,11 +3,18 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record ItemFlingEffect(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name,
+public class ItemFlingEffect
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
 
     // The result of this fling effect listed in different languages.
-    [property: JsonPropertyName("effect_entries")] List<Effect> EffectEntries,
-    [property: JsonPropertyName("items")] List<NamedApiResource> Items
-);
+    [JsonPropertyName("effect_entries")]
+    public List<Effect> EffectEntries { get; set; }
+
+    [JsonPropertyName("items")]
+    public List<NamedApiResource> Items { get; set; }
+}

@@ -3,14 +3,22 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record ItemAttribute(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name,
-    [property: JsonPropertyName("items")] List<NamedApiResource> Items,
+public class ItemAttribute
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+
+    [JsonPropertyName("items")]
+    public List<NamedApiResource> Items { get; set; }
 
     // The name of this item attribute listed in different languages.
-    [property: JsonPropertyName("names")] List<Name> Names,
+    [JsonPropertyName("names")]
+    public List<Name> Names { get; set; }
 
     // The description of this item attribute listed in different languages.
-    [property: JsonPropertyName("descriptions")] List<Description> Descriptions
-);
+    [JsonPropertyName("descriptions")]
+    public List<Description> Descriptions { get; set; }
+}

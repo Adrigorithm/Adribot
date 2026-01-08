@@ -3,9 +3,12 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record LocationAreaEncounter(
-    [property: JsonPropertyName("location_area")] NamedApiResource LocationArea,
+public class LocationAreaEncounter
+{
+    [JsonPropertyName("location_area")]
+    public NamedApiResource LocationArea { get; set; }
 
     // A list of versions and encounters with the referenced Pokémon that might happen.
-    [property: JsonPropertyName("version_details")] List<VersionEncounterDetail> VersionDetails
-);
+    [JsonPropertyName("version_details")]
+    public List<VersionEncounterDetail> VersionDetails { get; set; }
+}

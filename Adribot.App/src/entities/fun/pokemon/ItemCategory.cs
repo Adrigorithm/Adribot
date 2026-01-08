@@ -3,14 +3,22 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record ItemCategory(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name,
-    [property: JsonPropertyName("items")] List<NamedApiResource> Items,
+public class ItemCategory
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+
+    [JsonPropertyName("items")]
+    public List<NamedApiResource> Items { get; set; }
 
     // The name of this item category listed in different languages.
-    [property: JsonPropertyName("names")] List<Name> Names,
+    [JsonPropertyName("names")]
+    public List<Name> Names { get; set; }
 
     // The pocket items in this category would be put in.
-    [property: JsonPropertyName("pocket")] NamedApiResource Pocket
-);
+    [JsonPropertyName("pocket")]
+    public NamedApiResource Pocket { get; set; }
+}
