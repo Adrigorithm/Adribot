@@ -4,6 +4,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class MoveFlavourText
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     [JsonPropertyName("flavor_text")]
     public string FlavourText { get; set; }
 

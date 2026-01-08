@@ -4,6 +4,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class TypeRelationsPast
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     // The last generation in which the referenced type had the listed damage relations
     [JsonPropertyName("generation")]
     public NamedApiResource Generation { get; set; }

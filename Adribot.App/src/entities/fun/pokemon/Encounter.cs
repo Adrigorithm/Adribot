@@ -5,6 +5,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class Encounter
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     // The lowest level the Pokémon could be encountered at.
     [JsonPropertyName("min_level")]
     public int MinLevel { get; set; }

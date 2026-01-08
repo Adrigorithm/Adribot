@@ -4,6 +4,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class PokemonSpeciesDexEntry
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     // The index number within the Pokédex.
     [JsonPropertyName("entry_number")]
     public int EntryNumber { get; set; }

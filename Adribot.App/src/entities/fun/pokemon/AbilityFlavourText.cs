@@ -4,6 +4,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class AbilityFlavourText
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     // The localized name for an API resource in a specific language.
     [JsonPropertyName("flavor_text")]
     public string FlavourText { get; set; }

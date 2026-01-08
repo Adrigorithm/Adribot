@@ -5,6 +5,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class ApiResourceList
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     [JsonPropertyName("count")]
     public int Count { get; set; }
 

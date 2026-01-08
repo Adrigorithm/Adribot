@@ -4,6 +4,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class AbilityPokemon
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     [JsonPropertyName("is_hidden")]
     public bool IsHidden { get; set; }
 

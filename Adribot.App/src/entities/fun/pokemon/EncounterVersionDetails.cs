@@ -4,6 +4,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class EncounterVersionDetails
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     // The chance of an encounter to occur.
     [JsonPropertyName("rate")]
     public int Rate { get; set; }

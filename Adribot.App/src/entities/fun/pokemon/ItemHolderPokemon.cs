@@ -5,6 +5,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class ItemHolderPokemon
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     [JsonPropertyName("pokemon")]
     public NamedApiResource Pokemon { get; set; }
 

@@ -4,6 +4,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class PokemonStat
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     [JsonPropertyName("stat")]
     public NamedApiResource Stat { get; set; }
 

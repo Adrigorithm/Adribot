@@ -17,8 +17,10 @@ public class Ability
 
     [JsonPropertyName("generation")]
     public NamedApiResource Generation { get; set; }
+
     [JsonPropertyName("language")]
     public NamedApiResource Language { get; set; }
+
     [JsonPropertyName("names")]
     public List<Name> Names { get; set; }
 

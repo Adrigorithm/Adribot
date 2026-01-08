@@ -5,6 +5,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class LocationAreaEncounter
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     [JsonPropertyName("location_area")]
     public NamedApiResource LocationArea { get; set; }
 

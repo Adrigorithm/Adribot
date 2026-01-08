@@ -4,6 +4,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class MoveBattleStylePreference
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     [JsonPropertyName("low_hp_preference")]
     public int LowHpPreference { get; set; }
 

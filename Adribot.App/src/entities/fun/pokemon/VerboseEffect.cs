@@ -4,6 +4,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class VerboseEffect
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     [JsonPropertyName("effect")]
     public string Effect { get; set; }
 

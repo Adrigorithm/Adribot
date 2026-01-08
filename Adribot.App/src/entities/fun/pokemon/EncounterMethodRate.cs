@@ -5,6 +5,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class EncounterMethodRate
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     [JsonPropertyName("encounter_method")]
     public NamedApiResource EncounterMethod { get; set; }
 

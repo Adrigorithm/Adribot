@@ -4,6 +4,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class Description
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     [JsonPropertyName("description")]
     public string LocalisedDescription { get; set; }
 

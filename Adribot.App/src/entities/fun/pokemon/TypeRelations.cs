@@ -5,6 +5,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class TypeRelations
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     [JsonPropertyName("no_damage_to")]
     public List<NamedApiResource> NoDamageTo { get; set; }
 

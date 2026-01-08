@@ -5,6 +5,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class AbilityEffectChange
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     // The previous effect of this ability listed in different languages.
     [JsonPropertyName("effect_entries")]
     public List<Effect> EffectEntries { get; set; }

@@ -5,6 +5,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class PastMoveStatValues
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     // The percent value of how likely this move is to be successful.
     [JsonPropertyName("accuracy")]
     public int Accuracy { get; set; }

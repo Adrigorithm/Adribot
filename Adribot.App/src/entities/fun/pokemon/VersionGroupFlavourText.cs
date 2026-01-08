@@ -4,6 +4,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class VersionGroupFlavourText
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     [JsonPropertyName("text")]
     public string Text { get; set; }
 

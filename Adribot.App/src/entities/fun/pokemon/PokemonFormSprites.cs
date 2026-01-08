@@ -4,6 +4,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class PokemonFormSprites
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     [JsonPropertyName("front_default")]
     public string FrontDefault { get; set; }
 

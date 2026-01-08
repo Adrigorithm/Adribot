@@ -4,6 +4,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class GrowthRateExperienceLevel
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     // The level gained.
     [JsonPropertyName("level")]
     public int Level { get; set; }

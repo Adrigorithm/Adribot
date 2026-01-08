@@ -5,6 +5,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class NaturePokeathlonStatAffectSets
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     // A list of natures and how they change the referenced Pokéathlon stat.
     [JsonPropertyName("increase")]
     public List<NaturePokeathlonStatAffect> Increase { get; set; }

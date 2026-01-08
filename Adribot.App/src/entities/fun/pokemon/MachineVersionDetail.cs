@@ -4,6 +4,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class MachineVersionDetail
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     // The machine that teaches a move from an item.
     [JsonPropertyName("machine")]
     public ApiResource Machine { get; set; }

@@ -5,6 +5,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class ChainLink
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     [JsonPropertyName("is_baby")]
     public bool IsBaby { get; set; }
 

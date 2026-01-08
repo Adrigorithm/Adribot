@@ -4,6 +4,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class EvolutionDetail
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     [JsonPropertyName("item")]
     public NamedApiResource Item { get; set; }
 

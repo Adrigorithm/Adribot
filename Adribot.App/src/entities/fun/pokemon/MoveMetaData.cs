@@ -4,6 +4,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class MoveMetaData
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     // The status ailment this move inflicts on its target.
     [JsonPropertyName("ailment")]
     public NamedApiResource Ailment { get; set; }

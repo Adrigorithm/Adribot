@@ -5,6 +5,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class ContestComboDetail
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     // A list of moves to use before this move.
     [JsonPropertyName("use_before")]
     public List<NamedApiResource> UseBefore { get; set; }

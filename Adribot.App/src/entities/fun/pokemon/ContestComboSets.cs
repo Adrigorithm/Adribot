@@ -4,6 +4,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class ContestComboSets
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     // A detail of moves this move can be used before or after, granting additional appeal points in contests.
     [JsonPropertyName("normal")]
     public ContestComboDetail Normal { get; set; }

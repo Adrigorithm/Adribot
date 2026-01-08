@@ -5,6 +5,9 @@ namespace Adribot.entities.fun.pokemon;
 
 public class PokemonMove
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
     [JsonPropertyName("move")]
     public NamedApiResource Move { get; set; }
 
