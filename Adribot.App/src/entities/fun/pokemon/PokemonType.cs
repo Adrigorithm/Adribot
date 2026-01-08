@@ -2,8 +2,12 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record PokemonType(
+public class PokemonType
+{
     // The order the Pokémon's types are listed in.
-    [property: JsonPropertyName("slot")] int Slot,
-    [property: JsonPropertyName("type")] NamedApiResource Type
-);
+    [JsonPropertyName("slot")]
+    public int Slot { get; set; }
+
+    [JsonPropertyName("type")]
+    public NamedApiResource Type { get; set; }
+}

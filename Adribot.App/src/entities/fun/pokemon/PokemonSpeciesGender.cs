@@ -2,8 +2,12 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record PokemonSpeciesGender(
+public class PokemonSpeciesGender
+{
     // The chance of this Pokémon being female, in eighths; or -1 for genderless.
-    [property: JsonPropertyName("rate")] int Rate,
-    [property: JsonPropertyName("pokemon_species")] NamedApiResource PokemonSpecies
-);
+    [JsonPropertyName("rate")]
+    public int Rate { get; set; }
+
+    [JsonPropertyName("pokemon_species")]
+    public NamedApiResource PokemonSpecies { get; set; }
+}

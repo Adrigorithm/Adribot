@@ -3,24 +3,39 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record PokemonSpecies(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name,
+public class PokemonSpecies
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
 
     // The order in which species should be sorted. Based on National Dex order, except families are grouped together and sorted by stage.
-    [property: JsonPropertyName("order")] int Order,
+    [JsonPropertyName("order")]
+    public int Order { get; set; }
 
     // The chance of this Pokémon being female, in eighths; or -1 for genderless.
-    [property: JsonPropertyName("gender_rate")] int GenderRate,
+    [JsonPropertyName("gender_rate")]
+    public int GenderRate { get; set; }
 
     // The base capture rate; up to 255. The higher the number, the easier the catch.
-    [property: JsonPropertyName("capture_rate")] int CaptureRate,
+    [JsonPropertyName("capture_rate")]
+    public int CaptureRate { get; set; }
 
     // The happiness when caught by a normal Pokéball; up to 255. The higher the number, the happier the Pokémon.
-    [property: JsonPropertyName("base_happiness")] int BaseHappiness,
-    [property: JsonPropertyName("is_baby")] bool IsBaby,
-    [property: JsonPropertyName("is_legendary")] bool IsLegendary,
-    [property: JsonPropertyName("is_mythical")] bool IsMythical,
+    [JsonPropertyName("base_happiness")]
+    public int BaseHappiness { get; set; }
+
+    [JsonPropertyName("is_baby")]
+    public bool IsBaby { get; set; }
+
+    [JsonPropertyName("is_legendary")]
+    public bool IsLegendary { get; set; }
+
+    [JsonPropertyName("is_mythical")]
+    public bool IsMythical { get; set; }
+
     /*
      * Initial hatch counter: one must walk Y × (hatch_counter + 1) steps before this Pokémon's egg hatches, unless utilizing bonuses like Flame Body's.
      * Y varies per generation.
@@ -30,46 +45,69 @@ public record PokemonSpecies(
      * In Generations V and VI, Egg cycles are 257 steps long.
      * In Pokémon Sword and Shield, and in Pokémon Scarlet and Violet, Egg cycles are 128 steps long.
      */
-    [property: JsonPropertyName("hatch_counter")] int HatchCounter,
+    [JsonPropertyName("hatch_counter")]
+    public int HatchCounter { get; set; }
 
     // Whether this Pokémon has visual gender differences.
-    [property: JsonPropertyName("has_gender_differences")] bool HasGenderDifferences,
+    [JsonPropertyName("has_gender_differences")]
+    public bool HasGenderDifferences { get; set; }
 
     // Whether this Pokémon has multiple forms and can switch between them.
-    [property: JsonPropertyName("forms_switchable")] bool FormsSwitchable,
-    [property: JsonPropertyName("growth_rate")] NamedApiResource GrowthRate,
+    [JsonPropertyName("forms_switchable")]
+    public bool FormsSwitchable { get; set; }
+
+    [JsonPropertyName("growth_rate")]
+    public NamedApiResource GrowthRate { get; set; }
 
     // A list of Pokedexes and the indexes reserved within them for this Pokémon species.
-    [property: JsonPropertyName("pokedex_numbers")] List<PokemonSpeciesDexEntry> PokedexNumbers,
+    [JsonPropertyName("pokedex_numbers")]
+    public List<PokemonSpeciesDexEntry> PokedexNumbers { get; set; }
 
     // A list of egg groups this Pokémon species is a member of.
-    [property: JsonPropertyName("egg_groups")] List<NamedApiResource> EggGroups,
-    [property: JsonPropertyName("color")] NamedApiResource Colour,
-    [property: JsonPropertyName("shape")] NamedApiResource Shape,
+    [JsonPropertyName("egg_groups")]
+    public List<NamedApiResource> EggGroups { get; set; }
+
+    [JsonPropertyName("color")]
+    public NamedApiResource Colour { get; set; }
+
+    [JsonPropertyName("shape")]
+    public NamedApiResource Shape { get; set; }
 
     // The Pokémon species that evolves into this Pokemon_species.
-    [property: JsonPropertyName("evolves_from_species")] NamedApiResource EvolvesFromSpecies,
+    [JsonPropertyName("evolves_from_species")]
+    public NamedApiResource EvolvesFromSpecies { get; set; }
 
     // The evolution chain this Pokémon species is a member of.
-    [property: JsonPropertyName("evolution_chain")] ApiResource EvolutionChain,
-    [property: JsonPropertyName("habitat")] NamedApiResource Habitat,
-    [property: JsonPropertyName("generation")] NamedApiResource Generation,
+    [JsonPropertyName("evolution_chain")]
+    public ApiResource EvolutionChain { get; set; }
+
+    [JsonPropertyName("habitat")]
+    public NamedApiResource Habitat { get; set; }
+
+    [JsonPropertyName("generation")]
+    public NamedApiResource Generation { get; set; }
 
     // The name of this resource listed in different languages.
-    [property: JsonPropertyName("names")] List<Name> Names,
+    [JsonPropertyName("names")]
+    public List<Name> Names { get; set; }
 
     // A list of encounters that can be had with this Pokémon species in pal park.
-    [property: JsonPropertyName("pal_park_encounters")] List<PalParkEncounterArea> PalParkEncounters,
+    [JsonPropertyName("pal_park_encounters")]
+    public List<PalParkEncounterArea> PalParkEncounters { get; set; }
 
     // A list of flavor text entries for this Pokémon species.
-    [property: JsonPropertyName("flavor_text_entries")] List<FlavourText> FlavourTextEntries,
+    [JsonPropertyName("flavor_text_entries")]
+    public List<FlavourText> FlavourTextEntries { get; set; }
 
     // Descriptions of different forms Pokémon take on within the Pokémon species.
-    [property: JsonPropertyName("form_descriptions")] List<Description> FormDescriptions,
+    [JsonPropertyName("form_descriptions")]
+    public List<Description> FormDescriptions { get; set; }
 
     // The genus of this Pokémon species listed in multiple languages.
-    [property: JsonPropertyName("genera")] List<Genus> Genera,
+    [JsonPropertyName("genera")]
+    public List<Genus> Genera { get; set; }
 
     // A list of the Pokémon that exist within this Pokémon species.
-    [property: JsonPropertyName("varieties")] List<PokemonSpeciesVariety> Varieties
-);
+    [JsonPropertyName("varieties")]
+    public List<PokemonSpeciesVariety> Varieties { get; set; }
+}

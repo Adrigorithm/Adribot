@@ -3,20 +3,30 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record Region(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("locations")] List<NamedApiResource> Locations,
-    [property: JsonPropertyName("name")] string Name,
+public class Region
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("locations")]
+    public List<NamedApiResource> Locations { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
 
     // The name of this resource listed in different languages.
-    [property: JsonPropertyName("names")] List<Name> Names,
+    [JsonPropertyName("names")]
+    public List<Name> Names { get; set; }
 
     // The generation this region was introduced in.
-    [property: JsonPropertyName("main_generation")] NamedApiResource MainGeneration,
+    [JsonPropertyName("main_generation")]
+    public NamedApiResource MainGeneration { get; set; }
 
     // A list of pokédexes that catalogue Pokémon in this region.
-    [property: JsonPropertyName("pokedexes")] List<NamedApiResource> Pokedexes,
+    [JsonPropertyName("pokedexes")]
+    public List<NamedApiResource> Pokedexes { get; set; }
 
     // A list of version groups where this region can be visited.
-    [property: JsonPropertyName("version_groups")] List<NamedApiResource> VersionGroups
-);
+    [JsonPropertyName("version_groups")]
+    public List<NamedApiResource> VersionGroups { get; set; }
+}

@@ -3,7 +3,11 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record PokemonTypePast(
-    [property: JsonPropertyName("generation")] NamedApiResource Generation,
-    [property: JsonPropertyName("types")] List<PokemonType> Types
-);
+public class PokemonTypePast
+{
+    [JsonPropertyName("generation")]
+    public NamedApiResource Generation { get; set; }
+
+    [JsonPropertyName("types")]
+    public List<PokemonType> Types { get; set; }
+}

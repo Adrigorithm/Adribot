@@ -3,19 +3,32 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record VersionGroup(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name,
+public class VersionGroup
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
 
     // Order for sorting. Almost by date of release, except similar versions are grouped together.
-    [property: JsonPropertyName("order")] int Order,
-    [property: JsonPropertyName("generation")] NamedApiResource Generation,
+    [JsonPropertyName("order")]
+    public int Order { get; set; }
+
+    [JsonPropertyName("generation")]
+    public NamedApiResource Generation { get; set; }
 
     // A list of methods in which Pokémon can learn moves in this version group.
-    [property: JsonPropertyName("move_learn_methods")] List<NamedApiResource> MoveLearnMethods,
-    [property: JsonPropertyName("pokedexes")] List<NamedApiResource> Pokedexes,
+    [JsonPropertyName("move_learn_methods")]
+    public List<NamedApiResource> MoveLearnMethods { get; set; }
+
+    [JsonPropertyName("pokedexes")]
+    public List<NamedApiResource> Pokedexes { get; set; }
 
     // A list of regions that can be visited in this version group.
-    [property: JsonPropertyName("regions")] List<NamedApiResource> Regions,
-    [property: JsonPropertyName("versions")] List<NamedApiResource> Versions
-);
+    [JsonPropertyName("regions")]
+    public List<NamedApiResource> Regions { get; set; }
+
+    [JsonPropertyName("versions")]
+    public List<NamedApiResource> Versions { get; set; }
+}

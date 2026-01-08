@@ -2,10 +2,13 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record PokemonSpeciesDexEntry(
+public class PokemonSpeciesDexEntry
+{
     // The index number within the Pokédex.
-    [property: JsonPropertyName("entry_number")] int EntryNumber,
+    [JsonPropertyName("entry_number")]
+    public int EntryNumber { get; set; }
 
     // The Pokédex the referenced Pokémon species can be found in.
-    [property: JsonPropertyName("pokedex")] NamedApiResource Pokedex
-);
+    [JsonPropertyName("pokedex")]
+    public NamedApiResource Pokedex { get; set; }
+}

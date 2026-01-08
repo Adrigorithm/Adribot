@@ -2,10 +2,15 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record VersionGroupFlavourText(
-    [property: JsonPropertyName("text")] string Text,
-    [property: JsonPropertyName("language")] NamedApiResource Language,
+public class VersionGroupFlavourText
+{
+    [JsonPropertyName("text")]
+    public string Text { get; set; }
+
+    [JsonPropertyName("language")]
+    public NamedApiResource Language { get; set; }
 
     // The version group which uses this flavour text.
-    [property: JsonPropertyName("version_group")] NamedApiResource VersionGroup
-);
+    [JsonPropertyName("version_group")]
+    public NamedApiResource VersionGroup { get; set; }
+}

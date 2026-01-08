@@ -2,8 +2,14 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record PokemonStat(
-    [property: JsonPropertyName("stat")] NamedApiResource Stat,
-    [property: JsonPropertyName("effort")] int Effort,
-    [property: JsonPropertyName("base_stat")] int BaseStat
-);
+public class PokemonStat
+{
+    [JsonPropertyName("stat")]
+    public NamedApiResource Stat { get; set; }
+
+    [JsonPropertyName("effort")]
+    public int Effort { get; set; }
+
+    [JsonPropertyName("base_stat")]
+    public int BaseStat { get; set; }
+}

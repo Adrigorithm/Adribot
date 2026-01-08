@@ -2,8 +2,12 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record PokemonSpeciesVariety(
+public class PokemonSpeciesVariety
+{
     // Whether this variety is the default variety.
-    [property: JsonPropertyName("is_default")] bool IsDefault,
-    [property: JsonPropertyName("pokemon")] NamedApiResource Pokemon
-);
+    [JsonPropertyName("is_default")]
+    public bool IsDefault { get; set; }
+
+    [JsonPropertyName("pokemon")]
+    public NamedApiResource Pokemon { get; set; }
+}

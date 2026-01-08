@@ -2,7 +2,11 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record VersionGameIndex(
-    [property: JsonPropertyName("game_index")] int GameIndex,
-    [property: JsonPropertyName("version")] NamedApiResource Version
-);
+public class VersionGameIndex
+{
+    [JsonPropertyName("game_index")]
+    public int GameIndex { get; set; }
+
+    [JsonPropertyName("version")]
+    public NamedApiResource Version { get; set; }
+}

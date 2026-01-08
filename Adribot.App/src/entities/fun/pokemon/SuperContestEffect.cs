@@ -3,15 +3,20 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record SuperContestEffect(
-    [property: JsonPropertyName("id")] int Id,
+public class SuperContestEffect
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
 
     // The level of appeal this super contest effect has.
-    [property: JsonPropertyName("appeal")] int Appeal,
+    [JsonPropertyName("appeal")]
+    public int Appeal { get; set; }
 
     // The flavour text of this super contest effect listed in different languages.
-    [property: JsonPropertyName("flavor_text_entries")] List<FlavourText> FlavourTextEntries,
+    [JsonPropertyName("flavor_text_entries")]
+    public List<FlavourText> FlavourTextEntries { get; set; }
 
     // A list of moves that have the effect when used in super contests.
-    [property: JsonPropertyName("moves")] List<NamedApiResource> Moves
-);
+    [JsonPropertyName("moves")]
+    public List<NamedApiResource> Moves { get; set; }
+}
