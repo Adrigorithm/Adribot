@@ -3,21 +3,33 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record Pokedex(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name,
+public class Pokedex
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
 
     // Whether this Pokédex originated in the main series of the video games.
-    [property: JsonPropertyName("is_main_series")] bool IsMainSeries,
+    [JsonPropertyName("is_main_series")]
+    public bool IsMainSeries { get; set; }
 
     // The description of this resource listed in different languages.
-    [property: JsonPropertyName("descriptions")] List<Description> Descriptions,
+    [JsonPropertyName("descriptions")]
+    public List<Description> Descriptions { get; set; }
 
     // The name of this resource listed in different languages.
-    [property: JsonPropertyName("names")] List<Name> Names,
-    [property: JsonPropertyName("pokemon_entries")] List<PokemonEntry> PokemonEntries,
-    [property: JsonPropertyName("region")] NamedApiResource Region,
+    [JsonPropertyName("names")]
+    public List<Name> Names { get; set; }
+
+    [JsonPropertyName("pokemon_entries")]
+    public List<PokemonEntry> PokemonEntries { get; set; }
+
+    [JsonPropertyName("region")]
+    public NamedApiResource Region { get; set; }
 
     // A list of version groups this Pokédex is relevant to.
-    [property: JsonPropertyName("version_groups")] List<NamedApiResource> VersionGroups
-);
+    [JsonPropertyName("version_groups")]
+    public List<NamedApiResource> VersionGroups { get; set; }
+}

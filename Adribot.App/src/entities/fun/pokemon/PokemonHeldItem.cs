@@ -3,7 +3,11 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record PokemonHeldItem(
-    [property: JsonPropertyName("item")] NamedApiResource Item,
-    [property: JsonPropertyName("version_details")] List<PokemonHeldItemVersion> VersionDetails
-);
+public class PokemonHeldItem
+{
+    [JsonPropertyName("item")]
+    public NamedApiResource Item { get; set; }
+
+    [JsonPropertyName("version_details")]
+    public List<PokemonHeldItemVersion> VersionDetails { get; set; }
+}

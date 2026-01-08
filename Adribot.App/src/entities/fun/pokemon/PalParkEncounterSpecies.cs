@@ -2,11 +2,16 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record PalParkEncounterSpecies(
+public class PalParkEncounterSpecies
+{
     // The base score given to the player when this Pokémon is caught during a pal park run.
-    [property: JsonPropertyName("base_score")] int BaseScore,
+    [JsonPropertyName("base_score")]
+    public int BaseScore { get; set; }
 
-    // The base rate for encountering this Pokémon in this pal park area.
-    [property: JsonPropertyName("rate")] int Rate,
-    [property: JsonPropertyName("pokemon_species")] NamedApiResource PokemonSpecies
-);
+    // The base rate for encountering this Pokémon in the pal park area.
+    [JsonPropertyName("rate")]
+    public int Rate { get; set; }
+
+    [JsonPropertyName("pokemon_species")]
+    public NamedApiResource PokemonSpecies { get; set; }
+}

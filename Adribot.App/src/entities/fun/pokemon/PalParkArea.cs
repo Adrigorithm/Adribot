@@ -3,11 +3,18 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record PalParkArea(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name,
+public class PalParkArea
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
 
     // The name of this resource listed in different languages.
-    [property: JsonPropertyName("names")] List<Name> Names,
-    [property: JsonPropertyName("pokemon_encounters")] List<PalParkEncounterSpecies> PokemonEncounters
-);
+    [JsonPropertyName("names")]
+    public List<Name> Names { get; set; }
+
+    [JsonPropertyName("pokemon_encounters")]
+    public List<PalParkEncounterSpecies> PokemonEncounters { get; set; }
+}

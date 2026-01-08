@@ -3,7 +3,11 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record PokemonMove(
-    [property: JsonPropertyName("move")] NamedApiResource Move,
-    [property: JsonPropertyName("version_group_details")] List<PokemonMoveVersion> VersionGroupDetails
-);
+public class PokemonMove
+{
+    [JsonPropertyName("move")]
+    public NamedApiResource Move { get; set; }
+
+    [JsonPropertyName("version_group_details")]
+    public List<PokemonMoveVersion> VersionGroupDetails { get; set; }
+}

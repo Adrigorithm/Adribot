@@ -3,13 +3,19 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record PokemonColour(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name,
+public class PokemonColour
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
 
     // The name of this resource listed in different languages.
-    [property: JsonPropertyName("names")] List<Name> Names,
+    [JsonPropertyName("names")]
+    public List<Name> Names { get; set; }
 
     // A list of the Pokémon species that have this color.
-    [property: JsonPropertyName("pokemon_species")] List<NamedApiResource> PokemonSpecies
-);
+    [JsonPropertyName("pokemon_species")]
+    public List<NamedApiResource> PokemonSpecies { get; set; }
+}
