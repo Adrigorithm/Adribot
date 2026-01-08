@@ -2,10 +2,13 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record MoveStatAffect(
+public class MoveStatAffect
+{
     // The maximum amount of change to the referenced stat.
-    [property: JsonPropertyName("change")] int Change,
+    [JsonPropertyName("change")]
+    public int Change { get; set; }
 
     // The move causing the change.
-    [property: JsonPropertyName("move")] NamedApiResource Move
-);
+    [JsonPropertyName("move")]
+    public NamedApiResource Move { get; set; }
+}

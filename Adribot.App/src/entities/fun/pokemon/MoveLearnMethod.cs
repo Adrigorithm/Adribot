@@ -3,16 +3,23 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record MoveLearnMethod(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name,
+public class MoveLearnMethod
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
 
     // The description of this resource listed in different languages.
-    [property: JsonPropertyName("descriptions")] List<Description> Descriptions,
+    [JsonPropertyName("descriptions")]
+    public List<Description> Descriptions { get; set; }
 
     // The name of this resource listed in different languages.
-    [property: JsonPropertyName("names")] List<Name> Names,
+    [JsonPropertyName("names")]
+    public List<Name> Names { get; set; }
 
     // A list of version groups where moves can be learned through this method.
-    [property: JsonPropertyName("version_groups")] List<NamedApiResource> VersionGroups
-);
+    [JsonPropertyName("version_groups")]
+    public List<NamedApiResource> VersionGroups { get; set; }
+}

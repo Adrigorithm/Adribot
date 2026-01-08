@@ -2,7 +2,11 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record Name(
-    [property: JsonPropertyName("name")] string LocalisedName,
-    [property: JsonPropertyName("language")] NamedApiResource Language
-);
+public class Name
+{
+    [JsonPropertyName("name")]
+    public string LocalisedName { get; set; }
+
+    [JsonPropertyName("language")]
+    public NamedApiResource Language { get; set; }
+}

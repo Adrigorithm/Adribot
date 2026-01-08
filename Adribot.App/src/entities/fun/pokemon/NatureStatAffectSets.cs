@@ -3,10 +3,13 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record NatureStatAffectSets(
+public class NatureStatAffectSets
+{
     // A list of natures and how they change the referenced stat.
-    [property: JsonPropertyName("increase")] List<NamedApiResource> Increase,
+    [JsonPropertyName("increase")]
+    public List<NamedApiResource> Increase { get; set; }
 
     // A list of natures and how they change the referenced stat.
-    [property: JsonPropertyName("decrease")] List<NamedApiResource> Decrease
-);
+    [JsonPropertyName("decrease")]
+    public List<NamedApiResource> Decrease { get; set; }
+}

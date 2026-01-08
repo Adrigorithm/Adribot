@@ -3,10 +3,13 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record MoveStatAffectSets(
+public class MoveStatAffectSets
+{
     // A list of moves and how they change the referenced stat.
-    [property: JsonPropertyName("increase")] List<MoveStatAffect> Increase,
+    [JsonPropertyName("increase")]
+    public List<MoveStatAffect> Increase { get; set; }
 
     // A list of moves and how they change the referenced stat.
-    [property: JsonPropertyName("decrease")] List<MoveStatAffect> Decrease
-);
+    [JsonPropertyName("decrease")]
+    public List<MoveStatAffect> Decrease { get; set; }
+}

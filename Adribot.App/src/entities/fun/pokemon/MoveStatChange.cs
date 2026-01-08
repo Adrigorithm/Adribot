@@ -2,7 +2,11 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record MoveStatChange(
-    [property: JsonPropertyName("change")] int Change,
-    [property: JsonPropertyName("stat")] NamedApiResource Stat
-);
+public class MoveStatChange
+{
+    [JsonPropertyName("change")]
+    public int Change { get; set; }
+
+    [JsonPropertyName("stat")]
+    public NamedApiResource Stat { get; set; }
+}

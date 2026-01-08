@@ -2,36 +2,51 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record MoveMetaData(
+public class MoveMetaData
+{
     // The status ailment this move inflicts on its target.
-    [property: JsonPropertyName("ailment")] NamedApiResource Ailment,
+    [JsonPropertyName("ailment")]
+    public NamedApiResource Ailment { get; set; }
 
     // The category of move this move falls under, e.g. damage or ailment.
-    [property: JsonPropertyName("category")] NamedApiResource Category,
+    [JsonPropertyName("category")]
+    public NamedApiResource Category { get; set; }
 
     // The minimum number of times this move hits. Null if it always only hits once.
-    [property: JsonPropertyName("min_hits")] int MinHits,
+    [JsonPropertyName("min_hits")]
+    public int MinHits { get; set; }
 
     // The maximum number of times this move hits. Null if it always only hits once.
-    [property: JsonPropertyName("max_hits")] int MaxHits,
+    [JsonPropertyName("max_hits")]
+    public int MaxHits { get; set; }
 
     // The minimum number of turns this move continues to take effect. Null if it always only lasts one turn.
-    [property: JsonPropertyName("min_turns")] int MinTurns,
+    [JsonPropertyName("min_turns")]
+    public int MinTurns { get; set; }
 
     // The maximum number of turns this move continues to take effect. Null if it always only lasts one turn.
-    [property: JsonPropertyName("max_turns")] int MaxTurns,
+    [JsonPropertyName("max_turns")]
+    public int MaxTurns { get; set; }
 
     // HP drain (if positive) or Recoil damage (if negative), in percent of damage done.
-    [property: JsonPropertyName("drain")] int Drain,
+    [JsonPropertyName("drain")]
+    public int Drain { get; set; }
 
     // The amount of hp gained by the attacking Pokemon, in percent of it's maximum HP.
-    [property: JsonPropertyName("healing")] int Healing,
+    [JsonPropertyName("healing")]
+    public int Healing { get; set; }
 
     // Critical hit rate bonus.
-    [property: JsonPropertyName("crit_rate")] int CritRate,
-    [property: JsonPropertyName("ailment_chance")] int AilmentChance,
-    [property: JsonPropertyName("flinch_chance")] int FlinchChance,
+    [JsonPropertyName("crit_rate")]
+    public int CritRate { get; set; }
+
+    [JsonPropertyName("ailment_chance")]
+    public int AilmentChance { get; set; }
+
+    [JsonPropertyName("flinch_chance")]
+    public int FlinchChance { get; set; }
 
     // The likelihood this attack will cause a stat change in the target Pokémon.
-    [property: JsonPropertyName("stat_chance")] int StatChance
-);
+    [JsonPropertyName("stat_chance")]
+    public int StatChance { get; set; }
+}

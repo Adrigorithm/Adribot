@@ -3,10 +3,15 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record MoveBattleStyle(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name,
+public class MoveBattleStyle
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
 
     // The name of this resource listed in different languages.
-    [property: JsonPropertyName("names")] List<Name> Names
-);
+    [JsonPropertyName("names")]
+    public List<Name> Names { get; set; }
+}

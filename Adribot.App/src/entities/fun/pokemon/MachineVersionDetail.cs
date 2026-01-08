@@ -2,10 +2,13 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record MachineVersionDetail(
+public class MachineVersionDetail
+{
     // The machine that teaches a move from an item.
-    [property: JsonPropertyName("machine")] ApiResource Machine,
+    [JsonPropertyName("machine")]
+    public ApiResource Machine { get; set; }
 
     // The version group of this specific machine.
-    [property: JsonPropertyName("version_group")] NamedApiResource VersionGroup
-);
+    [JsonPropertyName("version_group")]
+    public NamedApiResource VersionGroup { get; set; }
+}

@@ -3,16 +3,23 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record MoveTarget(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name,
+public class MoveTarget
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
 
     // The description of this resource listed in different languages.
-    [property: JsonPropertyName("descriptions")] List<Description> Descriptions,
+    [JsonPropertyName("descriptions")]
+    public List<Description> Descriptions { get; set; }
 
     // A list of moves that that are directed at this target.
-    [property: JsonPropertyName("moves")] List<NamedApiResource> Moves,
+    [JsonPropertyName("moves")]
+    public List<NamedApiResource> Moves { get; set; }
 
     // The name of this resource listed in different languages.
-    [property: JsonPropertyName("names")] List<Name> Names
-);
+    [JsonPropertyName("names")]
+    public List<Name> Names { get; set; }
+}

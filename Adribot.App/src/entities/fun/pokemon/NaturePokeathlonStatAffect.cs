@@ -2,10 +2,13 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record NaturePokeathlonStatAffect(
+public class NaturePokeathlonStatAffect
+{
     // The maximum amount of change to the referenced Pokéathlon stat.
-    [property: JsonPropertyName("max_change")] int MaxChange,
+    [JsonPropertyName("max_change")]
+    public int MaxChange { get; set; }
 
     // The nature causing the change.
-    [property: JsonPropertyName("nature")] NamedApiResource Nature
-);
+    [JsonPropertyName("nature")]
+    public NamedApiResource Nature { get; set; }
+}

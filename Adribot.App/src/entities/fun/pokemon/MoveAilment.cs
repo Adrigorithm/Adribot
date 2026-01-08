@@ -3,13 +3,19 @@ using System.Text.Json.Serialization;
 
 namespace Adribot.entities.fun.pokemon;
 
-public record MoveAilment(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name,
+public class MoveAilment
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
 
     // A list of moves that cause this ailment.
-    [property: JsonPropertyName("moves")] List<NamedApiResource> Moves,
+    [JsonPropertyName("moves")]
+    public List<NamedApiResource> Moves { get; set; }
 
     // The name of this resource listed in different languages.
-    [property: JsonPropertyName("names")] List<Name> Names
-);
+    [JsonPropertyName("names")]
+    public List<Name> Names { get; set; }
+}
