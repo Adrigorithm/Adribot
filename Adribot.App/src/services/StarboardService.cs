@@ -22,6 +22,7 @@ public class StarboardService
         clientProvider.Client.ReactionRemoved += ClientOnReactionRemovedAsync;
         clientProvider.Client.ReactionsCleared += ClientOnReactionsClearedAsync;
 
+        _dGuildRepository = guildRepository;
         _starboardRepository = starboardRepository;
     }
 
