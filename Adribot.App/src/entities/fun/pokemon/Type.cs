@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -24,10 +25,12 @@ public class Type
     public List<GenerationGameIndex> GameIndices { get; set; }
 
     // The generation this type was introduced in.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("generation")]
     public NamedApiResource Generation { get; set; }
 
     // The class of damage inflicted by this type.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("move_damage_class")]
     public NamedApiResource MoveDamageClass { get; set; }
 

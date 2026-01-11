@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -33,6 +34,7 @@ public class PokemonForm
     [JsonPropertyName("form_name")]
     public string FormName { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("pokemon")]
     public NamedApiResource Pokemon { get; set; }
 
@@ -45,6 +47,7 @@ public class PokemonForm
     public PokemonFormSprites Sprites { get; set; }
 
     // The version group this Pokémon form was introduced in.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("version_group")]
     public NamedApiResource VersionGroup { get; set; }
 

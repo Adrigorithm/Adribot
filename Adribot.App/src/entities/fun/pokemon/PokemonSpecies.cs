@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -56,6 +57,7 @@ public class PokemonSpecies
     [JsonPropertyName("forms_switchable")]
     public bool FormsSwitchable { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("growth_rate")]
     public NamedApiResource GrowthRate { get; set; }
 
@@ -67,13 +69,16 @@ public class PokemonSpecies
     [JsonPropertyName("egg_groups")]
     public List<NamedApiResource> EggGroups { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("color")]
     public NamedApiResource Colour { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("shape")]
     public NamedApiResource Shape { get; set; }
 
     // The Pokémon species that evolves into this Pokemon_species.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("evolves_from_species")]
     public NamedApiResource EvolvesFromSpecies { get; set; }
 
@@ -81,9 +86,11 @@ public class PokemonSpecies
     [JsonPropertyName("evolution_chain")]
     public ApiResource EvolutionChain { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("habitat")]
     public NamedApiResource Habitat { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("generation")]
     public NamedApiResource Generation { get; set; }
 

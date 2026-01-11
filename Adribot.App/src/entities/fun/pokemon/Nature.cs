@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -11,15 +12,19 @@ public class Nature
     [JsonPropertyName("name")]
     public string Name { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("decreased_stat")]
     public NamedApiResource DecreasedStat { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("increased_stat")]
     public NamedApiResource IncreasedStat { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("hates_flavor")]
     public NamedApiResource HatesFlavour { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("likes_flavor")]
     public NamedApiResource LikesFlavour { get; set; }
 

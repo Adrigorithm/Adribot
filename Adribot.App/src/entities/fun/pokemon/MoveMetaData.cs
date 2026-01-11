@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -8,10 +9,12 @@ public class MoveMetaData
     public int Id { get; set; }
 
     // The status ailment this move inflicts on its target.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("ailment")]
     public NamedApiResource Ailment { get; set; }
 
     // The category of move this move falls under, e.g. damage or ailment.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("category")]
     public NamedApiResource Category { get; set; }
 

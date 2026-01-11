@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -17,12 +18,14 @@ public class Item
     [JsonPropertyName("fling_power")]
     public int FlingPower { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("fling_effect")]
     public NamedApiResource FlingEffect { get; set; }
 
     [JsonPropertyName("attributes")]
     public List<NamedApiResource> Attributes { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("category")]
     public NamedApiResource Category { get; set; }
 

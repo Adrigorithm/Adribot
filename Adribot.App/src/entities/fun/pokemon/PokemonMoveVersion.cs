@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -7,9 +8,11 @@ public class PokemonMoveVersion
     [JsonPropertyName("id")]
     public int Id { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("move_learn_method")]
     public NamedApiResource MoveLearnMethod { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("version_group")]
     public NamedApiResource VersionGroup { get; set; }
 

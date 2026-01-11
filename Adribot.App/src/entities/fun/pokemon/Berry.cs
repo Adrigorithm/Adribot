@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -32,6 +33,7 @@ public class Berry
     [JsonPropertyName("soil_dryness")]
     public int SoilDryness { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("firmness")]
     public NamedApiResource Firmness { get; set; }
 
@@ -39,10 +41,12 @@ public class Berry
     public List<BerryFlavourMap> Flavours { get; set; }
 
     // Berries are actually items. This is a reference to the item specific data for this berry.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("item")]
     public NamedApiResource Item { get; set; }
 
     // The type inherited by "Natural Gift" when used with this Berry.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("natural_gift_type")]
     public NamedApiResource NaturalGiftType { get; set; }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -15,9 +16,11 @@ public class Ability
     [JsonPropertyName("is_main_series")]
     public bool IsMainSeries { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("generation")]
     public NamedApiResource Generation { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("language")]
     public NamedApiResource Language { get; set; }
 

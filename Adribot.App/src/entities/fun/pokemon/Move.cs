@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -33,14 +34,17 @@ public class Move
     public ContestComboSets ContestCombos { get; set; }
 
     // The type of appeal this move gives a Pokémon when used in a contest.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("contest_type")]
     public NamedApiResource ContestType { get; set; }
 
     // The effect the move has when used in a contest.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("contest_effect")]
     public ApiResource ContestEffect { get; set; }
 
     // The type of damage the move inflicts on the target, e.g. physical.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("damage_class")]
     public NamedApiResource DamageClass { get; set; }
 
@@ -60,6 +64,7 @@ public class Move
     public List<MoveFlavourText> FlavourTextEntries { get; set; }
 
     // The generation in which this move was introduced.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("generation")]
     public NamedApiResource Generation { get; set; }
 
@@ -84,14 +89,17 @@ public class Move
     public List<MoveStatChange> StatChanges { get; set; }
 
     // The effect the move has when used in a super contest.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("super_contest_effect")]
     public ApiResource SuperContestEffect { get; set; }
 
     // The type of target that will receive the effects of the attack.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("target")]
     public NamedApiResource Target { get; set; }
 
     // The elemental type of this move.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("type")]
     public NamedApiResource Type { get; set; }
 }

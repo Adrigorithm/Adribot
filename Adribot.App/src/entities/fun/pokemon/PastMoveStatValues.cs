@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -27,10 +28,12 @@ public class PastMoveStatValues
     public List<VerboseEffect> EffectEntries { get; set; }
 
     // The elemental type of this move.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("type")]
     public NamedApiResource Type { get; set; }
 
     // The version group in which these move stat values were in effect.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("version_group")]
     public NamedApiResource VersionGroup { get; set; }
 }
