@@ -144,4 +144,19 @@ public class AdribotContext(DbContextOptions<AdribotContext> options) : DbContex
     public DbSet<VersionGameIndex> VersionGameIndices { get; set; }
     public DbSet<VersionGroup> VersionGroups { get; set; }
     public DbSet<VersionGroupFlavourText> VersionGroupFlavourTexts { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Needed because SQL does not allow two FKs in a table pointing to the same table
+        modelBuilder.Entity<ContestComboSets>()
+            .HasOne(e => e.Normal)
+            .WithMany()
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Needed because SQL does not allow two FKs in a table pointing to the same table
+        modelBuilder.Entity<ContestComboSets>()
+            .HasOne(e => e.Super)
+            .WithMany()
+            .OnDelete(DeleteBehavior.Restrict);
+    }
 }
