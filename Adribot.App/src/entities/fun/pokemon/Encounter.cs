@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -25,6 +26,7 @@ public class Encounter
     public int Chance { get; set; }
 
     // The method by which this encounter happens.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("method")]
     public NamedApiResource Method { get; set; }
 }

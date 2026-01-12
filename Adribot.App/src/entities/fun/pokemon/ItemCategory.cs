@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -19,6 +20,7 @@ public class ItemCategory
     public List<Name> Names { get; set; }
 
     // The pocket items in this category would be put in.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("pocket")]
     public NamedApiResource Pocket { get; set; }
 }

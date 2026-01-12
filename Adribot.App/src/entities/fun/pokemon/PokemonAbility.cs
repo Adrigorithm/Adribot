@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -14,6 +15,7 @@ public class PokemonAbility
     [JsonPropertyName("slot")]
     public int Slot { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("ability")]
     public NamedApiResource Ability { get; set; }
 }

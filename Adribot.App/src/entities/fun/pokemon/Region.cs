@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -19,6 +20,7 @@ public class Region
     public List<Name> Names { get; set; }
 
     // The generation this region was introduced in.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("main_generation")]
     public NamedApiResource MainGeneration { get; set; }
 

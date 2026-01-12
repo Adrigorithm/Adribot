@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -11,6 +12,7 @@ public class PokemonSpeciesVariety
     [JsonPropertyName("is_default")]
     public bool IsDefault { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("pokemon")]
     public NamedApiResource Pokemon { get; set; }
 }

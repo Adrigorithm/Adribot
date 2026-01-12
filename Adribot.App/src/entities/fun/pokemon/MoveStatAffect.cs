@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -12,6 +13,7 @@ public class MoveStatAffect
     public int Change { get; set; }
 
     // The move causing the change.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("move")]
     public NamedApiResource Move { get; set; }
 }

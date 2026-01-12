@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -32,6 +33,7 @@ public class Stat
     public List<ApiResource> Characteristics { get; set; }
 
     // The class of damage this stat is directly related to.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("move_damage_class")]
     public NamedApiResource MoveDamageClass { get; set; }
 

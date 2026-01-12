@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -11,6 +12,8 @@ public class BerryFlavourMap
     [JsonPropertyName("potency")]
     public int Potency { get; set; }
 
+
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("flavor")]
     public NamedApiResource Flavour { get; set; }
 }

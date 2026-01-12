@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -11,6 +12,7 @@ public class ItemHolderPokemonVersionDetail
     [JsonPropertyName("rarity")]
     public int Rarity { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("version")]
     public NamedApiResource Version { get; set; }
 }

@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -15,6 +16,7 @@ public class PalParkEncounterArea
     [JsonPropertyName("rate")]
     public int Rate { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("area")]
     public NamedApiResource Area { get; set; }
 }

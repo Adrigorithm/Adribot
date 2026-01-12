@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -15,6 +16,7 @@ public class VersionGroup
     [JsonPropertyName("order")]
     public int Order { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("generation")]
     public NamedApiResource Generation { get; set; }
 

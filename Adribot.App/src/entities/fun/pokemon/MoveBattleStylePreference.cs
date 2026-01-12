@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -14,6 +15,7 @@ public class MoveBattleStylePreference
     public int HighHpPreference { get; set; }
 
     // The move battle style.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("move_battle_style")]
     public NamedApiResource MoveBattleStyle { get; set; }
 }

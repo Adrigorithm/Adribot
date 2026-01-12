@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -12,6 +13,7 @@ public class PokemonSpeciesDexEntry
     public int EntryNumber { get; set; }
 
     // The Pokédex the referenced Pokémon species can be found in.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("pokedex")]
     public NamedApiResource Pokedex { get; set; }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -26,6 +27,7 @@ public class Pokedex
     [JsonPropertyName("pokemon_entries")]
     public List<PokemonEntry> PokemonEntries { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("region")]
     public NamedApiResource Region { get; set; }
 

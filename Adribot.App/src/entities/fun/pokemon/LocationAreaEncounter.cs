@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -8,6 +9,7 @@ public class LocationAreaEncounter
     [JsonPropertyName("id")]
     public int Id { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("location_area")]
     public NamedApiResource LocationArea { get; set; }
 

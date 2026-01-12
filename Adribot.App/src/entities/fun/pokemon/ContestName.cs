@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -13,6 +14,7 @@ public class ContestName
     [JsonPropertyName("color")]
     public string Colour { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("language")]
     public NamedApiResource Language { get; set; }
 }

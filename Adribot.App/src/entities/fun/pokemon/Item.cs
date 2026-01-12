@@ -51,6 +51,7 @@ public class Item
     [JsonPropertyName("held_by_pokemon")]
     public List<ItemHolderPokemon> HeldByPokemon { get; set; }
 
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("baby_trigger_for")]
     public ApiResource BabyTriggerFor { get; set; }
 

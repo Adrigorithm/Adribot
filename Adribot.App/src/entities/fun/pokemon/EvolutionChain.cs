@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -8,6 +9,7 @@ public class EvolutionChain
     public int Id { get; set; }
 
     // The item that a Pokémon would be holding when mating that would trigger the egg hatching a baby Pokémon rather than a basic Pokémon.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("baby_trigger_item")]
     public NamedApiResource BabyTriggerItem { get; set; }
 

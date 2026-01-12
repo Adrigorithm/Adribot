@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -17,6 +18,7 @@ public class Characteristic
     public List<int> PossibleValues { get; set; }
 
     // The stat which results in this characteristic.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("highest_stat")]
     public NamedApiResource HighestStat { get; set; }
 

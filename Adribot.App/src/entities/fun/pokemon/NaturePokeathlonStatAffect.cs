@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -12,6 +13,7 @@ public class NaturePokeathlonStatAffect
     public int MaxChange { get; set; }
 
     // The nature causing the change.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("nature")]
     public NamedApiResource Nature { get; set; }
 }

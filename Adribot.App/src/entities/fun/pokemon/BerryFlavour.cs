@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Adribot.entities.fun.pokemon;
 
@@ -15,6 +16,7 @@ public class BerryFlavour
     public List<FlavourBerryMap> Berries { get; set; }
 
     // The contest type that correlates with this berry flavour.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("contest_type")]
     public NamedApiResource ContestType { get; set; }
 

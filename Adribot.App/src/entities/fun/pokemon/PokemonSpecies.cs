@@ -83,6 +83,7 @@ public class PokemonSpecies
     public NamedApiResource EvolvesFromSpecies { get; set; }
 
     // The evolution chain this Pokémon species is a member of.
+    [DeleteBehavior(DeleteBehavior.Restrict)]
     [JsonPropertyName("evolution_chain")]
     public ApiResource EvolutionChain { get; set; }
 
